@@ -31,8 +31,6 @@ import org.robovm.apple.foundation.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
-import org.robovm.apple.opengles.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.corevideo.*;
 /*</imports>*/
 
@@ -53,10 +51,6 @@ import org.robovm.apple.corevideo.*;
     public CAMetalDisplayLinkUpdate() {}
     protected CAMetalDisplayLinkUpdate(Handle h, long handle) { super(h, handle); }
     protected CAMetalDisplayLinkUpdate(SkipInit skipInit) { super(skipInit); }
-    /*</constructors>*/
-    /*<properties>*/
-    @Property(selector = "drawable")
-    public native CAMetalDrawable getDrawable();
     @Property(selector = "targetTimestamp")
     public native double getTargetTimestamp();
     @Property(selector = "targetPresentationTimestamp")

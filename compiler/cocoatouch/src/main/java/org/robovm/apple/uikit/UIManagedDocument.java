@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -63,35 +57,10 @@ import org.robovm.apple.symbols.*;
     /*<properties>*/
     @Property(selector = "persistentStoreName")
     public static native String getPersistentStoreName();
-    @WeaklyLinked
-    @Property(selector = "managedObjectContext")
-    public native NSManagedObjectContext getManagedObjectContext();
-    @WeaklyLinked
-    @Property(selector = "managedObjectModel")
-    public native NSManagedObjectModel getManagedObjectModel();
-    @WeaklyLinked
-    @Property(selector = "persistentStoreOptions")
-    public native NSPersistentStoreOptions getPersistentStoreOptions();
-    @WeaklyLinked
-    @Property(selector = "setPersistentStoreOptions:")
-    public native void setPersistentStoreOptions(NSPersistentStoreOptions v);
     @Property(selector = "modelConfiguration")
     public native String getModelConfiguration();
     @Property(selector = "setModelConfiguration:")
     public native void setModelConfiguration(String v);
-    /*</properties>*/
-    /*<members>*//*</members>*/
-    /*<methods>*/
-    @WeaklyLinked
-    public boolean configurePersistentStoreCoordinator(NSURL storeURL, String fileType, String configuration, NSPersistentStoreOptions storeOptions) throws NSErrorException {
-       NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
-       boolean result = configurePersistentStoreCoordinator(storeURL, fileType, configuration, storeOptions, ptr);
-       if (ptr.get() != null) { throw new NSErrorException(ptr.get()); }
-       return result;
-    }
-    @WeaklyLinked
-    @Method(selector = "configurePersistentStoreCoordinatorForURL:ofType:modelConfiguration:storeOptions:error:")
-    private native boolean configurePersistentStoreCoordinator(NSURL storeURL, String fileType, String configuration, NSPersistentStoreOptions storeOptions, NSError.NSErrorPtr error);
     @Method(selector = "persistentStoreTypeForFileType:")
     public native String getPersistentStoreType(String fileType);
     public boolean readAdditionalContent(NSURL absoluteURL) throws NSErrorException {

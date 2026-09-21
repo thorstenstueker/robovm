@@ -30,8 +30,6 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 /*</imports>*/
 
@@ -47,25 +45,6 @@ import org.robovm.apple.iosurface.*;
     /*<constants>*//*</constants>*/
     /*<constructors>*/
     protected CVOpenGLESTextureCache() {}
-    /*</constructors>*/
-    /*<properties>*//*</properties>*/
-    /*<members>*//*</members>*/
-    /**
-     * @since Available in iOS 5.0 and later.
-     */
-    @WeaklyLinked
-    public static CVOpenGLESTextureCache create(CVOpenGLESTextureCacheAttributes cacheAttributes, EAGLContext eaglContext, NSDictionary<NSString, ?> textureAttributes) {
-        return create(null, cacheAttributes, eaglContext, textureAttributes);
-    }
-    /**
-     * @since Available in iOS 5.0 and later.
-     */
-    @WeaklyLinked
-    public static CVOpenGLESTextureCache create(CFAllocator allocator, CVOpenGLESTextureCacheAttributes cacheAttributes, EAGLContext eaglContext, NSDictionary<NSString, ?> textureAttributes) {
-        CVOpenGLESTextureCachePtr ptr = new CVOpenGLESTextureCachePtr();
-        create(allocator, cacheAttributes, eaglContext, textureAttributes, ptr);
-        return ptr.get();
-    }
     /**
      * @since Available in iOS 5.0 and later.
      */
@@ -87,13 +66,6 @@ import org.robovm.apple.iosurface.*;
     @Deprecated
     @Bridge(symbol="CVOpenGLESTextureCacheGetTypeID", optional=true)
     public static native @MachineSizedUInt long getClassTypeID();
-    /**
-     * @deprecated Deprecated in iOS 12.0. OpenGL/OpenGLES is no longer supported. Use Metal APIs instead. (Define COREVIDEO_SILENCE_GL_DEPRECATION to silence these warnings)
-     */
-    @Deprecated
-    @WeaklyLinked
-    @Bridge(symbol="CVOpenGLESTextureCacheCreate", optional=true)
-    private static native CVReturn create(CFAllocator allocator, CVOpenGLESTextureCacheAttributes cacheAttributes, EAGLContext eaglContext, NSDictionary textureAttributes, CVOpenGLESTextureCache.CVOpenGLESTextureCachePtr cacheOut);
     /**
      * @deprecated Deprecated in iOS 12.0. OpenGL/OpenGLES is no longer supported. Use Metal APIs instead. (Define COREVIDEO_SILENCE_GL_DEPRECATION to silence these warnings)
      */

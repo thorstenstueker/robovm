@@ -31,8 +31,6 @@ import org.robovm.apple.foundation.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
-import org.robovm.apple.opengles.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.corevideo.*;
 /*</imports>*/
 import org.robovm.rt.annotation.WeaklyLinked;
@@ -55,41 +53,6 @@ import org.robovm.rt.annotation.WeaklyLinked;
     protected CAAnimation(SkipInit skipInit) { super(skipInit); }
     @Method(selector = "initWithCoder:")
     public CAAnimation(NSCoder coder) { super((SkipInit) null); initObject(init(coder)); }
-    /*</constructors>*/
-    
-    /* SceneKit extensions */
-    @WeaklyLinked
-    public boolean usesSceneTimeBase() {
-        return org.robovm.apple.scenekit.CAAnimationExtensions.usesSceneTimeBase(this);
-    }
-    @WeaklyLinked
-    public void setUsesSceneTimeBase(boolean v) {
-        org.robovm.apple.scenekit.CAAnimationExtensions.setUsesSceneTimeBase(this, v);
-    }
-    @WeaklyLinked
-    public @MachineSizedFloat double getFadeInDuration() {
-        return org.robovm.apple.scenekit.CAAnimationExtensions.getFadeInDuration(this);
-    }
-    @WeaklyLinked
-    public void setFadeInDuration(@MachineSizedFloat double v) {
-        org.robovm.apple.scenekit.CAAnimationExtensions.setFadeInDuration(this, v);
-    }
-    @WeaklyLinked
-    public @MachineSizedFloat double getFadeOutDuration() {
-        return org.robovm.apple.scenekit.CAAnimationExtensions.getFadeOutDuration(this);
-    }
-    @WeaklyLinked
-    public void setFadeOutDuration(@MachineSizedFloat double v) {
-        org.robovm.apple.scenekit.CAAnimationExtensions.setFadeOutDuration(this, v);
-    }
-    @WeaklyLinked
-    public NSArray<org.robovm.apple.scenekit.SCNAnimationEvent> getAnimationEvents() {
-        return org.robovm.apple.scenekit.CAAnimationExtensions.getAnimationEvents(this);
-    }
-    @WeaklyLinked
-    public void setAnimationEvents(NSArray<org.robovm.apple.scenekit.SCNAnimationEvent> v) {
-        org.robovm.apple.scenekit.CAAnimationExtensions.setAnimationEvents(this, v);
-    }
     /*<properties>*/
     @Property(selector = "timingFunction")
     public native CAMediaTimingFunction getTimingFunction();

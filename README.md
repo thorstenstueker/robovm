@@ -51,6 +51,25 @@ Calls to APIs that are still missing in `robovm-rt` are reported as warnings at 
 (`Unresolved method ...`) and throw `NoSuchMethodError` at runtime. `compiler/rt/tools/ApiDelta.java`
 lists the remaining differences to the JDK's `java.base`.
 
+## Reduced CocoaTouch bindings
+
+This fork ships a reduced `robovm-cocoatouch` with the frameworks needed for UIKit based apps
+(RapidFX), camera, Bluetooth, GPS and motion sensors:
+
+`foundation`, `corefoundation`, `dispatch`, `uikit`, `coregraphics`, `coreanimation`, `coretext`,
+`coreimage`, `imageio`, `uniformtypeid`, `usernotifications`, `security`, `coreservices`,
+`avfoundation`, `coremedia`, `corevideo`, `audiotoolbox`, `coreaudio`, `iosurface`,
+`corelocation`, `coremotion`, `corebluetooth`.
+
+All other framework bindings (Metal, OpenGL ES, SceneKit, SpriteKit, MapKit, Intents, CloudKit,
+CoreData, HealthKit, HomeKit, ...) were removed together with the native `oslog` helper library,
+so `cocoatouch` builds with plain `javac` and no longer needs `cmake`. Cross references from the
+kept bindings into removed frameworks (e.g. `UIViewController` iAd/MediaPlayer extensions,
+`NSValue` MapKit/SceneKit values, `CAMetalLayer`) were removed as well.
+
+Note: apps linked against the iOS 26+ SDK must adopt the `UIScene` lifecycle (see the
+`ios-single-view-no-ib` template), otherwise UIKit traps at launch.
+
 ## Using RoboVM
 
 There are pre-built plugins for Eclipse and IntelliJ IDEA, for installation take a look at the [homepage](http://mobivm.github.io/).

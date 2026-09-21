@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -59,25 +53,10 @@ import org.robovm.apple.symbols.*;
     protected UISymbolContentTransition() {}
     protected UISymbolContentTransition(Handle h, long handle) { super(h, handle); }
     protected UISymbolContentTransition(SkipInit skipInit) { super(skipInit); }
-    public UISymbolContentTransition(NSSymbolContentTransition contentTransition) { super((Handle) null, create(contentTransition)); retain(getHandle()); }
-    public UISymbolContentTransition(NSSymbolContentTransition contentTransition, NSSymbolEffectOptions options) { super((Handle) null, create(contentTransition, options)); retain(getHandle()); }
     @Method(selector = "initWithCoder:")
     public UISymbolContentTransition(NSCoder coder) { super((SkipInit) null); initObject(init(coder)); }
-    /*</constructors>*/
-    /*<properties>*/
-    @Property(selector = "contentTransition")
-    public native NSSymbolContentTransition getContentTransition();
-    @Property(selector = "options")
-    public native NSSymbolEffectOptions getOptions();
     @Property(selector = "supportsSecureCoding")
     public static native boolean supportsSecureCoding();
-    /*</properties>*/
-    /*<members>*//*</members>*/
-    /*<methods>*/
-    @Method(selector = "transitionWithContentTransition:")
-    protected static native @Pointer long create(NSSymbolContentTransition contentTransition);
-    @Method(selector = "transitionWithContentTransition:options:")
-    protected static native @Pointer long create(NSSymbolContentTransition contentTransition, NSSymbolEffectOptions options);
     @Method(selector = "encodeWithCoder:")
     public native void encode(NSCoder coder);
     @Method(selector = "initWithCoder:")

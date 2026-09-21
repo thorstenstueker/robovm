@@ -30,7 +30,6 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coreaudio.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.avfoundation.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
@@ -49,12 +48,6 @@ import org.robovm.apple.uikit.*;
     /*<constants>*//*</constants>*/
     /*<constructors>*/
     public AURenderEvent() {}
-    public AURenderEvent(AURenderEventHeader head, AUParameterEvent parameter, AUMIDIEvent MIDI, AUMIDIEventList MIDIEventsList) {
-        this.setHead(head);
-        this.setParameter(parameter);
-        this.setMIDI(MIDI);
-        this.setMIDIEventsList(MIDIEventsList);
-    }
     /*</constructors>*/
     /*<properties>*//*</properties>*/
     /*<members>*/
@@ -63,7 +56,6 @@ import org.robovm.apple.uikit.*;
     @StructMember(0) public native @ByVal AUParameterEvent getParameter();
     @StructMember(0) public native AURenderEvent setParameter(@ByVal AUParameterEvent parameter);
     @StructMember(0) public native @ByVal AUMIDIEvent getMIDI();
-    @StructMember(0) public native AURenderEvent setMIDI(@ByVal AUMIDIEvent MIDI);
     @StructMember(0) public native @ByVal AUMIDIEventList getMIDIEventsList();
     @StructMember(0) public native AURenderEvent setMIDIEventsList(@ByVal AUMIDIEventList MIDIEventsList);
     /*</members>*/

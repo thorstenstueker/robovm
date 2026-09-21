@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -61,14 +55,6 @@ import org.robovm.apple.symbols.*;
     protected UIDocumentProperties(SkipInit skipInit) { super(skipInit); }
     @Method(selector = "initWithURL:")
     public UIDocumentProperties(NSURL url) { super((SkipInit) null); initObject(init(url)); }
-    @Method(selector = "initWithMetadata:")
-    public UIDocumentProperties(LPLinkMetadata metadata) { super((SkipInit) null); initObject(init(metadata)); }
-    /*</constructors>*/
-    /*<properties>*/
-    @Property(selector = "metadata")
-    public native LPLinkMetadata getMetadata();
-    @Property(selector = "setMetadata:")
-    public native void setMetadata(LPLinkMetadata v);
     @Property(selector = "dragItemsProvider")
     public native @Block Block1<UIDragSession, NSArray<UIDragItem>> getDragItemsProvider();
     @Property(selector = "setDragItemsProvider:")
@@ -86,7 +72,5 @@ import org.robovm.apple.symbols.*;
     /*<methods>*/
     @Method(selector = "initWithURL:")
     protected native @Pointer long init(NSURL url);
-    @Method(selector = "initWithMetadata:")
-    protected native @Pointer long init(LPLinkMetadata metadata);
     /*</methods>*/
 }
