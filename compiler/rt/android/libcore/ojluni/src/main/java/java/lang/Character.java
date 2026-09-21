@@ -7656,4 +7656,17 @@ class Character implements java.io.Serializable, Comparable<Character> {
     // Android-added: Use ICU.
     // Implement getNameImpl() natively.
     private static native String getNameImpl(int codePoint);
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns a {@code String} object representing the specified character (Unicode code point) (Java 11).
+     */
+    public static String toString(int codePoint) {
+        if (!isValidCodePoint(codePoint)) {
+            throw new IllegalArgumentException(
+                String.format("Not a valid Unicode code point: 0x%X", codePoint));
+        }
+        return new String(toChars(codePoint));
+    }
 }

@@ -25,6 +25,10 @@
 
 package java.io;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * This abstract class is the superclass of all classes representing
  * an input stream of bytes.
@@ -364,4 +368,231 @@ public abstract class InputStream implements Closeable {
         return false;
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    private static final int ROBOVM_DEFAULT_BUFFER_SIZE = 8192;
+    private static final int ROBOVM_MAX_BUFFER_SIZE = Integer.MAX_VALUE - 8;
+
+    /**
+     * Returns a new {@code InputStream} that reads no bytes (Java 11).
+     */
+    public static InputStream nullInputStream() {
+        return new InputStream() {
+            private volatile boolean closed;
+
+            private void ensureOpen() throws IOException {
+                if (closed) {
+                    throw new IOException("Stream closed");
+                }
+            }
+
+            @Override
+            public int available () throws IOException {
+                ensureOpen();
+                return 0;
+            }
+
+            @Override
+            public int read() throws IOException {
+                ensureOpen();
+                return -1;
+            }
+
+            @Override
+            public int read(byte[] b, int off, int len) throws IOException {
+                Objects.requireNonNull(b);
+                if (off < 0 || len < 0 || len > b.length - off) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (len == 0) {
+                    return 0;
+                }
+                ensureOpen();
+                return -1;
+            }
+
+            @Override
+            public byte[] readAllBytes() throws IOException {
+                ensureOpen();
+                return new byte[0];
+            }
+
+            @Override
+            public int readNBytes(byte[] b, int off, int len)
+                throws IOException {
+                Objects.requireNonNull(b);
+                if (off < 0 || len < 0 || len > b.length - off) {
+                    throw new IndexOutOfBoundsException();
+                }
+                ensureOpen();
+                return 0;
+            }
+
+            @Override
+            public byte[] readNBytes(int len) throws IOException {
+                if (len < 0) {
+                    throw new IllegalArgumentException("len < 0");
+                }
+                ensureOpen();
+                return new byte[0];
+            }
+
+            @Override
+            public long skip(long n) throws IOException {
+                ensureOpen();
+                return 0L;
+            }
+
+            @Override
+            public void skipNBytes(long n) throws IOException {
+                ensureOpen();
+                if (n > 0) {
+                    throw new EOFException();
+                }
+            }
+
+            @Override
+            public long transferTo(OutputStream out) throws IOException {
+                Objects.requireNonNull(out);
+                ensureOpen();
+                return 0L;
+            }
+
+            @Override
+            public void close() throws IOException {
+                closed = true;
+            }
+        };
+    }
+
+    /**
+     * Reads all remaining bytes from the input stream (Java 9).
+     */
+    public byte[] readAllBytes() throws IOException {
+        return readNBytes(Integer.MAX_VALUE);
+    }
+
+    /**
+     * Reads up to a specified number of bytes from the input stream (Java 11).
+     */
+    public byte[] readNBytes(int len) throws IOException {
+        if (len < 0) {
+            throw new IllegalArgumentException("len < 0");
+        }
+
+        java.util.List<byte[]> bufs = null;
+        byte[] result = null;
+        int total = 0;
+        int remaining = len;
+        int n;
+        do {
+            byte[] buf = new byte[Math.min(remaining, ROBOVM_DEFAULT_BUFFER_SIZE)];
+            int nread = 0;
+
+            // read to EOF which may read more or less than buffer size
+            while ((n = read(buf, nread,
+                    Math.min(buf.length - nread, remaining))) > 0) {
+                nread += n;
+                remaining -= n;
+            }
+
+            if (nread > 0) {
+                if (ROBOVM_MAX_BUFFER_SIZE - total < nread) {
+                    throw new OutOfMemoryError("Required array size too large");
+                }
+                if (nread < buf.length) {
+                    buf = Arrays.copyOfRange(buf, 0, nread);
+                }
+                total += nread;
+                if (result == null) {
+                    result = buf;
+                } else {
+                    if (bufs == null) {
+                        bufs = new ArrayList<>();
+                        bufs.add(result);
+                    }
+                    bufs.add(buf);
+                }
+            }
+            // if the last call to read returned -1 or the number of bytes
+            // requested have been read then break
+        } while (n >= 0 && remaining > 0);
+
+        if (bufs == null) {
+            if (result == null) {
+                return new byte[0];
+            }
+            return result.length == total ?
+                result : Arrays.copyOf(result, total);
+        }
+
+        result = new byte[total];
+        int offset = 0;
+        remaining = total;
+        for (byte[] b : bufs) {
+            int count = Math.min(b.length, remaining);
+            System.arraycopy(b, 0, result, offset, count);
+            offset += count;
+            remaining -= count;
+        }
+
+        return result;
+    }
+
+    /**
+     * Reads the requested number of bytes from the input stream into the given byte array (Java 9).
+     */
+    public int readNBytes(byte[] b, int off, int len) throws IOException {
+        Objects.requireNonNull(b);
+        if (off < 0 || len < 0 || len > b.length - off) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        int n = 0;
+        while (n < len) {
+            int count = read(b, off + n, len - n);
+            if (count < 0)
+                break;
+            n += count;
+        }
+        return n;
+    }
+
+    /**
+     * Skips over and discards exactly {@code n} bytes of data from this input stream (Java 12).
+     */
+    public void skipNBytes(long n) throws IOException {
+        while (n > 0) {
+            long ns = skip(n);
+            if (ns > 0 && ns <= n) {
+                // adjust number to skip
+                n -= ns;
+            } else if (ns == 0) { // no bytes skipped
+                // read one byte to check for EOS
+                if (read() == -1) {
+                    throw new EOFException();
+                }
+                // one byte read so decrement number to skip
+                n--;
+            } else { // skipped negative or too many bytes
+                throw new IOException("Unable to skip exactly");
+            }
+        }
+    }
+
+    /**
+     * Reads all bytes from this input stream and writes the bytes to the given output stream
+     * in the order that they are read (Java 9).
+     */
+    public long transferTo(OutputStream out) throws IOException {
+        Objects.requireNonNull(out, "out");
+        long transferred = 0;
+        byte[] buffer = new byte[ROBOVM_DEFAULT_BUFFER_SIZE];
+        int read;
+        while ((read = this.read(buffer, 0, ROBOVM_DEFAULT_BUFFER_SIZE)) >= 0) {
+            out.write(buffer, 0, read);
+            transferred += read;
+        }
+        return transferred;
+    }
 }

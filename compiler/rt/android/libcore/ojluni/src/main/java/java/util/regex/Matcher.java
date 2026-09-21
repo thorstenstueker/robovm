@@ -27,6 +27,14 @@
 package java.util.regex;
 
 import com.android.icu.util.regex.MatcherNative;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * An engine that performs match operations on a {@linkplain java.lang.CharSequence
@@ -1255,5 +1263,93 @@ public final class Matcher implements MatchResult {
         public int groupCount() {
             return (offsets.length / 2) - 1;
         }
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Implements a non-terminal append-and-replace step (Java 9, {@code StringBuilder} variant).
+     */
+    public Matcher appendReplacement(StringBuilder sb, String replacement) {
+        StringBuffer buffer = new StringBuffer();
+        appendReplacement(buffer, replacement);
+        sb.append(buffer);
+        return this;
+    }
+
+    /**
+     * Implements a terminal append-and-replace step (Java 9, {@code StringBuilder} variant).
+     */
+    public StringBuilder appendTail(StringBuilder sb) {
+        StringBuffer buffer = new StringBuffer();
+        appendTail(buffer);
+        sb.append(buffer);
+        return sb;
+    }
+
+    /**
+     * Replaces every subsequence of the input sequence that matches the pattern with the result
+     * of applying the given replacer function to the match result of this matcher (Java 9).
+     */
+    public String replaceAll(Function<MatchResult, String> replacer) {
+        Objects.requireNonNull(replacer);
+        reset();
+        boolean result = find();
+        if (result) {
+            StringBuilder sb = new StringBuilder();
+            do {
+                String replacement = replacer.apply(this);
+                appendReplacement(sb, replacement);
+                result = find();
+            } while (result);
+            appendTail(sb);
+            return sb.toString();
+        }
+        return text.toString();
+    }
+
+    /**
+     * Replaces the first subsequence of the input sequence that matches the pattern with the
+     * result of applying the given replacer function to the match result of this matcher (Java 9).
+     */
+    public String replaceFirst(Function<MatchResult, String> replacer) {
+        Objects.requireNonNull(replacer);
+        reset();
+        if (!find())
+            return text.toString();
+        StringBuilder sb = new StringBuilder();
+        appendReplacement(sb, replacer.apply(this));
+        appendTail(sb);
+        return sb.toString();
+    }
+
+    /**
+     * Returns a stream of match results for each subsequence of the input sequence that matches
+     * the pattern (Java 9).
+     */
+    public Stream<MatchResult> results() {
+        class MatchResultIterator implements Iterator<MatchResult> {
+            // -ve for call to find, 0 for not found, 1 for found
+            int state = -1;
+
+            @Override
+            public MatchResult next() {
+                if (!hasNext())
+                    throw new NoSuchElementException();
+                state = -1;
+                return toMatchResult();
+            }
+
+            @Override
+            public boolean hasNext() {
+                if (state >= 0)
+                    return state == 1;
+                boolean found = find();
+                state = found ? 1 : 0;
+                return found;
+            }
+        }
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+                new MatchResultIterator(), Spliterator.ORDERED | Spliterator.NONNULL), false);
     }
 }

@@ -6,6 +6,7 @@ import org.robovm.compiler.clazz.Clazz;
 import org.robovm.compiler.config.Config;
 import org.robovm.compiler.plugin.AbstractCompilerPlugin;
 import org.robovm.compiler.plugin.invokedynamic.lambda.LambdaPlugin;
+import org.robovm.compiler.plugin.invokedynamic.record.RecordObjectMethodsDelegate;
 import org.robovm.compiler.plugin.invokedynamic.stringconcat.StringConcatRewriterPlugin;
 import soot.*;
 import soot.jimple.*;
@@ -42,6 +43,7 @@ public class InvokeDynamicCompilerPlugin extends AbstractCompilerPlugin {
         supportedDynamicInvokes = List.of(
                 new LambdaPlugin(),
                 new StringConcatRewriterPlugin(),
+                new RecordObjectMethodsDelegate(),
                 new UnrecognizedBootstrapDelegate() // has to be declared last !
         );
     }
@@ -153,6 +155,7 @@ public class InvokeDynamicCompilerPlugin extends AbstractCompilerPlugin {
             initializeIfRequired();
             String msg = "Unsupported InvokeDynamic to " + invokeExpr.getBootstrapMethodRef().declaringClass().getName() +
                     '.' + invokeExpr.getBootstrapMethodRef().name();
+            config.getLogger().warn("%s in %s: NoSuchMethodError will be thrown at runtime", msg, method.getSignature());
             Jimple jimple = Jimple.v();
             Body body = method.retrieveActiveBody();
             LinkedList<Unit> newUnits = new LinkedList<>();

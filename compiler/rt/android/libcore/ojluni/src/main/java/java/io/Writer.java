@@ -322,4 +322,83 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      */
     abstract public void close() throws IOException;
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns a new {@code Writer} which discards all characters (Java 11).
+     */
+    public static Writer nullWriter() {
+        return new Writer() {
+            private volatile boolean closed;
+
+            private void ensureOpen() throws IOException {
+                if (closed) {
+                    throw new IOException("Stream closed");
+                }
+            }
+
+            @Override
+            public Writer append(char c) throws IOException {
+                ensureOpen();
+                return this;
+            }
+
+            @Override
+            public Writer append(CharSequence csq) throws IOException {
+                ensureOpen();
+                return this;
+            }
+
+            @Override
+            public Writer append(CharSequence csq, int start, int end) throws IOException {
+                ensureOpen();
+                if (csq != null) {
+                    int len = csq.length();
+                    if (start < 0 || start > end || end > len) {
+                        throw new IndexOutOfBoundsException();
+                    }
+                }
+                return this;
+            }
+
+            @Override
+            public void write(int c) throws IOException {
+                ensureOpen();
+            }
+
+            @Override
+            public void write(char[] cbuf, int off, int len) throws IOException {
+                java.util.Objects.requireNonNull(cbuf);
+                if (off < 0 || len < 0 || len > cbuf.length - off) {
+                    throw new IndexOutOfBoundsException();
+                }
+                ensureOpen();
+            }
+
+            @Override
+            public void write(String str) throws IOException {
+                java.util.Objects.requireNonNull(str);
+                ensureOpen();
+            }
+
+            @Override
+            public void write(String str, int off, int len) throws IOException {
+                java.util.Objects.requireNonNull(str);
+                if (off < 0 || len < 0 || len > str.length() - off) {
+                    throw new IndexOutOfBoundsException();
+                }
+                ensureOpen();
+            }
+
+            @Override
+            public void flush() throws IOException {
+                ensureOpen();
+            }
+
+            @Override
+            public void close() throws IOException {
+                closed = true;
+            }
+        };
+    }
 }

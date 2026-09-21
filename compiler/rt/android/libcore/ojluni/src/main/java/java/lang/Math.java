@@ -2525,4 +2525,73 @@ public final class Math {
                                      (FloatConsts.SIGNIFICAND_WIDTH-1))
                                     & FloatConsts.EXP_BIT_MASK);
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns the mathematical absolute value of an {@code int} value if it is exactly representable (Java 15).
+     */
+    public static int absExact(int a) {
+        if (a == Integer.MIN_VALUE)
+            throw new ArithmeticException(
+                "Overflow to represent absolute value of Integer.MIN_VALUE");
+        else
+            return abs(a);
+    }
+
+    /**
+     * Returns the mathematical absolute value of a {@code long} value if it is exactly representable (Java 15).
+     */
+    public static long absExact(long a) {
+        if (a == Long.MIN_VALUE)
+            throw new ArithmeticException(
+                "Overflow to represent absolute value of Long.MIN_VALUE");
+        else
+            return abs(a);
+    }
+
+    /**
+     * Returns the fused multiply add of the three arguments; that is, returns the exact product
+     * of the first two arguments summed with the third argument and then rounded once (Java 9).
+     */
+    public static double fma(double a, double b, double c) {
+        if (Double.isNaN(a) || Double.isNaN(b) || Double.isNaN(c)) {
+            return Double.NaN;
+        } else {
+            boolean infiniteA = Double.isInfinite(a);
+            boolean infiniteB = Double.isInfinite(b);
+            boolean infiniteC = Double.isInfinite(c);
+            double result;
+
+            if (infiniteA || infiniteB || infiniteC) {
+                if (infiniteA && b == 0.0 ||
+                    infiniteB && a == 0.0 ) {
+                    return Double.NaN;
+                }
+                double product = a * b;
+                if (Double.isInfinite(product) && !infiniteA && !infiniteB) {
+                    // Intermediate overflow; might cause a spurious NaN if added to infinite c.
+                    return c;
+                } else {
+                    result = product + c;
+                    return result;
+                }
+            } else {
+                // All inputs finite. Handle zeros to preserve the sign of a zero result.
+                if (a == 0.0 || b == 0.0 || c == 0.0) {
+                    return a * b + c;
+                }
+                java.math.BigDecimal product = (new java.math.BigDecimal(a)).multiply(new java.math.BigDecimal(b));
+                return product.add(new java.math.BigDecimal(c)).doubleValue();
+            }
+        }
+    }
+
+    /**
+     * Returns the fused multiply add of the three arguments (Java 9).
+     */
+    public static float fma(float a, float b, float c) {
+        // the product of two floats is exact as a double and the sum only rounds once to float
+        return (float)(((double) a * (double) b ) + (double) c);
+    }
 }

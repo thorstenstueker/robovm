@@ -169,7 +169,7 @@ public class NewProjectWizard extends Wizard implements INewWizard {
         
         @Override
         public String getCompilerCompliance() {
-            return "1.8";
+            return "17";
         }
 
         @Override

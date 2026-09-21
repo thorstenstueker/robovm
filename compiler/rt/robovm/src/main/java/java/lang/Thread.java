@@ -1304,4 +1304,12 @@ public class Thread implements Runnable {
             }
         }
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Indicates that the caller is momentarily unable to progress (Java 9). No-op on RoboVM.
+     */
+    public static void onSpinWait() {
+    }
 }

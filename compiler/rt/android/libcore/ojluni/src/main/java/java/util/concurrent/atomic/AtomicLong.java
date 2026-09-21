@@ -351,4 +351,73 @@ public class AtomicLong extends Number implements java.io.Serializable {
         return (double)get();
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /** Returns the current value, with memory semantics of reading as if the variable was declared non-volatile (Java 9). */
+    public final long getPlain() {
+        return get();
+    }
+
+    /** Sets the value with memory semantics of setting as if the variable was declared non-volatile (Java 9). */
+    public final void setPlain(long newValue) {
+        set(newValue);
+    }
+
+    /** Returns the current value, with memory effects of opaque access (Java 9). */
+    public final long getOpaque() {
+        return get();
+    }
+
+    /** Sets the value with memory effects of opaque access (Java 9). */
+    public final void setOpaque(long newValue) {
+        set(newValue);
+    }
+
+    /** Returns the current value, with memory effects of acquire access (Java 9). */
+    public final long getAcquire() {
+        return get();
+    }
+
+    /** Sets the value with memory effects of release access (Java 9). */
+    public final void setRelease(long newValue) {
+        set(newValue);
+    }
+
+    /** Atomically sets the value to {@code newValue} if the current value equals {@code expectedValue},
+     *  returning the witness value (Java 9). */
+    public final long compareAndExchange(long expectedValue, long newValue) {
+        while (true) {
+            long current = get();
+            if (current != expectedValue) {
+                return current;
+            }
+            if (compareAndSet(expectedValue, newValue)) {
+                return expectedValue;
+            }
+        }
+    }
+
+    public final long compareAndExchangeAcquire(long expectedValue, long newValue) {
+        return compareAndExchange(expectedValue, newValue);
+    }
+
+    public final long compareAndExchangeRelease(long expectedValue, long newValue) {
+        return compareAndExchange(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetPlain(long expectedValue, long newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetVolatile(long expectedValue, long newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetAcquire(long expectedValue, long newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetRelease(long expectedValue, long newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
 }

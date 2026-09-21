@@ -21,6 +21,36 @@ This is a fork of the [last open-source release of RoboVM](https://github.com/ro
 
 **Debugging support** is finished, and stable thanks to @dkimitsa!
 
+## Java version support
+
+**Building RoboVM** requires JDK 21 (this is what CI uses); the toolchain itself is compiled for Java 17.
+The runtime library (`robovm-rt`) is still compiled with `-source 8` on purpose: it *is* the boot class
+path and javac only accepts an empty `-bootclasspath` for Java 8 targets.
+
+**Application code** can be compiled with `javac --release 17` (or Kotlin `jvmTarget = 17`). This makes
+it possible to share Java 17 code between Android (`d8`/AGP 8.x) and iOS without a lowered language level:
+
+| Java 17 language feature | Android d8 | RoboVM |
+|---|---|---|
+| Lambdas, method references, string concat (`invokedynamic`) | yes | yes |
+| Nest based access control (private access between nested classes, Java 11) | yes | yes |
+| Private interface methods (Java 9) | yes | yes |
+| Records: `equals`/`hashCode`/`toString`, `Class.isRecord()`, `getRecordComponents()` | yes | yes (desugared at compile time) |
+| Sealed classes | yes | yes (`Class.isSealed()` reports `false`, the attribute is not retained) |
+| Pattern matching `instanceof`, switch expressions, text blocks, `var` | yes | yes |
+| `CONSTANT_Dynamic` (condy) | yes | no, reported as a compile error |
+| Java 21 pattern switch / record patterns | yes | no, `NoSuchMethodError` at runtime (with a compile time warning) |
+
+| API area | Android | RoboVM |
+|---|---|---|
+| `java.time`, streams, `Optional`, `java.util.function` | core library desugaring | yes (libcore 12) |
+| Java 9 - 17 additions to `String`, `Optional`, `Objects`, `Math`, `Arrays`, `Collectors`, `Stream`, `Files`, `Path`, `InputStream`, `HexFormat`, `Runtime.version()` ... | D8 backported methods | yes |
+| `java.lang.invoke.MethodHandle` invocation at runtime, `StackWalker`, `ProcessHandle`, hidden classes | partial | no |
+
+Calls to APIs that are still missing in `robovm-rt` are reported as warnings at compile time
+(`Unresolved method ...`) and throw `NoSuchMethodError` at runtime. `compiler/rt/tools/ApiDelta.java`
+lists the remaining differences to the JDK's `java.base`.
+
 ## Using RoboVM
 
 There are pre-built plugins for Eclipse and IntelliJ IDEA, for installation take a look at the [homepage](http://mobivm.github.io/).

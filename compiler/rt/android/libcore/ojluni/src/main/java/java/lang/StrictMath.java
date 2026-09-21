@@ -1816,4 +1816,46 @@ public final class StrictMath {
     public static float scalb(float f, int scaleFactor) {
         return Math.scalb(f, scaleFactor);
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    public static int absExact(int a) {
+        return Math.absExact(a);
+    }
+
+    public static long absExact(long a) {
+        return Math.absExact(a);
+    }
+
+    public static double fma(double a, double b, double c) {
+        return Math.fma(a, b, c);
+    }
+
+    public static float fma(float a, float b, float c) {
+        return Math.fma(a, b, c);
+    }
+
+    public static int incrementExact(int a) {
+        return Math.incrementExact(a);
+    }
+
+    public static long incrementExact(long a) {
+        return Math.incrementExact(a);
+    }
+
+    public static int decrementExact(int a) {
+        return Math.decrementExact(a);
+    }
+
+    public static long decrementExact(long a) {
+        return Math.decrementExact(a);
+    }
+
+    public static int negateExact(int a) {
+        return Math.negateExact(a);
+    }
+
+    public static long negateExact(long a) {
+        return Math.negateExact(a);
+    }
 }

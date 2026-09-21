@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Objects;
 
 /**
  * A <code>PrintStream</code> adds functionality to another output stream,
@@ -1155,4 +1156,41 @@ public class PrintStream extends FilterOutputStream
         return this;
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Creates a new print stream, with the specified OutputStream, automatic flushing and charset (Java 10).
+     */
+    public PrintStream(OutputStream out, boolean autoFlush, Charset charset) {
+        this(autoFlush, Objects.requireNonNull(out, "Null output stream"), Objects.requireNonNull(charset, "charset"));
+    }
+
+    /**
+     * Creates a new print stream, without automatic line flushing, with the specified file name and charset (Java 10).
+     */
+    public PrintStream(String fileName, Charset charset) throws IOException {
+        this(false, Objects.requireNonNull(charset, "charset"), new FileOutputStream(fileName));
+    }
+
+    /**
+     * Creates a new print stream, without automatic line flushing, with the specified file and charset (Java 10).
+     */
+    public PrintStream(File file, Charset charset) throws IOException {
+        this(false, Objects.requireNonNull(charset, "charset"), new FileOutputStream(file));
+    }
+
+    /**
+     * Writes all bytes from the specified byte array to this stream (Java 14).
+     */
+    @Override
+    public void write(byte[] buf) throws IOException {
+        this.write(buf, 0, buf.length);
+    }
+
+    /**
+     * Writes all bytes from the specified byte array to this stream (Java 14).
+     */
+    public void writeBytes(byte[] buf) {
+        this.write(buf, 0, buf.length);
+    }
 }

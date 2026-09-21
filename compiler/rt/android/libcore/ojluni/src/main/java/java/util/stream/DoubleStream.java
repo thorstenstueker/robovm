@@ -891,4 +891,82 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
          */
         DoubleStream build();
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns a stream consisting of the longest prefix of elements taken from this stream that
+     * match the given predicate (Java 9).
+     */
+    default DoubleStream takeWhile(DoublePredicate predicate) {
+        Objects.requireNonNull(predicate);
+        return boxed().takeWhile(v -> predicate.test(v)).mapToDouble(Double::doubleValue);
+    }
+
+    /**
+     * Returns a stream consisting of the remaining elements of this stream after dropping the
+     * longest prefix of elements that match the given predicate (Java 9).
+     */
+    default DoubleStream dropWhile(DoublePredicate predicate) {
+        Objects.requireNonNull(predicate);
+        return boxed().dropWhile(v -> predicate.test(v)).mapToDouble(Double::doubleValue);
+    }
+
+    /**
+     * Returns a stream consisting of the results of replacing each element of this stream with
+     * multiple elements, specifically zero or more elements (Java 16).
+     */
+    default DoubleStream mapMulti(DoubleMapMultiConsumer mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMap(e -> {
+            DoubleStream.Builder buffer = DoubleStream.builder();
+            mapper.accept(e, buffer);
+            return buffer.build();
+        });
+    }
+
+    /**
+     * Represents an operation that accepts a {@code double}-valued argument and a
+     * {@code DoubleConsumer}, and returns no result (Java 16).
+     */
+    @FunctionalInterface
+    interface DoubleMapMultiConsumer {
+        void accept(double value, DoubleConsumer ic);
+    }
+
+    /**
+     * Returns a sequential ordered {@code DoubleStream} produced by iterative application of the given
+     * {@code next} function to an initial element, conditioned on satisfying the given
+     * {@code hasNext} predicate (Java 9).
+     */
+    public static DoubleStream iterate(double seed, DoublePredicate hasNext, DoubleUnaryOperator next) {
+        Objects.requireNonNull(next);
+        Objects.requireNonNull(hasNext);
+        Spliterator.OfDouble spliterator = new Spliterators.AbstractDoubleSpliterator(Long.MAX_VALUE,
+               Spliterator.ORDERED | Spliterator.IMMUTABLE) {
+            double prev;
+            boolean started, finished;
+
+            @Override
+            public boolean tryAdvance(DoubleConsumer action) {
+                Objects.requireNonNull(action);
+                if (finished)
+                    return false;
+                double t;
+                if (started)
+                    t = next.applyAsDouble(prev);
+                else {
+                    t = seed;
+                    started = true;
+                }
+                if (!hasNext.test(t)) {
+                    finished = true;
+                    return false;
+                }
+                action.accept(prev = t);
+                return true;
+            }
+        };
+        return StreamSupport.doubleStream(spliterator, false);
+    }
 }

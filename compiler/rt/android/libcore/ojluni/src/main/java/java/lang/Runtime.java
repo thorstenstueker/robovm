@@ -42,6 +42,9 @@ import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.util.EmptyArray;
 import static android.system.OsConstants._SC_NPROCESSORS_CONF;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Every Java application has a single instance of class
@@ -1193,4 +1196,281 @@ public class Runtime {
         return out;
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns the version of the Java Runtime Environment as a {@link Version} (Java 9).
+     * RoboVM reports the Java API level it implements.
+     */
+    public static Version version() {
+        if (version == null) {
+            version = Version.parse(System.getProperty("java.runtime.version", "17.0.0"));
+        }
+        return version;
+    }
+
+    private static Version version;
+
+    /**
+     * A representation of a version string for an implementation of the Java SE Platform (Java 9).
+     * A version number is a non-empty sequence of non-negative integers separated by periods
+     * (VNUM), optionally followed by pre-release, build and optional information.
+     */
+    public static final class Version implements Comparable<Version> {
+        private final List<Integer> version;
+        private final Optional<String> pre;
+        private final Optional<Integer> build;
+        private final Optional<String> optional;
+
+        private Version(List<Integer> unmodifiableListOfVersions, Optional<String> pre,
+                        Optional<Integer> build, Optional<String> optional) {
+            this.version = unmodifiableListOfVersions;
+            this.pre = pre;
+            this.build = build;
+            this.optional = optional;
+        }
+
+        private static final java.util.regex.Pattern VSTR_PATTERN = java.util.regex.Pattern.compile(
+                "(?<VNUM>[1-9][0-9]*(?:(?:\\.0)*\\.[1-9][0-9]*)*)"
+                + "(?:-(?<PRE>[a-zA-Z0-9]+))?"
+                + "(?:(?<PLUS>\\+)(?<BUILD>0|[1-9][0-9]*)?)?"
+                + "(?:-(?<OPT>[-a-zA-Z0-9.]+))?");
+
+        /**
+         * Parses the given string as a valid version string.
+         */
+        public static Version parse(String s) {
+            if (s == null)
+                throw new NullPointerException();
+
+            java.util.regex.Matcher m = VSTR_PATTERN.matcher(s);
+            if (!m.matches())
+                throw new IllegalArgumentException("Invalid version string: '" + s + "'");
+
+            String[] split = m.group("VNUM").split("\\.");
+            Integer[] version = new Integer[split.length];
+            for (int i = 0; i < split.length; i++) {
+                version[i] = Integer.parseInt(split[i]);
+            }
+
+            Optional<String> pre = Optional.ofNullable(m.group("PRE"));
+
+            String b = m.group("BUILD");
+            Optional<Integer> build = (b == null) ? Optional.empty() : Optional.of(Integer.parseInt(b));
+
+            Optional<String> optional = Optional.ofNullable(m.group("OPT"));
+
+            if (!build.isPresent()) {
+                if (m.group("PLUS") != null) {
+                    if (optional.isPresent()) {
+                        if (pre.isPresent())
+                            throw new IllegalArgumentException("'+' found with pre-release and optional components:'" + s + "'");
+                    } else {
+                        throw new IllegalArgumentException("'+' found with neither build or optional components: '" + s + "'");
+                    }
+                } else {
+                    if (optional.isPresent() && !pre.isPresent()) {
+                        throw new IllegalArgumentException("optional component must be preceded by a pre-release component or '+': '" + s + "'");
+                    }
+                }
+            }
+            return new Version(Collections.unmodifiableList(Arrays.asList(version)), pre, build, optional);
+        }
+
+        public int feature() {
+            return version.get(0);
+        }
+
+        public int interim() {
+            return (version.size() > 1 ? version.get(1) : 0);
+        }
+
+        public int update() {
+            return (version.size() > 2 ? version.get(2) : 0);
+        }
+
+        public int patch() {
+            return (version.size() > 3 ? version.get(3) : 0);
+        }
+
+        /** @deprecated use {@link #feature()} */
+        @Deprecated
+        public int major() {
+            return feature();
+        }
+
+        /** @deprecated use {@link #interim()} */
+        @Deprecated
+        public int minor() {
+            return interim();
+        }
+
+        /** @deprecated use {@link #update()} */
+        @Deprecated
+        public int security() {
+            return update();
+        }
+
+        public List<Integer> version() {
+            return version;
+        }
+
+        public Optional<String> pre() {
+            return pre;
+        }
+
+        public Optional<Integer> build() {
+            return build;
+        }
+
+        public Optional<String> optional() {
+            return optional;
+        }
+
+        @Override
+        public int compareTo(Version obj) {
+            return compare(obj, false);
+        }
+
+        public int compareToIgnoreOptional(Version obj) {
+            return compare(obj, true);
+        }
+
+        private int compare(Version obj, boolean ignoreOpt) {
+            if (obj == null)
+                throw new NullPointerException();
+
+            int ret = compareVersion(obj);
+            if (ret != 0)
+                return ret;
+
+            ret = comparePre(obj);
+            if (ret != 0)
+                return ret;
+
+            ret = compareBuild(obj);
+            if (ret != 0)
+                return ret;
+
+            if (!ignoreOpt)
+                return compareOptional(obj);
+
+            return 0;
+        }
+
+        private int compareVersion(Version obj) {
+            int size = version.size();
+            int oSize = obj.version().size();
+            int min = Math.min(size, oSize);
+            for (int i = 0; i < min; i++) {
+                int val = version.get(i);
+                int oVal = obj.version().get(i);
+                if (val != oVal)
+                    return val - oVal;
+            }
+            return size - oSize;
+        }
+
+        private int comparePre(Version obj) {
+            Optional<String> oPre = obj.pre();
+            if (!pre.isPresent()) {
+                if (oPre.isPresent())
+                    return 1;
+            } else {
+                if (!oPre.isPresent())
+                    return -1;
+                String val = pre.get();
+                String oVal = oPre.get();
+                if (val.matches("\\d+")) {
+                    return (oVal.matches("\\d+")
+                        ? (new java.math.BigInteger(val)).compareTo(new java.math.BigInteger(oVal))
+                        : -1);
+                } else {
+                    return (oVal.matches("\\d+")
+                        ? 1
+                        : val.compareTo(oVal));
+                }
+            }
+            return 0;
+        }
+
+        private int compareBuild(Version obj) {
+            Optional<Integer> oBuild = obj.build();
+            if (oBuild.isPresent()) {
+                return (build.isPresent()
+                        ? build.get().compareTo(oBuild.get())
+                        : -1);
+            } else if (build.isPresent()) {
+                return 1;
+            }
+            return 0;
+        }
+
+        private int compareOptional(Version obj) {
+            Optional<String> oOpt = obj.optional();
+            if (!optional.isPresent()) {
+                if (oOpt.isPresent())
+                    return -1;
+            } else {
+                if (!oOpt.isPresent())
+                    return 1;
+                return optional.get().compareTo(oOpt.get());
+            }
+            return 0;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < version.size(); i++) {
+                if (i > 0) sb.append('.');
+                sb.append(version.get(i));
+            }
+            if (pre.isPresent())
+                sb.append("-").append(pre.get());
+
+            if (build.isPresent()) {
+                sb.append("+").append(build.get());
+                if (optional.isPresent())
+                    sb.append("-").append(optional.get());
+            } else {
+                if (optional.isPresent()) {
+                    sb.append(pre.isPresent() ? "-" : "+-");
+                    sb.append(optional.get());
+                }
+            }
+            return sb.toString();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            boolean ret = equalsIgnoreOptional(obj);
+            if (!ret)
+                return false;
+            Version that = (Version)obj;
+            return (this.optional().equals(that.optional()));
+        }
+
+        public boolean equalsIgnoreOptional(Object obj) {
+            if (this == obj)
+                return true;
+            if (!(obj instanceof Version))
+                return false;
+            Version that = (Version)obj;
+            return (this.version().equals(that.version())
+                && this.pre().equals(that.pre())
+                && this.build().equals(that.build()));
+        }
+
+        @Override
+        public int hashCode() {
+            int h = 1;
+            int p = 17;
+            h = p * h + version.hashCode();
+            h = p * h + pre.hashCode();
+            h = p * h + build.hashCode();
+            h = p * h + optional.hashCode();
+            return h;
+        }
+    }
 }

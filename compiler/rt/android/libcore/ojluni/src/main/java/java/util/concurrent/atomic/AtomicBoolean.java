@@ -161,4 +161,73 @@ public class AtomicBoolean implements java.io.Serializable {
         return Boolean.toString(get());
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /** Returns the current value, with memory semantics of reading as if the variable was declared non-volatile (Java 9). */
+    public final boolean getPlain() {
+        return get();
+    }
+
+    /** Sets the value with memory semantics of setting as if the variable was declared non-volatile (Java 9). */
+    public final void setPlain(boolean newValue) {
+        set(newValue);
+    }
+
+    /** Returns the current value, with memory effects of opaque access (Java 9). */
+    public final boolean getOpaque() {
+        return get();
+    }
+
+    /** Sets the value with memory effects of opaque access (Java 9). */
+    public final void setOpaque(boolean newValue) {
+        set(newValue);
+    }
+
+    /** Returns the current value, with memory effects of acquire access (Java 9). */
+    public final boolean getAcquire() {
+        return get();
+    }
+
+    /** Sets the value with memory effects of release access (Java 9). */
+    public final void setRelease(boolean newValue) {
+        set(newValue);
+    }
+
+    /** Atomically sets the value to {@code newValue} if the current value equals {@code expectedValue},
+     *  returning the witness value (Java 9). */
+    public final boolean compareAndExchange(boolean expectedValue, boolean newValue) {
+        while (true) {
+            boolean current = get();
+            if (current != expectedValue) {
+                return current;
+            }
+            if (compareAndSet(expectedValue, newValue)) {
+                return expectedValue;
+            }
+        }
+    }
+
+    public final boolean compareAndExchangeAcquire(boolean expectedValue, boolean newValue) {
+        return compareAndExchange(expectedValue, newValue);
+    }
+
+    public final boolean compareAndExchangeRelease(boolean expectedValue, boolean newValue) {
+        return compareAndExchange(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetPlain(boolean expectedValue, boolean newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetVolatile(boolean expectedValue, boolean newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetAcquire(boolean expectedValue, boolean newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetRelease(boolean expectedValue, boolean newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
 }

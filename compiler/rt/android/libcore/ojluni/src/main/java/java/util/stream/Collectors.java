@@ -1565,4 +1565,152 @@ public final class Collectors {
             };
         }
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Adapts a {@code Collector} to one accepting elements of the same type {@code T} by applying
+     * the predicate to each input element and only accumulating if the predicate returns
+     * {@code true} (Java 9).
+     */
+    public static <T, A, R> Collector<T, ?, R> filtering(Predicate<? super T> predicate,
+                                                         Collector<? super T, A, R> downstream) {
+        BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
+        return Collector.of(downstream.supplier(),
+                            (r, t) -> {
+                                if (predicate.test(t)) {
+                                    downstreamAccumulator.accept(r, t);
+                                }
+                            },
+                            downstream.combiner(), downstream.finisher(),
+                            downstream.characteristics().toArray(new Collector.Characteristics[0]));
+    }
+
+    /**
+     * Adapts a {@code Collector} accepting elements of type {@code U} to one accepting elements
+     * of type {@code T} by applying a flat mapping function to each input element before
+     * accumulation (Java 9).
+     */
+    public static <T, U, A, R> Collector<T, ?, R> flatMapping(Function<? super T, ? extends Stream<? extends U>> mapper,
+                                                              Collector<? super U, A, R> downstream) {
+        BiConsumer<A, ? super U> downstreamAccumulator = downstream.accumulator();
+        return Collector.of(downstream.supplier(),
+                            (r, t) -> {
+                                try (Stream<? extends U> result = mapper.apply(t)) {
+                                    if (result != null)
+                                        result.sequential().forEach(u -> downstreamAccumulator.accept(r, u));
+                                }
+                            },
+                            downstream.combiner(), downstream.finisher(),
+                            downstream.characteristics().toArray(new Collector.Characteristics[0]));
+    }
+
+    /**
+     * Returns a {@code Collector} that accumulates the input elements into an unmodifiable List
+     * in encounter order (Java 10).
+     */
+    public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
+        return collectingAndThen(toList(), list -> List.copyOf(list));
+    }
+
+    /**
+     * Returns a {@code Collector} that accumulates the input elements into an unmodifiable Set (Java 10).
+     */
+    public static <T> Collector<T, ?, Set<T>> toUnmodifiableSet() {
+        return collectingAndThen(toSet(), set -> Set.copyOf(set));
+    }
+
+    /**
+     * Returns a {@code Collector} that accumulates the input elements into an unmodifiable Map,
+     * whose keys and values are the result of applying the provided mapping functions (Java 10).
+     */
+    public static <T, K, U> Collector<T, ?, Map<K,U>> toUnmodifiableMap(Function<? super T, ? extends K> keyMapper,
+                                                                        Function<? super T, ? extends U> valueMapper) {
+        Objects.requireNonNull(keyMapper, "keyMapper");
+        Objects.requireNonNull(valueMapper, "valueMapper");
+        return collectingAndThen(toMap(keyMapper, valueMapper), map -> Map.copyOf(map));
+    }
+
+    /**
+     * Returns a {@code Collector} that accumulates the input elements into an unmodifiable Map,
+     * merging values with the provided merge function (Java 10).
+     */
+    public static <T, K, U> Collector<T, ?, Map<K,U>> toUnmodifiableMap(Function<? super T, ? extends K> keyMapper,
+                                                                        Function<? super T, ? extends U> valueMapper,
+                                                                        BinaryOperator<U> mergeFunction) {
+        Objects.requireNonNull(keyMapper, "keyMapper");
+        Objects.requireNonNull(valueMapper, "valueMapper");
+        Objects.requireNonNull(mergeFunction, "mergeFunction");
+        return collectingAndThen(toMap(keyMapper, valueMapper, mergeFunction, HashMap::new), map -> Map.copyOf(map));
+    }
+
+    /**
+     * Returns a {@code Collector} that is a composite of two downstream collectors. Every element
+     * passed to the resulting collector is processed by both downstream collectors, then their
+     * results are merged using the specified merge function into the final result (Java 12).
+     */
+    public static <T, R1, R2, R> Collector<T, ?, R> teeing(Collector<? super T, ?, R1> downstream1,
+                                                           Collector<? super T, ?, R2> downstream2,
+                                                           BiFunction<? super R1, ? super R2, R> merger) {
+        return teeing0(downstream1, downstream2, merger);
+    }
+
+    private static <T, A1, A2, R1, R2, R> Collector<T, ?, R> teeing0(Collector<? super T, A1, R1> downstream1,
+                                                                     Collector<? super T, A2, R2> downstream2,
+                                                                     BiFunction<? super R1, ? super R2, R> merger) {
+        Objects.requireNonNull(downstream1, "downstream1");
+        Objects.requireNonNull(downstream2, "downstream2");
+        Objects.requireNonNull(merger, "merger");
+
+        Supplier<A1> c1Supplier = Objects.requireNonNull(downstream1.supplier(), "downstream1 supplier");
+        Supplier<A2> c2Supplier = Objects.requireNonNull(downstream2.supplier(), "downstream2 supplier");
+        BiConsumer<A1, ? super T> c1Accumulator =
+                Objects.requireNonNull(downstream1.accumulator(), "downstream1 accumulator");
+        BiConsumer<A2, ? super T> c2Accumulator =
+                Objects.requireNonNull(downstream2.accumulator(), "downstream2 accumulator");
+        BinaryOperator<A1> c1Combiner = Objects.requireNonNull(downstream1.combiner(), "downstream1 combiner");
+        BinaryOperator<A2> c2Combiner = Objects.requireNonNull(downstream2.combiner(), "downstream2 combiner");
+        Function<A1, R1> c1Finisher = Objects.requireNonNull(downstream1.finisher(), "downstream1 finisher");
+        Function<A2, R2> c2Finisher = Objects.requireNonNull(downstream2.finisher(), "downstream2 finisher");
+
+        Set<Collector.Characteristics> characteristics;
+        Set<Collector.Characteristics> c1Characteristics = downstream1.characteristics();
+        Set<Collector.Characteristics> c2Characteristics = downstream2.characteristics();
+        if (c1Characteristics.contains(Collector.Characteristics.IDENTITY_FINISH)
+                || c2Characteristics.contains(Collector.Characteristics.IDENTITY_FINISH)
+                || c1Characteristics.isEmpty() || c2Characteristics.isEmpty()) {
+            characteristics = Collections.emptySet();
+        } else {
+            EnumSet<Collector.Characteristics> c = EnumSet.noneOf(Collector.Characteristics.class);
+            c.addAll(c1Characteristics);
+            c.retainAll(c2Characteristics);
+            c.remove(Collector.Characteristics.IDENTITY_FINISH);
+            characteristics = Collections.unmodifiableSet(c);
+        }
+
+        class PairBox {
+            A1 left = c1Supplier.get();
+            A2 right = c2Supplier.get();
+
+            void add(T t) {
+                c1Accumulator.accept(left, t);
+                c2Accumulator.accept(right, t);
+            }
+
+            PairBox combine(PairBox other) {
+                left = c1Combiner.apply(left, other.left);
+                right = c2Combiner.apply(right, other.right);
+                return this;
+            }
+
+            R get() {
+                R1 r1 = c1Finisher.apply(left);
+                R2 r2 = c2Finisher.apply(right);
+                return merger.apply(r1, r2);
+            }
+        }
+
+        return Collector.of(PairBox::new, PairBox::add, PairBox::combine, PairBox::get,
+                characteristics.toArray(new Collector.Characteristics[0]));
+    }
 }

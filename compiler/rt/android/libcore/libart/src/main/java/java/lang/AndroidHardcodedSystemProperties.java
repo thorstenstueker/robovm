@@ -45,7 +45,8 @@ public final class AndroidHardcodedSystemProperties {
 
     // This value is shared with sun.misc.Version. It is defined here so that the compiler
     // can use it.
-    public final static String JAVA_VERSION = "0";
+    // RoboVM Note: the Java API level implemented by the RoboVM runtime library
+    public final static String JAVA_VERSION = "17.0.0";
     public final static String ROBOVM_PROJECT_URL = "http://www.robovm.org/";
     public final static String ROBOVM_PROJECT_NAME = "RoboVM";
 
@@ -53,23 +54,23 @@ public final class AndroidHardcodedSystemProperties {
         // None of these four are meaningful on Android, but these keys are guaranteed
         // to be present for System.getProperty. For java.class.version, we use the maximum
         // class file version that dx currently supports.
-        { "java.class.version", "50.0" },
+        { "java.class.version", "61.0" },
         { "java.version", JAVA_VERSION },
-        { "java.runtime.version", "0.9" },
+        { "java.runtime.version", JAVA_VERSION },
         { "java.runtime.name", "RoboVM Runtime" },
         { "java.compiler", "" },
         { "java.ext.dirs", "" },
 
         { "java.specification.name", "RoboVM Core Library" },
         { "java.specification.vendor", ROBOVM_PROJECT_NAME },
-        { "java.specification.version", "0.9" },
+        { "java.specification.version", "17" },
 
         { "java.vendor", ROBOVM_PROJECT_NAME },
         { "java.vendor.url", ROBOVM_PROJECT_URL },
         { "java.vm.name", "RoboVM" },
         { "java.vm.specification.name", "RoboVM Virtual Machine Specification" },
         { "java.vm.specification.vendor", ROBOVM_PROJECT_NAME },
-        { "java.vm.specification.version", "0.9" },
+        { "java.vm.specification.version", "17" },
         { "java.vm.vendor", ROBOVM_PROJECT_NAME },
 
         { "java.vm.vendor.url", ROBOVM_PROJECT_URL },

@@ -239,4 +239,73 @@ public class AtomicReference<V> implements java.io.Serializable {
         return String.valueOf(get());
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /** Returns the current value, with memory semantics of reading as if the variable was declared non-volatile (Java 9). */
+    public final V getPlain() {
+        return get();
+    }
+
+    /** Sets the value with memory semantics of setting as if the variable was declared non-volatile (Java 9). */
+    public final void setPlain(V newValue) {
+        set(newValue);
+    }
+
+    /** Returns the current value, with memory effects of opaque access (Java 9). */
+    public final V getOpaque() {
+        return get();
+    }
+
+    /** Sets the value with memory effects of opaque access (Java 9). */
+    public final void setOpaque(V newValue) {
+        set(newValue);
+    }
+
+    /** Returns the current value, with memory effects of acquire access (Java 9). */
+    public final V getAcquire() {
+        return get();
+    }
+
+    /** Sets the value with memory effects of release access (Java 9). */
+    public final void setRelease(V newValue) {
+        set(newValue);
+    }
+
+    /** Atomically sets the value to {@code newValue} if the current value equals {@code expectedValue},
+     *  returning the witness value (Java 9). */
+    public final V compareAndExchange(V expectedValue, V newValue) {
+        while (true) {
+            V current = get();
+            if (current != expectedValue) {
+                return current;
+            }
+            if (compareAndSet(expectedValue, newValue)) {
+                return expectedValue;
+            }
+        }
+    }
+
+    public final V compareAndExchangeAcquire(V expectedValue, V newValue) {
+        return compareAndExchange(expectedValue, newValue);
+    }
+
+    public final V compareAndExchangeRelease(V expectedValue, V newValue) {
+        return compareAndExchange(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetPlain(V expectedValue, V newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetVolatile(V expectedValue, V newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetAcquire(V expectedValue, V newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
+
+    public final boolean weakCompareAndSetRelease(V expectedValue, V newValue) {
+        return compareAndSet(expectedValue, newValue);
+    }
 }

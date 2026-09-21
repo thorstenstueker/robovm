@@ -5043,4 +5043,910 @@ public class Arrays {
     public static DoubleStream stream(double[] array, int startInclusive, int endExclusive) {
         return StreamSupport.doubleStream(spliterator(array, startInclusive, endExclusive), false);
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /** Returns true if the two specified arrays of booleans, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(boolean[] a, int aFromIndex, int aToIndex,
+                                 boolean[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code boolean} arrays lexicographically (Java 9). */
+    public static int compare(boolean[] a, boolean[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Boolean.compare(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code boolean} arrays lexicographically over the specified ranges (Java 9). */
+    public static int compare(boolean[] a, int aFromIndex, int aToIndex,
+                              boolean[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Boolean.compare(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code boolean} arrays,
+     *  otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(boolean[] a, boolean[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!(a[i] == b[i]))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code boolean} arrays
+     *  over the specified ranges, otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(boolean[] a, int aFromIndex, int aToIndex,
+                               boolean[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Returns true if the two specified arrays of bytes, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(byte[] a, int aFromIndex, int aToIndex,
+                                 byte[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code byte} arrays lexicographically (Java 9). */
+    public static int compare(byte[] a, byte[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Byte.compare(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code byte} arrays lexicographically over the specified ranges (Java 9). */
+    public static int compare(byte[] a, int aFromIndex, int aToIndex,
+                              byte[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Byte.compare(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code byte} arrays,
+     *  otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(byte[] a, byte[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!(a[i] == b[i]))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code byte} arrays
+     *  over the specified ranges, otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(byte[] a, int aFromIndex, int aToIndex,
+                               byte[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Returns true if the two specified arrays of chars, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(char[] a, int aFromIndex, int aToIndex,
+                                 char[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code char} arrays lexicographically (Java 9). */
+    public static int compare(char[] a, char[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Character.compare(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code char} arrays lexicographically over the specified ranges (Java 9). */
+    public static int compare(char[] a, int aFromIndex, int aToIndex,
+                              char[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Character.compare(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code char} arrays,
+     *  otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(char[] a, char[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!(a[i] == b[i]))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code char} arrays
+     *  over the specified ranges, otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(char[] a, int aFromIndex, int aToIndex,
+                               char[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Returns true if the two specified arrays of shorts, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(short[] a, int aFromIndex, int aToIndex,
+                                 short[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code short} arrays lexicographically (Java 9). */
+    public static int compare(short[] a, short[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Short.compare(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code short} arrays lexicographically over the specified ranges (Java 9). */
+    public static int compare(short[] a, int aFromIndex, int aToIndex,
+                              short[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Short.compare(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code short} arrays,
+     *  otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(short[] a, short[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!(a[i] == b[i]))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code short} arrays
+     *  over the specified ranges, otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(short[] a, int aFromIndex, int aToIndex,
+                               short[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Returns true if the two specified arrays of ints, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(int[] a, int aFromIndex, int aToIndex,
+                                 int[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code int} arrays lexicographically (Java 9). */
+    public static int compare(int[] a, int[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Integer.compare(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code int} arrays lexicographically over the specified ranges (Java 9). */
+    public static int compare(int[] a, int aFromIndex, int aToIndex,
+                              int[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Integer.compare(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code int} arrays,
+     *  otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(int[] a, int[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!(a[i] == b[i]))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code int} arrays
+     *  over the specified ranges, otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(int[] a, int aFromIndex, int aToIndex,
+                               int[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Returns true if the two specified arrays of longs, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(long[] a, int aFromIndex, int aToIndex,
+                                 long[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code long} arrays lexicographically (Java 9). */
+    public static int compare(long[] a, long[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Long.compare(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code long} arrays lexicographically over the specified ranges (Java 9). */
+    public static int compare(long[] a, int aFromIndex, int aToIndex,
+                              long[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Long.compare(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code long} arrays,
+     *  otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(long[] a, long[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!(a[i] == b[i]))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code long} arrays
+     *  over the specified ranges, otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(long[] a, int aFromIndex, int aToIndex,
+                               long[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!(a[aFromIndex + i] == b[bFromIndex + i]))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Returns true if the two specified arrays of floats, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(float[] a, int aFromIndex, int aToIndex,
+                                 float[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!(Float.floatToIntBits(a[aFromIndex + i]) == Float.floatToIntBits(b[bFromIndex + i])))
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code float} arrays lexicographically (Java 9). */
+    public static int compare(float[] a, float[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Float.compare(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code float} arrays lexicographically over the specified ranges (Java 9). */
+    public static int compare(float[] a, int aFromIndex, int aToIndex,
+                              float[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Float.compare(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code float} arrays,
+     *  otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(float[] a, float[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!(Float.floatToIntBits(a[i]) == Float.floatToIntBits(b[i])))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code float} arrays
+     *  over the specified ranges, otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(float[] a, int aFromIndex, int aToIndex,
+                               float[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!(Float.floatToIntBits(a[aFromIndex + i]) == Float.floatToIntBits(b[bFromIndex + i])))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Returns true if the two specified arrays of doubles, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(double[] a, int aFromIndex, int aToIndex,
+                                 double[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!(Double.doubleToLongBits(a[aFromIndex + i]) == Double.doubleToLongBits(b[bFromIndex + i])))
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code double} arrays lexicographically (Java 9). */
+    public static int compare(double[] a, double[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Double.compare(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code double} arrays lexicographically over the specified ranges (Java 9). */
+    public static int compare(double[] a, int aFromIndex, int aToIndex,
+                              double[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Double.compare(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code double} arrays,
+     *  otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(double[] a, double[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!(Double.doubleToLongBits(a[i]) == Double.doubleToLongBits(b[i])))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code double} arrays
+     *  over the specified ranges, otherwise return -1 if no mismatch is found (Java 9). */
+    public static int mismatch(double[] a, int aFromIndex, int aToIndex,
+                               double[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!(Double.doubleToLongBits(a[aFromIndex + i]) == Double.doubleToLongBits(b[bFromIndex + i])))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Compares two {@code byte} arrays lexicographically, numerically treating elements as unsigned (Java 9). */
+    public static int compareUnsigned(byte[] a, byte[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Byte.compareUnsigned(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code byte} arrays lexicographically over the specified ranges, numerically
+     *  treating elements as unsigned (Java 9). */
+    public static int compareUnsigned(byte[] a, int aFromIndex, int aToIndex,
+                                      byte[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Byte.compareUnsigned(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Compares two {@code short} arrays lexicographically, numerically treating elements as unsigned (Java 9). */
+    public static int compareUnsigned(short[] a, short[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Short.compareUnsigned(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code short} arrays lexicographically over the specified ranges, numerically
+     *  treating elements as unsigned (Java 9). */
+    public static int compareUnsigned(short[] a, int aFromIndex, int aToIndex,
+                                      short[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Short.compareUnsigned(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Compares two {@code int} arrays lexicographically, numerically treating elements as unsigned (Java 9). */
+    public static int compareUnsigned(int[] a, int[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Integer.compareUnsigned(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code int} arrays lexicographically over the specified ranges, numerically
+     *  treating elements as unsigned (Java 9). */
+    public static int compareUnsigned(int[] a, int aFromIndex, int aToIndex,
+                                      int[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Integer.compareUnsigned(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Compares two {@code long} arrays lexicographically, numerically treating elements as unsigned (Java 9). */
+    public static int compareUnsigned(long[] a, long[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int i = mismatch(a, b);
+        if (i >= 0 && i < Math.min(a.length, b.length)) {
+            return Long.compareUnsigned(a[i], b[i]);
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code long} arrays lexicographically over the specified ranges, numerically
+     *  treating elements as unsigned (Java 9). */
+    public static int compareUnsigned(long[] a, int aFromIndex, int aToIndex,
+                                      long[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int i = mismatch(a, aFromIndex, aToIndex, b, bFromIndex, bToIndex);
+        if (i >= 0 && i < Math.min(aLength, bLength)) {
+            return Long.compareUnsigned(a[aFromIndex + i], b[bFromIndex + i]);
+        }
+        return aLength - bLength;
+    }
+
+    /** Returns true if the two specified arrays of Objects, over the specified ranges, are equal to one another (Java 9). */
+    public static boolean equals(Object[] a, int aFromIndex, int aToIndex,
+                                 Object[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (!Objects.equals(a[aFromIndex + i], b[bFromIndex + i]))
+                return false;
+        }
+        return true;
+    }
+
+    /** Returns true if the two specified arrays of Objects are equal to one another using the comparator (Java 9). */
+    public static <T> boolean equals(T[] a, T[] b, Comparator<? super T> cmp) {
+        Objects.requireNonNull(cmp);
+        if (a == b)
+            return true;
+        if (a == null || b == null)
+            return false;
+        int length = a.length;
+        if (b.length != length)
+            return false;
+        for (int i = 0; i < length; i++) {
+            if (cmp.compare(a[i], b[i]) != 0)
+                return false;
+        }
+        return true;
+    }
+
+    /** Returns true if the two specified arrays of Objects, over the specified ranges, are equal
+     *  to one another using the comparator (Java 9). */
+    public static <T> boolean equals(T[] a, int aFromIndex, int aToIndex,
+                                     T[] b, int bFromIndex, int bToIndex,
+                                     Comparator<? super T> cmp) {
+        Objects.requireNonNull(cmp);
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        if (aLength != bLength)
+            return false;
+        for (int i = 0; i < aLength; i++) {
+            if (cmp.compare(a[aFromIndex + i], b[bFromIndex + i]) != 0)
+                return false;
+        }
+        return true;
+    }
+
+    /** Compares two {@code Object} arrays, within comparable elements, lexicographically (Java 9). */
+    public static <T extends Comparable<? super T>> int compare(T[] a, T[] b) {
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; i++) {
+            T oa = a[i];
+            T ob = b[i];
+            if (oa != ob) {
+                if (oa == null || ob == null)
+                    return oa == null ? -1 : 1;
+                int v = oa.compareTo(ob);
+                if (v != 0) {
+                    return v;
+                }
+            }
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code Object} arrays lexicographically over the specified ranges (Java 9). */
+    public static <T extends Comparable<? super T>> int compare(
+            T[] a, int aFromIndex, int aToIndex,
+            T[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            T oa = a[aFromIndex++];
+            T ob = b[bFromIndex++];
+            if (oa != ob) {
+                if (oa == null || ob == null)
+                    return oa == null ? -1 : 1;
+                int v = oa.compareTo(ob);
+                if (v != 0) {
+                    return v;
+                }
+            }
+        }
+        return aLength - bLength;
+    }
+
+    /** Compares two {@code Object} arrays lexicographically using a specified comparator (Java 9). */
+    public static <T> int compare(T[] a, T[] b, Comparator<? super T> cmp) {
+        Objects.requireNonNull(cmp);
+        if (a == b)
+            return 0;
+        if (a == null || b == null)
+            return a == null ? -1 : 1;
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; i++) {
+            T oa = a[i];
+            T ob = b[i];
+            if (oa != ob) {
+                int v = cmp.compare(oa, ob);
+                if (v != 0) {
+                    return v;
+                }
+            }
+        }
+        return a.length - b.length;
+    }
+
+    /** Compares two {@code Object} arrays lexicographically over the specified ranges using a comparator (Java 9). */
+    public static <T> int compare(
+            T[] a, int aFromIndex, int aToIndex,
+            T[] b, int bFromIndex, int bToIndex,
+            Comparator<? super T> cmp) {
+        Objects.requireNonNull(cmp);
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            T oa = a[aFromIndex++];
+            T ob = b[bFromIndex++];
+            if (oa != ob) {
+                int v = cmp.compare(oa, ob);
+                if (v != 0) {
+                    return v;
+                }
+            }
+        }
+        return aLength - bLength;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code Object} arrays (Java 9). */
+    public static int mismatch(Object[] a, Object[] b) {
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            if (!Objects.equals(a[i], b[i]))
+                return i;
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code Object} arrays
+     *  over the specified ranges (Java 9). */
+    public static int mismatch(
+            Object[] a, int aFromIndex, int aToIndex,
+            Object[] b, int bFromIndex, int bToIndex) {
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            if (!Objects.equals(a[aFromIndex + i], b[bFromIndex + i]))
+                return i;
+        }
+        return aLength != bLength ? length : -1;
+    }
+
+    /** Finds and returns the index of the first mismatch between two {@code Object} arrays using a comparator (Java 9). */
+    public static <T> int mismatch(T[] a, T[] b, Comparator<? super T> cmp) {
+        Objects.requireNonNull(cmp);
+        int length = Math.min(a.length, b.length);
+        if (a == b)
+            return -1;
+        for (int i = 0; i < length; i++) {
+            T oa = a[i];
+            T ob = b[i];
+            if (oa != ob) {
+                int v = cmp.compare(oa, ob);
+                if (v != 0) {
+                    return i;
+                }
+            }
+        }
+        return a.length != b.length ? length : -1;
+    }
+
+    /** Finds and returns the relative index of the first mismatch between two {@code Object} arrays
+     *  over the specified ranges using a comparator (Java 9). */
+    public static <T> int mismatch(
+            T[] a, int aFromIndex, int aToIndex,
+            T[] b, int bFromIndex, int bToIndex,
+            Comparator<? super T> cmp) {
+        Objects.requireNonNull(cmp);
+        rangeCheck(a.length, aFromIndex, aToIndex);
+        rangeCheck(b.length, bFromIndex, bToIndex);
+        int aLength = aToIndex - aFromIndex;
+        int bLength = bToIndex - bFromIndex;
+        int length = Math.min(aLength, bLength);
+        for (int i = 0; i < length; i++) {
+            T oa = a[aFromIndex++];
+            T ob = b[bFromIndex++];
+            if (oa != ob) {
+                int v = cmp.compare(oa, ob);
+                if (v != 0) {
+                    return i;
+                }
+            }
+        }
+        return aLength != bLength ? length : -1;
+    }
 }

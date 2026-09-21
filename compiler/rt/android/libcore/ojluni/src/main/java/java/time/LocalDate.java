@@ -2073,4 +2073,90 @@ public final class LocalDate
         return LocalDate.of(year, month, dayOfMonth);
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Obtains an instance of {@code LocalDate} from an {@code Instant} and zone ID (Java 9).
+     */
+    public static LocalDate ofInstant(Instant instant, ZoneId zone) {
+        Objects.requireNonNull(instant, "instant");
+        Objects.requireNonNull(zone, "zone");
+        java.time.zone.ZoneRules rules = zone.getRules();
+        ZoneOffset offset = rules.getOffset(instant);
+        long localSecond = instant.getEpochSecond() + offset.getTotalSeconds();
+        long localEpochDay = Math.floorDiv(localSecond, 86400);
+        return ofEpochDay(localEpochDay);
+    }
+
+    /**
+     * Converts this {@code LocalDate} to the number of seconds since the epoch of 1970-01-01T00:00:00Z (Java 9).
+     */
+    public long toEpochSecond(LocalTime time, ZoneOffset offset) {
+        Objects.requireNonNull(time, "time");
+        Objects.requireNonNull(offset, "offset");
+        long secs = toEpochDay() * 86400 + time.toSecondOfDay();
+        secs -= offset.getTotalSeconds();
+        return secs;
+    }
+
+    /**
+     * Returns a sequential ordered stream of dates. The returned stream starts from this date
+     * (inclusive) and goes to {@code endExclusive} (exclusive) by an incremental step of 1 day (Java 9).
+     */
+    public java.util.stream.Stream<LocalDate> datesUntil(LocalDate endExclusive) {
+        long end = endExclusive.toEpochDay();
+        long start = toEpochDay();
+        if (end < start) {
+            throw new IllegalArgumentException(endExclusive + " < " + this);
+        }
+        return java.util.stream.LongStream.range(start, end).mapToObj(LocalDate::ofEpochDay);
+    }
+
+    /**
+     * Returns a sequential ordered stream of dates by given incremental step (Java 9).
+     */
+    public java.util.stream.Stream<LocalDate> datesUntil(LocalDate endExclusive, Period step) {
+        if (step.isZero()) {
+            throw new IllegalArgumentException("step is zero");
+        }
+        long end = endExclusive.toEpochDay();
+        long start = toEpochDay();
+        long until = end - start;
+        long months = step.toTotalMonths();
+        long days = step.getDays();
+        if ((months < 0 && days > 0) || (months > 0 && days < 0)) {
+            throw new IllegalArgumentException("period months and days are of opposite sign");
+        }
+        if (until == 0) {
+            return java.util.stream.Stream.empty();
+        }
+        int sign = months > 0 || days > 0 ? 1 : -1;
+        if (sign < 0 ^ until < 0) {
+            throw new IllegalArgumentException(endExclusive + (sign < 0 ? " > " : " < ") + this);
+        }
+        if (months == 0) {
+            long steps = (until - sign) / days; // non-negative
+            return java.util.stream.LongStream.rangeClosed(0, steps).mapToObj(
+                    n -> LocalDate.ofEpochDay(start + n * days));
+        }
+        // 48699/1600 = 365.2425/12, no overflow, non-negative result
+        long steps = until * 1600 / (months * 48699 + days * 1600) + 1;
+        long addMonths = months * steps;
+        long addDays = days * steps;
+        long maxAddMonths = months > 0 ? MAX.getProlepticMonth() - getProlepticMonth()
+                : getProlepticMonth() - MIN.getProlepticMonth();
+        // adjust steps estimation
+        if (addMonths * sign > maxAddMonths
+                || (plusMonths(addMonths).toEpochDay() + addDays) * sign >= end * sign) {
+            steps--;
+            addMonths -= months;
+            addDays -= days;
+            if (addMonths * sign > maxAddMonths
+                    || (plusMonths(addMonths).toEpochDay() + addDays) * sign >= end * sign) {
+                steps--;
+            }
+        }
+        return java.util.stream.LongStream.rangeClosed(0, steps).mapToObj(
+                n -> this.plusMonths(months * n).plusDays(days * n));
+    }
 }

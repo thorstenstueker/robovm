@@ -76,4 +76,21 @@ public interface Enumeration<E> {
      * @exception  NoSuchElementException  if no more elements exist.
      */
     E nextElement();
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns an {@link Iterator} that traverses the remaining elements covered by this
+     * enumeration (Java 9).
+     */
+    default Iterator<E> asIterator() {
+        return new Iterator<E>() {
+            @Override public boolean hasNext() {
+                return hasMoreElements();
+            }
+            @Override public E next() {
+                return nextElement();
+            }
+        };
+    }
 }
