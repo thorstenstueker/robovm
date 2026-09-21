@@ -123,6 +123,7 @@ public class IOSSimLauncher implements Launcher {
             int exitCode = e.getExitCode();
             // if process is interrupted replace with 0 otherwise constant will look odd in console output
             if (exitCode == ExecuteException.INTERRUPTED_EXIT_CODE) return 0;
+            log.error("AppLauncher failed: %s", e.getMessage());
             throw e;
         } catch (Throwable t) {
             log.error("AppLauncher failed with an exception: %s", t.getMessage());

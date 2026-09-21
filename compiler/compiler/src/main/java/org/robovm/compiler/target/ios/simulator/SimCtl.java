@@ -20,7 +20,9 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsoner;
 import org.robovm.compiler.log.Logger;
 import org.robovm.compiler.util.Executor;
+import org.robovm.compiler.util.ToolchainUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -63,10 +65,52 @@ public final class SimCtl {
         executor.exec();
     }
 
-    public static void show(Logger log, String udid) throws IOException {
-        Executor executor = new Executor(log, "open");
-        executor.args("-a", "Simulator", "--args", "-CurrentDeviceUDID", udid);
-        executor.exec();
+    /**
+     * Brings the Simulator UI to front for the given device. This is best effort only: the location
+     * of Simulator.app differs between Xcode versions (Xcode 27 does not ship it under
+     * Contents/Developer/Applications any more) and an app runs on a booted simulator without the
+     * UI, so failures are reported as warnings and do not abort the launch.
+     */
+    public static void show(Logger log, String udid) {
+        String[] candidates = simulatorAppCandidates();
+        for (String candidate : candidates) {
+            try {
+                Executor executor = new Executor(log, "open");
+                if (candidate != null) {
+                    executor.args(candidate, "--args", "-CurrentDeviceUDID", udid);
+                } else {
+                    executor.args("-a", "Simulator", "--args", "-CurrentDeviceUDID", udid);
+                }
+                executor.exec();
+                return;
+            } catch (IOException e) {
+                log.debug("Failed to open %s: %s", candidate != null ? candidate : "Simulator", e.getMessage());
+            }
+        }
+        log.warn("Simulator.app could not be found, the app is launched on the booted simulator %s "
+                + "without bringing the simulator UI to front", udid);
+    }
+
+    private static String[] simulatorAppCandidates() {
+        List<String> result = new ArrayList<>();
+        try {
+            File xcodePath = new File(ToolchainUtil.findXcodePath());
+            // Xcode <= 26: <Xcode>/Contents/Developer/Applications/Simulator.app
+            addIfExists(result, new File(xcodePath, "Applications/Simulator.app"));
+            // <Xcode>/Contents/Applications/Simulator.app (next to Instruments.app)
+            addIfExists(result, new File(xcodePath.getParentFile(), "Applications/Simulator.app"));
+        } catch (Exception ignored) {
+        }
+        addIfExists(result, new File("/Applications/Simulator.app"));
+        // finally let Launch Services resolve it by name
+        result.add(null);
+        return result.toArray(new String[0]);
+    }
+
+    private static void addIfExists(List<String> result, File app) {
+        if (app.isDirectory()) {
+            result.add(app.getAbsolutePath());
+        }
     }
 
     public static void install(Logger log, String udid, String localPath) throws IOException {
