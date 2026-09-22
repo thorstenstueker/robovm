@@ -53,8 +53,9 @@ lists the remaining differences to the JDK's `java.base`.
 
 ## Reduced CocoaTouch bindings
 
-This fork ships a reduced `robovm-cocoatouch` with the frameworks needed for UIKit based apps
-(RapidFX), camera, Bluetooth, GPS and motion sensors:
+This fork ships a reduced `robovm-cocoatouch` with the frameworks needed by RapidFX/RapidJ apps —
+Swing drawn onto a `UIView` through CoreGraphics and CoreText, plus UIKit for the window, the scene
+life cycle, keyboard and touch input — and by camera, Bluetooth, GPS and motion sensors:
 
 `foundation`, `corefoundation`, `dispatch`, `uikit`, `coregraphics`, `coreanimation`, `coretext`,
 `coreimage`, `imageio`, `uniformtypeid`, `usernotifications`, `security`, `coreservices`,

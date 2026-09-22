@@ -14,6 +14,10 @@
 
     <properties>
         <robovmdir>${basedir}/../../compiler</robovmdir>
+        <!-- The archive's name and the folder it unpacks to. Overridable so that a fork build
+             can be published under a name of its own (see release-tsb.sh) while the Maven
+             version stays 3.0.0-SNAPSHOT for the modules. -->
+        <dist.name>robovm-${project.version}</dist.name>
     </properties>
 
     <dependencies>
@@ -77,7 +81,7 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/dist-full.xml</descriptor>
                             </descriptors>
-                            <finalName>robovm-${project.version}</finalName>
+                            <finalName>${dist.name}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>
@@ -91,7 +95,7 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/dist-nocompiler.xml</descriptor>
                             </descriptors>
-                            <finalName>robovm-${project.version}</finalName>
+                            <finalName>${dist.name}</finalName>
                             <appendAssemblyId>true</appendAssemblyId>
                         </configuration>
                     </execution>
