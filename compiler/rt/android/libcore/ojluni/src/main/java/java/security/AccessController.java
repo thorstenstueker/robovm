@@ -94,6 +94,37 @@ public final class AccessController {
         return doPrivileged(action);
     }
 
+    /**
+     * Performs the specified action with privileges enabled and restricted by the specified
+     * permissions. There is no security manager here, so the permissions are not consulted.
+     *
+     * @since 1.8
+     */
+    public static <T> T doPrivileged(PrivilegedAction<T> action,
+                                     AccessControlContext context, Permission... perms) {
+        return action.run();
+    }
+
+    /** @since 1.8 */
+    public static <T> T doPrivilegedWithCombiner(PrivilegedAction<T> action,
+                                                 AccessControlContext context, Permission... perms) {
+        return action.run();
+    }
+
+    /** @since 1.8 */
+    public static <T> T doPrivileged(PrivilegedExceptionAction<T> action,
+                                     AccessControlContext context, Permission... perms)
+            throws PrivilegedActionException {
+        return doPrivileged(action);
+    }
+
+    /** @since 1.8 */
+    public static <T> T doPrivilegedWithCombiner(PrivilegedExceptionAction<T> action,
+                                                 AccessControlContext context, Permission... perms)
+            throws PrivilegedActionException {
+        return doPrivileged(action);
+    }
+
     public static AccessControlContext getContext() {
         return new AccessControlContext(null);
     }
