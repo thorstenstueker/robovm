@@ -51,6 +51,24 @@ Calls to APIs that are still missing in `robovm-rt` are reported as warnings at 
 (`Unresolved method ...`) and throw `NoSuchMethodError` at runtime. `compiler/rt/tools/ApiDelta.java`
 lists the remaining differences to the JDK's `java.base`.
 
+### State on 23.09.2026 — what the runtime has and lacks
+
+Added for the tsbMobile consumers (RapidFX, RapidJ) since the Java 17 commit: `LocalDate.EPOCH`,
+`java.lang.ref.Cleaner`, `Method`/`Constructor.getParameterCount()`, the limited
+`AccessController.doPrivileged(…, Permission...)` overloads, `MalformedParameterizedTypeException(String)`.
+
+Known missing, and what it means:
+
+| Missing | Effect |
+|---|---|
+| `MethodHandle` invocation, `MethodHandles.lookup()` | FlatLaf's reflective paths (`JavaCompatibility2`, `FlatPopupFactory`, `FlatStylingSupport`) print `Unresolved method` warnings at build time and would throw `NoSuchMethodError` if reached |
+| `java.lang.Module`, `StackWalker`, `ProcessHandle`, hidden classes | absent; the java.desktop port replaces `Module` with `tsb.port.Modul` |
+| `sun.net.util.URLUtil`, `sun.misc.SharedSecrets` | `NoSuchMethodError` if reached (URL image loading, old `PlatformLogger` caller info) |
+| `java.io.tmpdir` | `/tmp`, not writable on a device — apps use the documents directory |
+| class files newer than 61 | refused with a warning; Java 21 language features are not supported |
+
+Consumer-facing documentation of the same facts: RapidFX `mobile/JAVA17.md`, RapidJ `docs/JAVA17.md`.
+
 ## Reduced CocoaTouch bindings
 
 The sources under `compiler/cocoatouch/src/main/java` are **identical to upstream MobiVM**
