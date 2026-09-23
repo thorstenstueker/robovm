@@ -3,7 +3,7 @@
 XCODE=27.0
 IOS_SDK=27.0
 BRO_GEN_REPO=https://github.com/thorstenstueker/robovm-bro-gen.git
-BRO_GEN_COMMIT=e495077
+BRO_GEN_COMMIT=95c243f
 RUBY_MIN=3.2
 FFI_MIN=1.17
 FFI_CLANG_MIN=0.10

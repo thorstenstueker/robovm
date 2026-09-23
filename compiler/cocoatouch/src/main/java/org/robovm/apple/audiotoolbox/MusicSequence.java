@@ -30,7 +30,6 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coreaudio.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.avfoundation.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
@@ -183,15 +182,6 @@ import org.robovm.apple.uikit.*;
      * @throws OSStatusException 
      * @since Available in iOS 5.0 and later.
      */
-    @WeaklyLinked
-    public void setMIDIEndpoint(MIDIEndpoint endpoint) throws OSStatusException {
-        OSStatus status = setMIDIEndpoint0(endpoint);
-        OSStatusException.throwIfNecessary(status);
-    }
-    /**
-     * @throws OSStatusException 
-     * @since Available in iOS 5.0 and later.
-     */
     public void setSequenceType(MusicSequenceType type) throws OSStatusException {
         OSStatus status = setSequenceType0(type);
         OSStatusException.throwIfNecessary(status);
@@ -331,7 +321,7 @@ import org.robovm.apple.uikit.*;
     protected native OSStatus getAUGraph0(AUGraph.AUGraphPtr outGraph);
     @WeaklyLinked
     @Bridge(symbol="MusicSequenceSetMIDIEndpoint", optional=true)
-    public native OSStatus setMIDIEndpoint0(MIDIEndpoint inEndpoint);
+    public native OSStatus setMIDIEndpoint0(int inEndpoint);
     @Bridge(symbol="MusicSequenceSetSequenceType", optional=true)
     protected native OSStatus setSequenceType0(MusicSequenceType inType);
     @Bridge(symbol="MusicSequenceGetSequenceType", optional=true)

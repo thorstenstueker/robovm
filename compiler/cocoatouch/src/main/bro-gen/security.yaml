@@ -815,9 +815,6 @@ values:
             UseAuthenticationUI:
                 name: usesAuthenticationUI
                 type: boolean
-            UseAuthenticationContext:
-                name: useAuthenticationContext
-                type: 'org.robovm.apple.localauthentication.LAContext'
     kSec(UseItemList|UseOperationPrompt|UseNoAuthenticationUI|UseAuthenticationUI|UseAuthenticationContext|UseDataProtectionKeychain):
         dictionary: SecAttributes
         name: '#{g[0]}'

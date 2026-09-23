@@ -1,18 +1,7 @@
 package: org.robovm.apple.uikit
-include:
-    - foundation
-    - coreanimation
-    - coregraphics
-    - coredata
-    - coreimage
-    - coretext
-    - corelocation
-    - cloudkit
-    - fileprovider
-    - intents
-    - usernotifications
-    - linkpresentation
-    - symbols
+# tsbMobile (23.09.2026): the bindings are ours and only these frameworks exist; members typed with
+# a class of coredata, cloudkit, fileprovider, intents, linkpresentation, symbols are skipped by the generator and listed in bro-gen/skipped.txt.
+include: [foundation.yaml, coreanimation.yaml, coregraphics.yaml, coreimage.yaml, coretext.yaml, corelocation.yaml, usernotifications.yaml]
 library: UIKit
 framework: UIKit
 clang_args: ['-x', 'objective-c']
@@ -2432,32 +2421,8 @@ classes:
             'region':
                 annotations: ['@WeaklyLinked']
     UILongPressGestureRecognizer: {} # DONE
-    UIManagedDocument: # DONE
-        properties: 
-            '(managedObjectContext|managedObjectModel)':
-                annotations: ['@WeaklyLinked']
-            'persistentStoreOptions':
-                type: NSPersistentStoreOptions
-                annotations: ['@WeaklyLinked']
-        methods:
-            '-additionalContentForURL:error:':
-                name: getAdditionalContent
-                throws: NSErrorException
-            '-configurePersistentStoreCoordinatorForURL:ofType:modelConfiguration:storeOptions:error:':
-                name: configurePersistentStoreCoordinator
-                throws: NSErrorException
-                annotations: ['@WeaklyLinked']
-                parameters:
-                    storeOptions:
-                        type: NSPersistentStoreOptions
-            '-persistentStoreTypeForFileType:':
-                name: getPersistentStoreType
-            '-readAdditionalContentFromURL:error:':
-                name: readAdditionalContent
-                throws: NSErrorException
-            '-writeAdditionalContent:toURL:originalContentsURL:error:':
-                name: writeAdditionalContent
-                throws: NSErrorException
+    # tsbMobile: built on CoreData, which the fork does not bind — the class would keep nothing but its name
+    UIManagedDocument: {exclude: true}
     UIMarkupTextPrintFormatter: # DONE
         methods:
             '-init.*':

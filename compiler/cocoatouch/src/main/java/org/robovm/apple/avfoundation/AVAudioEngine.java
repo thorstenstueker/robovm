@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -256,12 +254,12 @@ import org.robovm.apple.uikit.*;
      */
     @Deprecated
     @Method(selector = "connectMIDI:to:format:eventListBlock:")
-    public native void connectMIDI(AVAudioNode sourceNode, AVAudioNode destinationNode, AVAudioFormat format, @Block Block3<AUEventSampleTime, Byte, MIDIEventList, OSStatus> tapBlock);
+    public native void connectMIDI(AVAudioNode sourceNode, AVAudioNode destinationNode, AVAudioFormat format, ObjCBlock tapBlock);
     /**
      * @since Available in iOS 27.0 and later.
      */
     @Method(selector = "connectMIDI:to:format:eventListProvider:")
-    public native void connectMIDI$to$format$eventListProvider$(AVAudioNode sourceNode, AVAudioNode destinationNode, AVAudioFormat format, @Block Block3<Long, Byte, MIDIEventList, OSStatus> tapBlock);
+    public native void connectMIDI$to$format$eventListProvider$(AVAudioNode sourceNode, AVAudioNode destinationNode, AVAudioFormat format, ObjCBlock tapBlock);
     /**
      * @since Available in iOS 13.0 and later.
      * @deprecated Deprecated in iOS 16.0. Use connectMIDI:toNodes:format:eventListBlock:
@@ -275,12 +273,12 @@ import org.robovm.apple.uikit.*;
      */
     @Deprecated
     @Method(selector = "connectMIDI:toNodes:format:eventListBlock:")
-    public native void connectMIDI(AVAudioNode sourceNode, NSArray<AVAudioNode> destinationNodes, AVAudioFormat format, @Block Block3<AUEventSampleTime, Byte, MIDIEventList, OSStatus> tapBlock);
+    public native void connectMIDI(AVAudioNode sourceNode, NSArray<AVAudioNode> destinationNodes, AVAudioFormat format, ObjCBlock tapBlock);
     /**
      * @since Available in iOS 27.0 and later.
      */
     @Method(selector = "connectMIDI:toNodes:format:eventListProvider:")
-    public native void connectMIDI$toNodes$format$eventListProvider$(AVAudioNode sourceNode, NSArray<AVAudioNode> destinationNodes, AVAudioFormat format, @Block Block3<Long, Byte, MIDIEventList, OSStatus> tapBlock);
+    public native void connectMIDI$toNodes$format$eventListProvider$(AVAudioNode sourceNode, NSArray<AVAudioNode> destinationNodes, AVAudioFormat format, ObjCBlock tapBlock);
     /**
      * @since Available in iOS 12.0 and later.
      */

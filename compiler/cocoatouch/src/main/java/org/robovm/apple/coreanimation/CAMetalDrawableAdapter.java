@@ -31,8 +31,6 @@ import org.robovm.apple.foundation.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
-import org.robovm.apple.opengles.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.corevideo.*;
 /*</imports>*/
 
@@ -40,7 +38,7 @@ import org.robovm.apple.corevideo.*;
 /*</javadoc>*/
 /*<annotations>*//*</annotations>*/
 /*<visibility>*/public/*</visibility>*/ class /*<name>*/CAMetalDrawableAdapter/*</name>*/ 
-    extends /*<extends>*/MTLDrawableAdapter/*</extends>*/ 
+    extends /*<extends>*/NSObject/*</extends>*/ 
     /*<implements>*/implements CAMetalDrawable/*</implements>*/ {
 
     /*<ptr>*/
@@ -50,9 +48,6 @@ import org.robovm.apple.corevideo.*;
     /*<constants>*//*</constants>*/
     /*<constructors>*//*</constructors>*/
     /*<properties>*/
-    @WeaklyLinked
-    @NotImplemented("texture")
-    public MTLTexture getTexture() { return null; }
     @NotImplemented("layer")
     public CAMetalLayer getLayer() { return null; }
     /*</properties>*/

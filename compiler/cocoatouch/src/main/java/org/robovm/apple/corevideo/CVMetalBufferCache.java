@@ -30,8 +30,6 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 /*</imports>*/
 
@@ -61,11 +59,6 @@ import org.robovm.apple.iosurface.*;
      */
     @Bridge(symbol="CVMetalBufferCacheGetTypeID", optional=true)
     public static native @MachineSizedUInt long getClassTypeID();
-    /**
-     * @since Available in iOS 18.0 and later.
-     */
-    @Bridge(symbol="CVMetalBufferCacheCreate", optional=true)
-    public static native CVReturn create(CFAllocator allocator, CFDictionary cacheAttributes, MTLDevice metalDevice, CVMetalBuffer.CVMetalBufferPtr cacheOut);
     /**
      * @since Available in iOS 18.0 and later.
      */

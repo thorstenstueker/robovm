@@ -30,11 +30,9 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.imageio.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 import org.robovm.apple.avfoundation.*;
 /*</imports>*/

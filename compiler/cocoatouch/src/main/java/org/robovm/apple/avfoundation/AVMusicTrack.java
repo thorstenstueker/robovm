@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -66,9 +64,9 @@ import org.robovm.apple.uikit.*;
     @Property(selector = "setDestinationAudioUnit:")
     public native void setDestinationAudioUnit(AVAudioUnit v);
     @Property(selector = "destinationMIDIEndpoint")
-    public native MIDIEndpoint getDestinationMIDIEndpoint();
+    public native int getDestinationMIDIEndpoint();
     @Property(selector = "setDestinationMIDIEndpoint:")
-    public native void setDestinationMIDIEndpoint(MIDIEndpoint v);
+    public native void setDestinationMIDIEndpoint(int v);
     @Property(selector = "loopRange")
     public native @ByVal AVBeatRange getLoopRange();
     @Property(selector = "setLoopRange:")

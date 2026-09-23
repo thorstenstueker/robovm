@@ -1,5 +1,5 @@
 package: org.robovm.apple.iosurface
-include: [foundation, corefoundation]
+include: [foundation.yaml, corefoundation.yaml]
 library: IOSurface
 framework: IOSurface
 clang_args: ['-x', 'objective-c']

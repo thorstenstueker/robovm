@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -65,17 +59,13 @@ import org.robovm.apple.symbols.*;
      */
     @Deprecated
     @Method(selector = "initWithPreparationHandler:")
-    public UICloudSharingController(@Block("(,@Block)") VoidBlock2<UICloudSharingController, VoidBlock3<CKShare, CKContainer, NSError>> preparationHandler) { super((SkipInit) null); initObject(init(preparationHandler)); }
-    @Method(selector = "initWithShare:container:")
-    public UICloudSharingController(CKShare share, CKContainer container) { super((SkipInit) null); initObject(init(share, container)); }
+    public UICloudSharingController(@Block VoidBlock2<UICloudSharingController, ObjCBlock> preparationHandler) { super((SkipInit) null); initObject(init(preparationHandler)); }
     /*</constructors>*/
     /*<properties>*/
     @Property(selector = "delegate")
     public native UICloudSharingControllerDelegate getDelegate();
     @Property(selector = "setDelegate:", strongRef = true)
     public native void setDelegate(UICloudSharingControllerDelegate v);
-    @Property(selector = "share")
-    public native CKShare getShare();
     @Property(selector = "availablePermissions")
     public native UICloudSharingPermissionOptions getAvailablePermissions();
     @Property(selector = "setAvailablePermissions:")
@@ -89,9 +79,7 @@ import org.robovm.apple.symbols.*;
      */
     @Deprecated
     @Method(selector = "initWithPreparationHandler:")
-    protected native @Pointer long init(@Block("(,@Block)") VoidBlock2<UICloudSharingController, VoidBlock3<CKShare, CKContainer, NSError>> preparationHandler);
-    @Method(selector = "initWithShare:container:")
-    protected native @Pointer long init(CKShare share, CKContainer container);
+    protected native @Pointer long init(@Block VoidBlock2<UICloudSharingController, ObjCBlock> preparationHandler);
     @Method(selector = "activityItemSource")
     public native UIActivityItemSource activityItemSource();
     /*</methods>*/

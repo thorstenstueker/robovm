@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -238,18 +232,6 @@ import org.robovm.apple.symbols.*;
      */
     @NotImplemented("applicationShouldRequestHealthAuthorization:")
     public void shouldRequestHealthAuthorization(UIApplication application) {}
-    /**
-     * @since Available in iOS 14.0 and later.
-     */
-    @NotImplemented("application:handlerForIntent:")
-    public NSObject getHandlerForIntent(UIApplication application, INIntent intent) { return null; }
-    /**
-     * @since Available in iOS 11.0 and later.
-     * @deprecated Deprecated in iOS 14.0. Use application:handlerForIntent: instead
-     */
-    @Deprecated
-    @NotImplemented("application:handleIntent:completionHandler:")
-    public void handleIntent(UIApplication application, INIntent intent, @Block VoidBlock1<INIntentResponse> completionHandler) {}
     @NotImplemented("applicationProtectedDataWillBecomeUnavailable:")
     public void protectedDataWillBecomeUnavailable(UIApplication application) {}
     @NotImplemented("applicationProtectedDataDidBecomeAvailable:")
@@ -314,13 +296,6 @@ import org.robovm.apple.symbols.*;
     @Deprecated
     @NotImplemented("application:didUpdateUserActivity:")
     public void didUpdateUserActivity(UIApplication application, NSUserActivity userActivity) {}
-    /**
-     * @since Available in iOS 10.0 and later.
-     * @deprecated Deprecated in iOS 26.0. Use UIScene lifecycle and windowScene(_:userDidAcceptCloudKitShareWith:) from UIWindowSceneDelegate instead.
-     */
-    @Deprecated
-    @NotImplemented("application:userDidAcceptCloudKitShareWithMetadata:")
-    public void didAcceptCloudKitShare(UIApplication application, CKShareMetadata cloudKitShareMetadata) {}
     /**
      * @since Available in iOS 13.0 and later.
      */

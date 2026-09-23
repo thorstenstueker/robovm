@@ -31,14 +31,12 @@ import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.coreanimation.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.security.*;
 import org.robovm.apple.dispatch.*;
 /*</imports>*/
 import org.robovm.rt.annotation.WeaklyLinked;
-import org.robovm.apple.newsstandkit.NKAssetDownload;
 
 /*<javadoc>*/
 
@@ -80,12 +78,6 @@ import org.robovm.apple.newsstandkit.NKAssetDownload;
     }
     public void unscheduleFromRunLoop(NSRunLoop aRunLoop, NSRunLoopMode mode) {
         unscheduleFromRunLoop(aRunLoop, mode.value().toString());
-    }
-
-    /* NewsstandKit extensions */
-    @WeaklyLinked
-    public NKAssetDownload getNewsstandAssetDownload() {
-        return org.robovm.apple.newsstandkit.NSURLConnectionExtensions.getNewsstandAssetDownload(this);
     }
     /*<methods>*/
     /**

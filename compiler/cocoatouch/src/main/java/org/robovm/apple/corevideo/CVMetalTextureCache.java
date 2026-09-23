@@ -30,8 +30,6 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 /*</imports>*/
 
@@ -50,42 +48,9 @@ import org.robovm.apple.iosurface.*;
     /*</constructors>*/
     /*<properties>*//*</properties>*/
     /*<members>*//*</members>*/
-    /**
-     * @since Available in iOS 8.0 and later.
-     */
-    public static CVMetalTextureCache create(CVMetalTextureCacheAttributes cacheAttributes, MTLDevice metalDevice, NSDictionary<NSString, ?> textureAttributes) {
-        return create(null, cacheAttributes, metalDevice, textureAttributes);
-    }
-    /**
-     * @since Available in iOS 8.0 and later.
-     */
-    public static CVMetalTextureCache create(CFAllocator allocator, CVMetalTextureCacheAttributes cacheAttributes, MTLDevice metalDevice, NSDictionary<NSString, ?> textureAttributes) {
-        CVMetalTextureCache.CVMetalTextureCachePtr ptr = new CVMetalTextureCache.CVMetalTextureCachePtr();
-        create(allocator, cacheAttributes, metalDevice, textureAttributes, ptr);
-        return ptr.get();
-    }
-    /**
-     * @since Available in iOS 8.0 and later.
-     */
-    public static CVMetalTexture createTexture(CVMetalTextureCache textureCache, CVImageBuffer sourceImage, NSDictionary<NSString, ?> textureAttributes, MTLPixelFormat pixelFormat, @MachineSizedUInt long width, @MachineSizedUInt long height, @MachineSizedUInt long planeIndex) {
-        return createTexture(null, textureCache, sourceImage, textureAttributes, pixelFormat, width, height, planeIndex);
-    }
-    /**
-     * @since Available in iOS 8.0 and later.
-     */
-    public static CVMetalTexture createTexture(CFAllocator allocator, CVMetalTextureCache textureCache, CVImageBuffer sourceImage, NSDictionary<NSString, ?> textureAttributes, MTLPixelFormat pixelFormat, @MachineSizedUInt long width, @MachineSizedUInt long height, @MachineSizedUInt long planeIndex) {
-        CVMetalTexture.CVMetalTexturePtr ptr = new CVMetalTexture.CVMetalTexturePtr();
-        createTexture(allocator, textureCache, sourceImage, textureAttributes, pixelFormat, width, height, planeIndex, ptr);
-        return ptr.get();
-    }
-
     /*<methods>*/
     @Bridge(symbol="CVMetalTextureCacheGetTypeID", optional=true)
     public static native @MachineSizedUInt long getClassTypeID();
-    @Bridge(symbol="CVMetalTextureCacheCreate", optional=true)
-    private static native CVReturn create(CFAllocator allocator, CVMetalTextureCacheAttributes cacheAttributes, MTLDevice metalDevice, NSDictionary textureAttributes, CVMetalTextureCache.CVMetalTextureCachePtr cacheOut);
-    @Bridge(symbol="CVMetalTextureCacheCreateTextureFromImage", optional=true)
-    private static native CVReturn createTexture(CFAllocator allocator, CVMetalTextureCache textureCache, CVImageBuffer sourceImage, NSDictionary textureAttributes, MTLPixelFormat pixelFormat, @MachineSizedUInt long width, @MachineSizedUInt long height, @MachineSizedUInt long planeIndex, CVMetalTexture.CVMetalTexturePtr textureOut);
     @Bridge(symbol="CVMetalTextureCacheFlush", optional=true)
     public native void flush(long options);
     /*</methods>*/

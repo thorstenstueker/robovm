@@ -1,5 +1,7 @@
 package: org.robovm.apple.usernotifications
-include: [foundation, intents]
+# tsbMobile (23.09.2026): the bindings are ours and only these frameworks exist; members typed with
+# a class of intents are skipped by the generator and listed in bro-gen/skipped.txt.
+include: [foundation.yaml]
 library: UserNotifications
 framework: UserNotifications
 clang_args: ['-x', 'objective-c']

@@ -1,5 +1,7 @@
 package: org.robovm.apple.corelocation
-include: [foundation.yaml, addressbook.yaml, corebluetooth.yaml, contacts]
+# tsbMobile (23.09.2026): the bindings are ours and only these frameworks exist; members typed with
+# a class of addressbook, contacts are skipped by the generator and listed in bro-gen/skipped.txt.
+include: [foundation.yaml, corebluetooth.yaml]
 library: CoreLocation
 framework: CoreLocation
 internal_frameworks: [_LocationEssentials]
@@ -71,9 +73,7 @@ classes:
             '-geocodeAddressDictionary:completionHandler:':
                 name: geocodeAddress
                 annotations: ['@WeaklyLinked']
-                parameters:
-                    addressDictionary:
-                        type: ABPersonAddress
+                # tsbMobile: was typed ABPersonAddress (AddressBook), a framework the fork does not bind
             '-geocodeAddressString:completionHandler:':
                 name: geocodeAddress
             '-geocodeAddressString:inRegion:completionHandler:':
@@ -169,7 +169,7 @@ classes:
                 type: '@org.robovm.rt.bro.annotation.Marshaler(NSArray.AsStringListMarshaler.class) List<String>'
             'addressDictionary':
                 name: address
-                type: ABPersonAddress
+                # tsbMobile: was typed ABPersonAddress (AddressBook), a framework the fork does not bind
                 annotations: ['@WeaklyLinked']
         methods:
             '-initWithPlacemark:':

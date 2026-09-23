@@ -15,8 +15,10 @@
 #   1. checks Xcode, the iOS SDK, Ruby and the gems against ./versions
 #   2. brings the submodule to the pinned commit
 #   3. runs bro-gen for the requested YAMLs with BRO_IOS_VERSION = the SDK version
-#   4. fails on "Failed to resolve type", "Err:" or skipped categories in the generator's log,
-#      lists Java files the generator did not touch (orphans: the class left the SDK or the YAML)
+#   4. fails on "Failed to resolve type", "Err:" and unmapped symbols (FIXME.java) in the generator's
+#      log; writes the members the generator skipped because their type belongs to a framework the
+#      fork does not bind to ./skipped.txt (a diff there is a finding); lists Java files the
+#      generator did not touch and ./handwritten.txt does not name (the class left the SDK or the YAML)
 #   5. builds compiler/cocoatouch-prune and compiler/cocoatouch (javac + the cut, no javadoc)
 #   6. prints the source diff summary and the prune report diff — that is what to review
 #
@@ -51,7 +53,8 @@ XC=$(xcodebuild -version 2>/dev/null | awk 'NR==1{print $2}')
 [ "$XC" = "$XCODE" ] || fail "Xcode $XC selected, versions says $XCODE — xcode-select or bump versions"
 SDK=$(xcrun --sdk iphoneos --show-sdk-version)
 [ "$SDK" = "$IOS_SDK" ] || fail "iOS SDK $SDK, versions says $IOS_SDK"
-RUBY=${RUBY:-$( (brew --prefix ruby 2>/dev/null || echo /opt/homebrew/opt/ruby)/bin/ruby)}
+RUBY_PREFIX=$(brew --prefix ruby 2>/dev/null || echo /opt/homebrew/opt/ruby)
+RUBY=${RUBY:-$RUBY_PREFIX/bin/ruby}
 [ -x "$RUBY" ] || fail "no Ruby at $RUBY — brew install ruby (system Ruby is 2.6, ffi-clang needs $RUBY_MIN+)"
 RV=$("$RUBY" -e 'print RUBY_VERSION')
 vercmp "$RV" "$RUBY_MIN" || fail "Ruby $RV, need $RUBY_MIN+"
@@ -88,31 +91,45 @@ for f in "${FRAMEWORKS[@]}"; do
         tail -30 "$LOG" >&2
         fail "bro-gen failed on $f — see $LOG"
     fi
-    printf '   %-20s %s new-entry lines suggested\n' "$f" "$(awk '/POTENTIAL NEW ENTRIES/{f=1;next} /END OF YAML FILE POTENTIAL NEW ENTRIES/{f=0} f' "$LOG" | grep -c "name:" || true)"
+    printf '   %-20s %s new-entry lines suggested\n' "$f" "$(awk -v fw="$f" '/^===== /{cur=$2} /POTENTIAL NEW ENTRIES/{f=(cur==fw);next} /END OF YAML FILE POTENTIAL NEW ENTRIES/{f=0} f' "$LOG" | grep -c "name:" || true)"
 done
 
 echo "== 4. generator log"
-if grep -nE "Failed to resolve|Err:" "$LOG" | head -20; then
+# "WARN: skipping ..." lines quote the unresolved type on purpose; everything else naming one is fatal.
+if grep -nE "Failed to resolve|Err:|Error\)$" "$LOG" | grep -vE "^[0-9]+:WARN: " | head -20; then
     fail "the generator reported problems — fix the YAML (exclude: true, name:, private_typedefs) and rerun"
 fi
 echo "   no unresolved types, no errors ($(grep -c 'WARN: Skipping category' "$LOG") skipped categories on foreign classes, as always)"
 # What the generator could not place goes into FIXME.java and into Constant__/Value__ members of a
 # framework's default class. Both mean: a symbol the SDK has and the YAML does not map — new since
 # the last run. Map it or exclude it in the YAML; the file is the to-do list, not a result.
-UNMAPPED=$( (find "$JAVA/org/robovm/apple" -name FIXME.java; grep -rlE "Constants?__?[A-Za-z]|Value__[A-Za-z]" "$JAVA/org/robovm/apple" --include='*.java') 2>/dev/null | sort -u | sed "s|$JAVA/||")
+UNMAPPED=$( { find "$JAVA/org/robovm/apple" -name FIXME.java; grep -rlE "Constants?__?[A-Za-z]|Value__[A-Za-z]" "$JAVA/org/robovm/apple" --include='*.java' || true; } 2>/dev/null | sort -u | sed "s|$JAVA/||")
 if [ -n "$UNMAPPED" ]; then
     echo "   unmapped symbols — map or exclude them in the YAML (values:/functions:/constants:), then delete these files and rerun:" >&2
     echo "$UNMAPPED" | sed 's/^/     /' >&2
     for f in $UNMAPPED; do grep -oE 'symbol="[^"]*"|Constants?__?[A-Za-z_0-9]+' "$JAVA/$f" | sed 's/symbol=//; s/"//g; s/^/       /' | head -40 >&2; done
     fail "unmapped symbols"
 fi
+# Members typed with a class of a framework the fork does not bind (Metal, CoreData, Intents, ...)
+# are skipped by the generator (fork commit in ./versions) and logged. The list lives in
+# ./skipped.txt under version control: a member that appears there for the first time is either
+# new in the SDK (fine) or a YAML mistake (an include or a type mapping missing) — read the diff.
+if [ ${#FRAMEWORKS[@]} -eq $(ls "$YAMLS"/*.yaml | grep -vc __template) ]; then
+    { grep "^WARN: skipping " "$LOG" || true; } | sed 's/^WARN: skipping //; s/ with kind .*//' | sort > "$HERE/skipped.txt"
+    echo "   $(wc -l < "$HERE/skipped.txt" | tr -d ' ') members skipped for types of unbound frameworks (bro-gen/skipped.txt)"
+else
+    echo "   partial run: bro-gen/skipped.txt not rewritten ($(grep -c '^WARN: skipping ' "$LOG") skips in the log)"
+fi
 ORPHANS=$(for f in "${FRAMEWORKS[@]}"; do
     pkg=$(sed -n 's/^package: *org\.robovm\.apple\.//p' "$YAMLS/$f.yaml" | head -1)
     [ -n "$pkg" ] && find "$JAVA/org/robovm/apple/$pkg" -name '*.java' ! -newer "$STAMP" 2>/dev/null
 done | sed "s|$JAVA/||")
 rm -f "$STAMP"
+# Hand-written files are never touched; the known ones are listed in ./handwritten.txt.
+ORPHANS=$(echo "$ORPHANS" | grep -vxFf <(grep -v '^#' "$HERE/handwritten.txt") || true)
 if [ -n "$ORPHANS" ]; then
-    echo "   files the generator did not touch (class gone from the SDK or the YAML? hand-written? decide):"
+    echo "   files the generator did not touch and handwritten.txt does not name (class gone from the SDK or"
+    echo "   the YAML? then delete it; new hand-written code? then add it to handwritten.txt):"
     echo "$ORPHANS" | sed 's/^/     /'
 fi
 
@@ -124,8 +141,8 @@ fi
 
 echo "== 6. what changed"
 (cd "$ROOT" && git diff --stat -- compiler/cocoatouch/src/main/java | tail -1)
-(cd "$ROOT" && git diff --stat -- compiler/cocoatouch/prune/report.txt | tail -1)
+(cd "$ROOT" && git diff --stat -- compiler/cocoatouch/prune/report.txt compiler/cocoatouch/bro-gen/skipped.txt | tail -1)
 echo "   review: git diff -- compiler/cocoatouch/src/main/java (appends and @Deprecated are normal;"
 echo "           a removed, non-deprecated member means Apple removed it — check the consumers)"
-echo "           git diff -- compiler/cocoatouch/prune/report.txt"
+echo "           git diff -- compiler/cocoatouch/prune/report.txt compiler/cocoatouch/bro-gen/skipped.txt"
 echo "   log:    $LOG (new-entry suggestions per YAML at the end of each section)"

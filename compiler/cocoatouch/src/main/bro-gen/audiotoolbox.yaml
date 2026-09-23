@@ -1,5 +1,7 @@
 package: org.robovm.apple.audiotoolbox
-include: [foundation.yaml, corefoundation.yaml, coreaudio.yaml, coremidi.yaml, avfoundation, uikit]
+# tsbMobile (23.09.2026): the bindings are ours and only these frameworks exist; members typed with
+# a class of coremidi are skipped by the generator and listed in bro-gen/skipped.txt.
+include: [foundation.yaml, corefoundation.yaml, coreaudio.yaml, avfoundation.yaml, uikit.yaml]
 library: AudioToolbox
 framework: AudioToolbox
 clang_args: ['-x', 'objective-c', '-DUSE_AUDIOTOOLBOX_PUBLIC_HEADERS=1']
@@ -280,11 +282,11 @@ classes:
     MusicTrack: {}
 
     # Structs
-    AUMIDIEventList:
-        annotations: ['@Packed(4)']
+    # tsbMobile: the AUv3 render-event family carries a CoreMIDI MIDIEventList, a framework the fork
+    # does not bind; a struct cannot lose a member, so the family is out (nothing here hosts audio units)
+    AUMIDIEventList: {exclude: true}
     AURecordedParameterEvent: {}
-    AUMIDIEvent:
-        annotations: ['@Packed(4)']
+    AUMIDIEvent: {exclude: true}
     AUMIDIOutputCallbackStruct: {}
     AUParameterAutomationEvent: {}
     AUParameterEvent:
@@ -292,9 +294,8 @@ classes:
     AudioUnitEvent: {}
     AudioUnitEvent$InnerStruct$1:
         name: AudioUnitEventArgument
-    AURenderEvent: {}
-    AURenderEventHeader:
-        annotations: ['@Packed(4)']
+    AURenderEvent: {exclude: true}
+    AURenderEventHeader: {exclude: true}
     AUSamplerBankPresetData: {}
     AudioUnitParameterEvent: {}
     AudioUnitParameterEvent$InnerStruct$1:
