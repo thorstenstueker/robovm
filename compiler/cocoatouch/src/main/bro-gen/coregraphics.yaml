@@ -127,6 +127,11 @@ classes:
         extends: CFType
 
 functions:
+    # tsbMobile, iOS 27 SDK (23.09.2026): new in the headers, not needed by the consumers, kept out so
+    # the generator neither dumps them into FIXME.java nor into the default class. Map instead of
+    # exclude when somebody needs them.
+    CGPDF(StructureElement|MarkedContentItem).*: {exclude: true}
+    CGPDFContext(BeginMarkedContentSequence|BeginObjectReference|AddStructureTreeRootChild): {exclude: true}
     (CG.*)GetTypeID:
         class: '#{g[0]}'
         name: getClassTypeID

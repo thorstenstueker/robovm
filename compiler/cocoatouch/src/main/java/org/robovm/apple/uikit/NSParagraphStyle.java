@@ -61,6 +61,8 @@ import org.robovm.apple.symbols.*;
     public NSParagraphStyle(NSCoder coder) { super((SkipInit) null); initObject(init(coder)); }
     /*</constructors>*/
     /*<properties>*/
+    @Property(selector = "alignment")
+    public native NSTextAlignment getAlignment();
     @Property(selector = "defaultParagraphStyle")
     public static native NSParagraphStyle getDefaultParagraphStyle();
     @Property(selector = "lineSpacing")
@@ -108,8 +110,6 @@ import org.robovm.apple.symbols.*;
      */
     @Property(selector = "lineBreakStrategy")
     public native NSLineBreakStrategy getLineBreakStrategy();
-    @Property(selector = "alignment")
-    public native NSTextAlignment getAlignment();
     @Property(selector = "supportsSecureCoding")
     public static native boolean supportsSecureCoding();
     /*</properties>*/

@@ -59,6 +59,10 @@ import org.robovm.apple.symbols.*;
     protected NSMutableParagraphStyle(SkipInit skipInit) { super(skipInit); }
     /*</constructors>*/
     /*<properties>*/
+    @Property(selector = "alignment")
+    public native NSTextAlignment getAlignment();
+    @Property(selector = "setAlignment:")
+    public native void setAlignment(NSTextAlignment v);
     @Property(selector = "lineSpacing")
     public native @MachineSizedFloat double getLineSpacing();
     @Property(selector = "setLineSpacing:")
@@ -151,10 +155,6 @@ import org.robovm.apple.symbols.*;
     public native void setTextLists(NSArray<NSTextList> v);
     @Property(selector = "defaultParagraphStyle")
     public static native NSParagraphStyle getDefaultParagraphStyle();
-    @Property(selector = "alignment")
-    public native NSTextAlignment getAlignment();
-    @Property(selector = "setAlignment:")
-    public native void setAlignment(NSTextAlignment v);
     @Property(selector = "supportsSecureCoding")
     public static native boolean supportsSecureCoding();
     /*</properties>*/

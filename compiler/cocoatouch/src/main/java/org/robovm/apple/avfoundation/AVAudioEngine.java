@@ -142,15 +142,40 @@ import org.robovm.apple.uikit.*;
     public native void attachNode(AVAudioNode node);
     @Method(selector = "detachNode:")
     public native void detachNode(AVAudioNode node);
+    /**
+     * @deprecated Deprecated in iOS 27.0. Use connect:to:fromBus:toBus:format:error:
+     */
+    @Deprecated
     @Method(selector = "connect:to:fromBus:toBus:format:")
     public native void connect(AVAudioNode node1, AVAudioNode node2, @MachineSizedUInt long bus1, @MachineSizedUInt long bus2, AVAudioFormat format);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "connect:to:fromBus:toBus:format:error:")
+    public native boolean connect$to$fromBus$toBus$format$error$(AVAudioNode node1, AVAudioNode node2, @MachineSizedUInt long bus1, @MachineSizedUInt long bus2, AVAudioFormat format, NSError.NSErrorPtr error);
+    /**
+     * @deprecated Deprecated in iOS 27.0. Use connect:to:format:error:
+     */
+    @Deprecated
     @Method(selector = "connect:to:format:")
     public native void connect(AVAudioNode node1, AVAudioNode node2, AVAudioFormat format);
     /**
-     * @since Available in iOS 9.0 and later.
+     * @since Available in iOS 27.0 and later.
      */
+    @Method(selector = "connect:to:format:error:")
+    public native boolean connect$to$format$error$(AVAudioNode node1, AVAudioNode node2, AVAudioFormat format, NSError.NSErrorPtr error);
+    /**
+     * @since Available in iOS 9.0 and later.
+     * @deprecated Deprecated in iOS 27.0. Use connect:toConnectionPoints:fromBus:format:error:
+     */
+    @Deprecated
     @Method(selector = "connect:toConnectionPoints:fromBus:format:")
     public native void connect(AVAudioNode sourceNode, NSArray<AVAudioConnectionPoint> destNodes, @MachineSizedUInt long sourceBus, AVAudioFormat format);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "connect:toConnectionPoints:fromBus:format:error:")
+    public native boolean connect$toConnectionPoints$fromBus$format$error$(AVAudioNode sourceNode, NSArray<AVAudioConnectionPoint> destNodes, @MachineSizedUInt long sourceBus, AVAudioFormat format, NSError.NSErrorPtr error);
     @Method(selector = "disconnectNodeInput:bus:")
     public native void disconnectNodeInput(AVAudioNode node, @MachineSizedUInt long bus);
     @Method(selector = "disconnectNodeInput:")
@@ -227,9 +252,16 @@ import org.robovm.apple.uikit.*;
     public native void connectMIDI(AVAudioNode sourceNode, AVAudioNode destinationNode, AVAudioFormat format, @Block("(,,@MachineSizedSInt,)") Block4<AUEventSampleTime, Byte, Long, BytePtr, OSStatus> tapBlock);
     /**
      * @since Available in iOS 16.0 and later.
+     * @deprecated Deprecated in iOS 27.0. Use connectMIDI:to:format:eventListProvider:
      */
+    @Deprecated
     @Method(selector = "connectMIDI:to:format:eventListBlock:")
     public native void connectMIDI(AVAudioNode sourceNode, AVAudioNode destinationNode, AVAudioFormat format, @Block Block3<AUEventSampleTime, Byte, MIDIEventList, OSStatus> tapBlock);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "connectMIDI:to:format:eventListProvider:")
+    public native void connectMIDI$to$format$eventListProvider$(AVAudioNode sourceNode, AVAudioNode destinationNode, AVAudioFormat format, @Block Block3<Long, Byte, MIDIEventList, OSStatus> tapBlock);
     /**
      * @since Available in iOS 13.0 and later.
      * @deprecated Deprecated in iOS 16.0. Use connectMIDI:toNodes:format:eventListBlock:
@@ -239,9 +271,16 @@ import org.robovm.apple.uikit.*;
     public native void connectMIDI(AVAudioNode sourceNode, NSArray<AVAudioNode> destinationNodes, AVAudioFormat format, @Block("(,,@MachineSizedSInt,)") Block4<AUEventSampleTime, Byte, Long, BytePtr, OSStatus> tapBlock);
     /**
      * @since Available in iOS 16.0 and later.
+     * @deprecated Deprecated in iOS 27.0. Use connectMIDI:toNodes:format:eventListProvider:
      */
+    @Deprecated
     @Method(selector = "connectMIDI:toNodes:format:eventListBlock:")
     public native void connectMIDI(AVAudioNode sourceNode, NSArray<AVAudioNode> destinationNodes, AVAudioFormat format, @Block Block3<AUEventSampleTime, Byte, MIDIEventList, OSStatus> tapBlock);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "connectMIDI:toNodes:format:eventListProvider:")
+    public native void connectMIDI$toNodes$format$eventListProvider$(AVAudioNode sourceNode, NSArray<AVAudioNode> destinationNodes, AVAudioFormat format, @Block Block3<Long, Byte, MIDIEventList, OSStatus> tapBlock);
     /**
      * @since Available in iOS 12.0 and later.
      */

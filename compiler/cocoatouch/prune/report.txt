@@ -1,9 +1,9 @@
 cocoatouch prune report
-kept 3063 of 19917 classes, deleted 16854, stripped 78 members in 18 classes, 4 classes with phantom references
+kept 3089 of 19944 classes, deleted 16855, stripped 78 members in 18 classes, 4 classes with phantom references
 
 kept per package (kept / total; packages with 0 kept are omitted)
   (other)                    1 /     1
-  avfoundation             414 /  1307
+  avfoundation             414 /  1310
   coreanimation             54 /   173
   coreaudio                 16 /    40
   corebluetooth             90 /    90
@@ -17,10 +17,10 @@ kept per package (kept / total; packages with 0 kept are omitted)
   coretext                  86 /   136
   corevideo                 87 /   144
   dispatch                  12 /    26
-  foundation               423 /  1029
+  foundation               428 /  1031
   imageio                  132 /   165
   iosurface                  8 /    17
-  uikit                   1112 /  2198
+  uikit                   1133 /  2220
   uniformtypeid              4 /     6
   usernotifications         16 /    58
 

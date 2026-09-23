@@ -44,7 +44,7 @@ import org.robovm.apple.uikit.*;
 
 /*<javadoc>*/
 /**
- * @since Available in iOS 18.0 and later.
+ * @since Available in iOS 26.0 and later.
  */
 /*</javadoc>*/
 /*<annotations>*/@Library("AVFoundation") @NativeClass/*</annotations>*/

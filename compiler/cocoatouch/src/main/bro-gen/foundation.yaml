@@ -1338,6 +1338,9 @@ classes:
             'recoveryAttempter':
                 type: NSErrorRecoveryAttempting
         methods:
+            # tsbMobile, iOS 27 SDK: +new carries a deprecation message now, so the generator would
+            # emit `public static native NSError new()` — `new` is a Java keyword.
+            '+new': {exclude: true}
             '+errorWithDomain:code:userInfo:':
                 exclude: true
             '-initWithDomain:code:userInfo:':
@@ -5440,6 +5443,11 @@ protocols:
     NSDiscardableContent: {}
     NSCopying: {exclude: true, skip_implements: true, skip_methods: true}
     NSMutableCopying: {exclude: true, skip_implements: true, skip_methods: true}
+    # tsbMobile, iOS 27 SDK (23.09.2026): types that members of kept classes name
+    NSPredicateValidating: #since 26.4
+        methods:
+            '-visitPredicate:error:':
+                name: visitPredicate
 functions:
     NSAllocateObject:
         exclude: true

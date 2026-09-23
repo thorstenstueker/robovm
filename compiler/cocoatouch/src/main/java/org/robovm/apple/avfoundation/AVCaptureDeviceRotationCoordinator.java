@@ -76,5 +76,10 @@ import org.robovm.apple.uikit.*;
     /*<methods>*/
     @Method(selector = "initWithDevice:previewLayer:")
     protected native @Pointer long init(AVCaptureDevice device, CALayer previewLayer);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "videoRotationAngleRelativeToDeviceOrientation:")
+    public native @MachineSizedFloat double videoRotationAngleRelativeToDeviceOrientation(AVCaptureVideoOrientation deviceOrientation);
     /*</methods>*/
 }

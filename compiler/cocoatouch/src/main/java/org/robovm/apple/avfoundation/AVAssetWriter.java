@@ -180,6 +180,21 @@ import org.robovm.apple.uikit.*;
      */
     @Property(selector = "setDelegate:", strongRef = true)
     public native void setDelegate(AVAssetWriterDelegate v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "isProVideoStorageSupported")
+    public native boolean isProVideoStorageSupported();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "usesProVideoStorage")
+    public native boolean usesProVideoStorage();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setUsesProVideoStorage:")
+    public native void setUsesProVideoStorage(boolean v);
     /*</properties>*/
     /*<members>*//*</members>*/
     public boolean canApplyOutputSettings(AVAudioSettings outputSettings, AVMediaType mediaType) {

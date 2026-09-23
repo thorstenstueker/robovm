@@ -100,6 +100,14 @@ import org.robovm.apple.uikit.*;
 
     /*<constants>*/
     /**
+     * @since Available in iOS 27.0 and later.
+     */
+    public static final AVMetadataObjectType FocusTrackedObject = new AVMetadataObjectType("FocusTrackedObject");
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    public static final AVMetadataObjectType CinematicVideoMetadata = new AVMetadataObjectType("CinematicVideoMetadata");
+    /**
      * @since Available in iOS 13.0 and later.
      */
     public static final AVMetadataObjectType HumanBody = new AVMetadataObjectType("HumanBody");
@@ -167,7 +175,7 @@ import org.robovm.apple.uikit.*;
     public static final AVMetadataObjectType MicroPDF417Code = new AVMetadataObjectType("MicroPDF417Code");
     /*</constants>*/
     
-    private static /*<name>*/AVMetadataObjectType/*</name>*/[] values = new /*<name>*/AVMetadataObjectType/*</name>*/[] {/*<value_list>*/HumanBody, HumanFullBody, CatHead, CatBody, DogHead, DogBody, SalientObject, Face, UPCECode, Code39Code, Code39Mod43Code, EAN13Code, EAN8Code, Code93Code, Code128Code, PDF417Code, QRCode, AztecCode, Interleaved2of5Code, ITF14Code, DataMatrixCode, CodabarCode, GS1DataBarCode, GS1DataBarExpandedCode, GS1DataBarLimitedCode, MicroQRCode, MicroPDF417Code/*</value_list>*/};
+    private static /*<name>*/AVMetadataObjectType/*</name>*/[] values = new /*<name>*/AVMetadataObjectType/*</name>*/[] {/*<value_list>*/FocusTrackedObject, CinematicVideoMetadata, HumanBody, HumanFullBody, CatHead, CatBody, DogHead, DogBody, SalientObject, Face, UPCECode, Code39Code, Code39Mod43Code, EAN13Code, EAN8Code, Code93Code, Code128Code, PDF417Code, QRCode, AztecCode, Interleaved2of5Code, ITF14Code, DataMatrixCode, CodabarCode, GS1DataBarCode, GS1DataBarExpandedCode, GS1DataBarLimitedCode, MicroQRCode, MicroPDF417Code/*</value_list>*/};
 
     /*<name>*/AVMetadataObjectType/*</name>*/ (String getterName) {
         super(Values.class, getterName);
@@ -199,6 +207,16 @@ import org.robovm.apple.uikit.*;
     	static { Bro.bind(Values.class); }
 
         /*<values>*/
+        /**
+         * @since Available in iOS 27.0 and later.
+         */
+        @GlobalValue(symbol="AVMetadataObjectTypeFocusTrackedObject", optional=true)
+        public static native NSString FocusTrackedObject();
+        /**
+         * @since Available in iOS 27.0 and later.
+         */
+        @GlobalValue(symbol="AVMetadataObjectTypeCinematicVideoMetadata", optional=true)
+        public static native NSString CinematicVideoMetadata();
         /**
          * @since Available in iOS 13.0 and later.
          */

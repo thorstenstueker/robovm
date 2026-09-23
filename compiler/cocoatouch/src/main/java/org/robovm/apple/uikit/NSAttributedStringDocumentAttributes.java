@@ -96,7 +96,7 @@ import org.robovm.apple.symbols.*;
     /*</marshalers>*/
 
     /*<constructors>*/
-    NSAttributedStringDocumentAttributes(NSDictionary data) {
+    public NSAttributedStringDocumentAttributes(NSDictionary data) {
         super(data);
     }
     public NSAttributedStringDocumentAttributes() {}

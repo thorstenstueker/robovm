@@ -288,6 +288,11 @@ import org.robovm.apple.uikit.*;
         @GlobalValue(symbol="AVVideoYCbCrMatrixKey", optional=true)
         public static native NSString YCbCrMatrix();
         /**
+         * @since Available in iOS 27.0 and later.
+         */
+        @GlobalValue(symbol="AVVideoLogTransferFunctionKey", optional=true)
+        public static native NSString LogTransferFunction();
+        /**
          * @since Available in iOS 10.0 and later.
          */
         @GlobalValue(symbol="AVVideoAllowWideColorKey", optional=true)

@@ -84,7 +84,7 @@ import org.robovm.apple.avfoundation.*;
     @Method(selector = "applyWithExtent:inputs:arguments:error:")
     public static native CIImage apply(@ByVal CGRect extent, NSArray<CIImage> inputs, NSDictionary<NSString, ?> arguments, NSError.NSErrorPtr error);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     public static boolean process(NSArray<?> inputs, NSDictionary<NSString, ?> arguments, NSArray<?> outputs) throws NSErrorException {
        NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
@@ -93,17 +93,17 @@ import org.robovm.apple.avfoundation.*;
        return result;
     }
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "processWithInputs:arguments:outputs:error:")
     private static native boolean process(NSArray<?> inputs, NSDictionary<NSString, ?> arguments, NSArray<?> outputs, NSError.NSErrorPtr error);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "outputFormatAtIndex:arguments:")
     public static native int getOutputFormat(int outputIndex, NSDictionary<NSString, ?> arguments);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     public static NSArray<CIImage> apply(NSArray<CIVector> extents, NSArray<CIImage> inputs, NSDictionary<NSString, ?> arguments) throws NSErrorException {
        NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
@@ -112,9 +112,14 @@ import org.robovm.apple.avfoundation.*;
        return result;
     }
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "applyWithExtents:inputs:arguments:error:")
     private static native NSArray<CIImage> apply(NSArray<CIVector> extents, NSArray<CIImage> inputs, NSDictionary<NSString, ?> arguments, NSError.NSErrorPtr error);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "applyWithTiledExtent:inputs:arguments:error:")
+    public static native CIImage applyWithTiledExtent$inputs$arguments$error$(NSArray<CIVector> tileExtents, NSArray<CIImage> inputs, NSDictionary<NSString, ?> args, NSError.NSErrorPtr error);
     /*</methods>*/
 }

@@ -111,8 +111,16 @@ import org.robovm.apple.contacts.*;
     public native double getHeadingFilter();
     @Property(selector = "setHeadingFilter:")
     public native void setHeadingFilter(double v);
+    /**
+     * @deprecated Deprecated in iOS 27.0. Use headingBody
+     */
+    @Deprecated
     @Property(selector = "headingOrientation")
     public native CLDeviceOrientation getHeadingOrientation();
+    /**
+     * @deprecated Deprecated in iOS 27.0. Use headingBody
+     */
+    @Deprecated
     @Property(selector = "setHeadingOrientation:")
     public native void setHeadingOrientation(CLDeviceOrientation v);
     @Property(selector = "heading")

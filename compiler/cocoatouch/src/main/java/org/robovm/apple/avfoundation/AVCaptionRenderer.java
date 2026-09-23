@@ -61,20 +61,40 @@ import org.robovm.apple.uikit.*;
     protected AVCaptionRenderer(SkipInit skipInit) { super(skipInit); }
     /*</constructors>*/
     /*<properties>*/
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
     @Property(selector = "captions")
     public native NSArray<AVCaption> getCaptions();
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
     @Property(selector = "setCaptions:")
     public native void setCaptions(NSArray<AVCaption> v);
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
     @Property(selector = "bounds")
     public native @ByVal CGRect getBounds();
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
     @Property(selector = "setBounds:")
     public native void setBounds(@ByVal CGRect v);
     /*</properties>*/
     /*<members>*//*</members>*/
     /*<methods>*/
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
     @Method(selector = "captionSceneChangesInRange:")
     public native NSArray<AVCaptionRendererScene> captionSceneChangesInRange(@ByVal CMTimeRange consideredTimeRange);
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
     @Method(selector = "renderInContext:forTime:")
     public native void render(CGContext ctx, @ByVal CMTime time);
+    @Method(selector = "captionPreviewForProfileID:extendedLanguageTag:renderSize:")
+    public static native NSAttributedString captionPreviewForProfileID$extendedLanguageTag$renderSize$(String profileID, String extendedLanguageTag, @ByVal CGSize renderSize);
     /*</methods>*/
 }

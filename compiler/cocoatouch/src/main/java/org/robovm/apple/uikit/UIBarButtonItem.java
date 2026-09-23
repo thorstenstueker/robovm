@@ -288,6 +288,26 @@ import org.robovm.apple.symbols.*;
     @Property(selector = "setSymbolAnimationEnabled:")
     public native void setSymbolAnimationEnabled(boolean v);
     /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "visibilityPriority")
+    public native @MachineSizedSInt long getVisibilityPriority();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setVisibilityPriority:")
+    public native void setVisibilityPriority(@MachineSizedSInt long v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "isPaddingRemoved")
+    public native boolean isPaddingRemoved();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setPaddingRemoved:")
+    public native void setPaddingRemoved(boolean v);
+    /**
      * @since Available in iOS 16.0 and later.
      */
     @Property(selector = "menuRepresentation")

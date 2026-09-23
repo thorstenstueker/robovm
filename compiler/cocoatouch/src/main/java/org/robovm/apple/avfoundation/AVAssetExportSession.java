@@ -176,5 +176,7 @@ import org.robovm.apple.uikit.*;
      */
     @Method(selector = "estimateOutputFileLengthWithCompletionHandler:")
     public native void estimateOutputFileLength(@Block VoidBlock2<Long, NSError> handler);
+    @Method(selector = "configureForResumableExportWithCompletionHandler:")
+    public native void configureForResumableExportWithCompletionHandler(@Block VoidBlock1<AVAssetExportSessionResumptionState> handler);
     /*</methods>*/
 }

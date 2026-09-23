@@ -173,6 +173,8 @@ enums:
     EXCLUDED2: { exclude: true, first: AVAudioSessionSetActiveFlags_NotifyOthersOnDeactivation} # Deprecated in iOS 6.0
     EXCLUDED1: { exclude: true, first: AVAudioSessionInterruptionFlags_ShouldResume} #  Deprecated in iOS 6.0
 
+    # tsbMobile, iOS 27 SDK (23.09.2026): types that members of kept classes name
+    AVAudioSessionDeactivationOptions: {prefix: AVAudioSessionDeactivationOption} #since 27.0
 typed_enums:
     AVAssetDownloadedAssetEvictionPriority:
         enum: AVAssetDownloadedAssetEvictionPriority
@@ -960,6 +962,8 @@ classes:
             'streamDescription':
                 annotations: ['@WeaklyLinked']
         methods:
+            # tsbMobile, iOS 27 SDK: deprecated in favour of -initWithFormatDescription:, same Java signature
+            '-initWithCMAudioFormatDescription:': {exclude: true}
             '-initWithStreamDescription:':
                 name: init
                 annotations: ['@WeaklyLinked']
@@ -2933,10 +2937,15 @@ classes:
         methods:
             '-initWithReceiverBlock:':
                 name: init
+            # tsbMobile, iOS 27 SDK: same Java signature as -initWithReceiverBlock:
+            '-initWithRealtimeSafeReceiverBlock:': {exclude: true}
     AVAudioSourceNode: #since 13.0
         methods:
             '-initWithRenderBlock:':
                 name: init
+            # tsbMobile, iOS 27 SDK: same Java signatures as the two render-block initializers
+            '-initWithRealtimeSafeRenderBlock:': {exclude: true}
+            '-initWithFormat:realtimeSafeRenderBlock:': {exclude: true}
             '-initWithFormat:renderBlock:':
                 name: init
     AVCaptureMultiCamSession: {} #since 13.0
@@ -3558,6 +3567,8 @@ classes:
                 name: setOutputSettings
     AVVideoPerformanceMetrics: {} #since 17.4
     AVZoomRange: {} #since 17.2
+    # tsbMobile, iOS 27 SDK (23.09.2026): types that members of kept classes name
+    AVAssetExportSessionResumptionState: {} #since 27.0
 protocols:
     AVCapturePhotoCaptureDelegate:
         methods:
@@ -3908,6 +3919,18 @@ functions:
         name: 'Function__#{g[0]}'
 
 values:
+    # tsbMobile, iOS 27 SDK (23.09.2026): new in the headers, not needed by the consumers, kept out so
+    # the generator neither dumps them into FIXME.java nor into the default class. Map instead of
+    # exclude when somebody needs them.
+    AVAssetExportSessionResumptionFailureReason.*: {exclude: true}
+    AVCaptureAncillaryDataUserKeyRDD18.*: {exclude: true}
+    AVCaptureDeviceExposureSignal.*: {exclude: true}
+    AVCaptureExposureDurationAuto: {exclude: true}
+    AVCaptureISOAuto: {exclude: true}
+    AVCaptureLensAperture(Auto|Current): {exclude: true}
+    AVExternalStorageDeviceReasonNotRecommendedForCaptureUse.*: {exclude: true}
+    AVProVideoStorageBusyReason.*: {exclude: true}
+    AVVideoLogTransferFunction_.*: {exclude: true}
     AVFoundationErrorDomain:
         class: AVError
         name: getClassDomain     

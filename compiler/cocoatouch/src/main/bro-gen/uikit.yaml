@@ -400,6 +400,17 @@ enums:
 #    EXCLUDE1: {exclude: true, first: NSAttachmentCharacter} -- don't exclude it as value will be picked up as constant
     EXCLUDE3_AS_DEPRECATED: {exclude: true, first: NSControlCharacterZeroAdvancementAction}
 
+    # tsbMobile, iOS 27 SDK (23.09.2026): types that members of kept classes name
+    UIWritingToolsCoordinatorTextDecoration: {} #since 27.0
+    UITextAttachmentViewProviderReusePolicy: {} #since 27.0
+    UISheetPresentationControllerPlacement: {} #since 27.0
+    UITabBarControllerSidebarPlacement: {} #since 27.0
+    UIMenuElementImageVisibility: {} #since 27.0
+    UITextGrammarCheckingType: {} #since 27.0
+    UIDragLiftBehavior: {} #since 27.0
+    UIBarMinimizationBehavior: {} #since 27.0
+    UIBarMinimizationSafeAreaAdjustment: {} #since 27.0
+    UIBarMinimizationRestorationBehavior: {} #since 27.0
 categories:
     CIColor: # DONE
         annotations: ['@WeaklyLinked']
@@ -856,6 +867,8 @@ classes:
                 name: showCGGlyphs
     NSMutableParagraphStyle: # DONE
         properties:
+            # tsbMobile, iOS 27 SDK: NSTextBlock and its four enums are not bound (nothing here lays out tables)
+            'textBlocks': {exclude: true}
             'tabStops':
                 type: NSArray<NSTextTab>
         methods:
@@ -865,6 +878,8 @@ classes:
                 trim_after_first_colon: true
     NSParagraphStyle: # DONE
         properties:
+            # tsbMobile, iOS 27 SDK: NSTextBlock and its four enums are not bound (nothing here lays out tables)
+            'textBlocks': {exclude: true}
             'tabStops':
                 type: NSArray<NSTextTab>
         methods:
@@ -5293,6 +5308,10 @@ classes:
     UIScrollEdgeEffectStyle: {} #since 26.0
     UIScrollEdgeElementContainerInteraction: {} #since 26.0
     UISearchTab: #since 18.0
+        properties:
+            # tsbMobile, iOS 27 SDK: a class property (keyed '+name' here); as a static getIdentifier()
+            # it clashes with UITab's instance getter
+            '+identifier': {exclude: true}
         methods:
             '-initWithViewControllerProvider:':
                 name: init
@@ -5438,6 +5457,17 @@ classes:
             '+effectWithColor:':
                 name: create
                 constructor: true
+    # tsbMobile, iOS 27 SDK (23.09.2026): types that members of kept classes name
+    UISceneAccessoryRegistration: {} #since 27.0
+    UISceneClosureConfirmation: #since 27.0
+        methods:
+            '+confirmationWithTitle:message:actions:':
+                name: create
+    UISceneAccessory: #since 27.0
+        methods:
+            '+externalNonInteractiveSceneAccessoryWithConfiguration:':
+                name: createExternalNonInteractive
+    UIBarMinimization: {} #since 27.0
 protocols:
     NSLayoutManagerDelegate: # DONE
         methods:
@@ -7616,6 +7646,9 @@ protocols:
     # skipped
     UIAppearance: {exclude: true, skip_implements: true, skip_methods: true} # as functionality is implemented in UIAppearance
 
+    # tsbMobile, iOS 27 SDK (23.09.2026): types that members of kept classes name
+    NSTextViewportRenderingSurface: {} #since 27.0
+    NSTextViewportRenderingSurfaceKey: {} #since 18.0
 functions:
     # NSTextAlignment
     NSTextAlignmentToCTTextAlignment: # We use them directly in NSTextAlignment
@@ -7766,6 +7799,10 @@ functions:
         class: FIXME
 
 values:
+    # tsbMobile, iOS 27 SDK (23.09.2026): new in the headers, not needed by the consumers, kept out so
+    # the generator neither dumps them into FIXME.java nor into the default class. Map instead of
+    # exclude when somebody needs them.
+    UIBarButtonItemVisibilityPriority.*: {exclude: true}
     NS(TabColumnTerminators)AttributeName:
         dictionary: NSTextTabOptions
         name: '#{g[0]}'

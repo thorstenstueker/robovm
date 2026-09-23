@@ -104,7 +104,9 @@ import org.robovm.apple.uikit.*;
 
         /**
          * @since Available in iOS 13.0 and later.
+         * @deprecated Deprecated in iOS 27.0. AVMovieShouldSupportAliasDataReferencesKey is not supported on this platform
          */
+        @Deprecated
         @GlobalValue(symbol="AVMovieShouldSupportAliasDataReferencesKey", optional=true)
         public static native NSString ShouldSupportAliasDataReferences();
     }

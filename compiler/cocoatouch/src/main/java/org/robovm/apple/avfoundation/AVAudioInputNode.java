@@ -160,6 +160,11 @@ import org.robovm.apple.uikit.*;
     @Method(selector = "setManualRenderingInputPCMFormat:inputBlock:")
     public native boolean setManualRenderingInputPCMFormat(AVAudioFormat format, @Block Block1<Integer, AudioBufferList> block);
     /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "setRealtimeSafeManualRenderingInputPCMFormat:inputBlock:")
+    public native boolean setRealtimeSafeManualRenderingInputPCMFormat$inputBlock$(AVAudioFormat format, @Block Block1<Integer, AudioBufferList> block);
+    /**
      * @since Available in iOS 17.0 and later.
      */
     @Method(selector = "setMutedSpeechActivityEventListener:")

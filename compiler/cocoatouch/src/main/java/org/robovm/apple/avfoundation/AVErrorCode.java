@@ -229,7 +229,23 @@ public enum /*<name>*/AVErrorCode/*</name>*/ implements NSErrorCode {
     /**
      * @since Available in iOS 26.0 and later.
      */
-    FollowExternalSyncDeviceTimedOut(-11892L);
+    FollowExternalSyncDeviceTimedOut(-11892L),
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    FollowExternalSyncFailed(-11894L),
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    ExternalSyncDeviceFrequencyHigherThanSpecified(-11895L),
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    ExternalSyncDeviceFrequencyLowerThanSpecified(-11896L),
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    NotEnoughSpaceForProVideoStorageReplenishment(-11897L);
     /*</values>*/
 
     /*<bind>*/

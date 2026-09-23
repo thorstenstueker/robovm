@@ -111,6 +111,8 @@ classes:
                 name: getDistanceTo
     CLLocationManager: # DONE
         properties:
+            # tsbMobile, iOS 27 SDK: CLBodyIdentifiable (visionOS body tracking) is not bound
+            'headingBody': {exclude: true}
             'authorizationStatus':
                 omit_prefix: true
             'headingAvailable': # Deprecated in iOS 4. Conflicts with the class method with the same name.

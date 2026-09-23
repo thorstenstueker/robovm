@@ -61,6 +61,9 @@ classes:
                     handler:
                         type: '@Block VoidBlock1<CMMotionActivity>'
     CMMotionManager: # DONE
+        properties:
+            # tsbMobile, iOS 27 SDK: CMBodyIdentifiable (visionOS body tracking) is not bound
+            'deviceMotionBody': {exclude: true}
         methods:
             '-startAccelerometerUpdatesToQueue:withHandler:':
                 name: startAccelerometerUpdates

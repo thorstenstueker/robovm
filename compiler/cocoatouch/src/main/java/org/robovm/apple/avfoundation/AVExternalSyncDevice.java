@@ -65,6 +65,11 @@ import org.robovm.apple.uikit.*;
     public native AVExternalSyncDeviceStatus getStatus();
     @Property(selector = "clock")
     public native CMClock getClock();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "isSignalCompensationDelaySupported")
+    public native boolean isSignalCompensationDelaySupported();
     @Property(selector = "signalCompensationDelay")
     public native @ByVal CMTime getSignalCompensationDelay();
     @Property(selector = "setSignalCompensationDelay:")

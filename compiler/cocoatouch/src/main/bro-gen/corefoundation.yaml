@@ -2003,6 +2003,10 @@ values:
         name: 'Values_#{g[0]}'
 
 constants:
+    # tsbMobile, iOS 27 SDK (23.09.2026): new in the headers, not needed by the consumers, kept out so
+    # the generator neither dumps them into FIXME.java nor into the default class. Map instead of
+    # exclude when somebody needs them.
+    CF_HAS_TYPED_ALLOCATOR: {exclude: true}
     kCFCoreFoundation(Version.*):
         class: CoreFoundationVersionNumber
         name: '#{g[0]}'

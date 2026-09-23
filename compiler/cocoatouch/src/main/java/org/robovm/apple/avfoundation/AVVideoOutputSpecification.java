@@ -67,14 +67,14 @@ import org.robovm.apple.uikit.*;
     public native NSArray<?> getPreferredTagCollections();
     /**
      * @since Available in iOS 17.2 and later.
-     * @deprecated Use defaultOutputSettings
+     * @deprecated Deprecated in iOS 27.0. Use defaultOutputSettings
      */
     @Deprecated
     @Property(selector = "defaultPixelBufferAttributes")
     public native NSDictionary<NSString, ?> getDefaultPixelBufferAttributes();
     /**
      * @since Available in iOS 17.2 and later.
-     * @deprecated Use defaultOutputSettings
+     * @deprecated Deprecated in iOS 27.0. Use defaultOutputSettings
      */
     @Deprecated
     @Property(selector = "setDefaultPixelBufferAttributes:")
@@ -96,7 +96,7 @@ import org.robovm.apple.uikit.*;
     protected native @Pointer long init(NSArray<?> tagCollections);
     /**
      * @since Available in iOS 17.2 and later.
-     * @deprecated Use setOutputSettings:forTagCollection:
+     * @deprecated Deprecated in iOS 27.0. Use setOutputSettings:forTagCollection:
      */
     @Deprecated
     @Method(selector = "setOutputPixelBufferAttributes:forTagCollection:")
