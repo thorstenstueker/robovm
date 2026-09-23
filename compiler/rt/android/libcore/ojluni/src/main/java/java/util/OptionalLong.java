@@ -27,6 +27,7 @@ package java.util;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
+import java.util.stream.LongStream;
 
 // Android-changed: removed ValueBased paragraph.
 /**
@@ -244,5 +245,48 @@ public final class OptionalLong {
         return isPresent
                 ? String.format("OptionalLong[%s]", value)
                 : "OptionalLong.empty";
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * If a value is not present, returns {@code true}, otherwise {@code false} (Java 11).
+     */
+    public boolean isEmpty() {
+        return !isPresent;
+    }
+
+    /**
+     * If a value is present, performs the given action with the value, otherwise performs
+     * the given empty-based action (Java 9).
+     */
+    public void ifPresentOrElse(LongConsumer action, Runnable emptyAction) {
+        if (isPresent) {
+            action.accept(value);
+        } else {
+            emptyAction.run();
+        }
+    }
+
+    /**
+     * If a value is present, returns a sequential stream containing only that value,
+     * otherwise returns an empty stream (Java 9).
+     */
+    public LongStream stream() {
+        if (isPresent) {
+            return LongStream.of(value);
+        } else {
+            return LongStream.empty();
+        }
+    }
+
+    /**
+     * If a value is present, returns the value, otherwise throws {@code NoSuchElementException} (Java 10).
+     */
+    public long orElseThrow() {
+        if (!isPresent) {
+            throw new NoSuchElementException("No value present");
+        }
+        return value;
     }
 }

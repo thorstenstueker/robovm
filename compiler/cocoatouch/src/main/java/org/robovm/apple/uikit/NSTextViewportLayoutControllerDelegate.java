@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -68,6 +62,12 @@ import org.robovm.apple.symbols.*;
     void textViewportLayoutControllerWillLayout(NSTextViewportLayoutController textViewportLayoutController);
     @Method(selector = "textViewportLayoutControllerDidLayout:")
     void textViewportLayoutControllerDidLayout(NSTextViewportLayoutController textViewportLayoutController);
+    @Method(selector = "textViewportLayoutController:cacheRenderingSurface:forKey:")
+    void textViewportLayoutController$cacheRenderingSurface$forKey$(NSTextViewportLayoutController textViewportLayoutController, NSTextViewportRenderingSurface renderingSurface, NSTextViewportRenderingSurfaceKey renderingSurfaceKey);
+    @Method(selector = "textViewportLayoutController:retrieveCachedRenderingSurfaceForKey:")
+    NSTextViewportRenderingSurface textViewportLayoutController$retrieveCachedRenderingSurfaceForKey$(NSTextViewportLayoutController textViewportLayoutController, NSTextViewportRenderingSurfaceKey renderingSurfaceKey);
+    @Method(selector = "textViewportLayoutControllerReceivedSetNeedsLayout:")
+    void textViewportLayoutControllerReceivedSetNeedsLayout(NSTextViewportLayoutController textViewportLayoutController);
     /*</methods>*/
     /*<adapter>*/
     /*</adapter>*/

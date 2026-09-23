@@ -798,4 +798,21 @@ public interface Path
      * @return  the string representation of this path
      */
     String toString();
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns a {@code Path} by converting a path string, or a sequence of strings that when
+     * joined form a path string (Java 11).
+     */
+    public static Path of(String first, String... more) {
+        return Paths.get(first, more);
+    }
+
+    /**
+     * Returns a {@code Path} by converting a URI (Java 11).
+     */
+    public static Path of(java.net.URI uri) {
+        return Paths.get(uri);
+    }
 }

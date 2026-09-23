@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 import org.robovm.apple.corefoundation.CFDictionary;
 import org.robovm.apple.coremedia.CMTextMarkupAttributes;
@@ -370,6 +364,11 @@ import org.robovm.apple.coremedia.CMTextMarkupAttributes;
      */
     @Property(selector = "isEditable")
     public native boolean isEditable();
+    /**
+     * @since Available in iOS 26.4 and later.
+     */
+    @Property(selector = "unobscuredContentRect")
+    public native @ByVal CGRect getUnobscuredContentRect();
     @Property(selector = "hasText")
     public native boolean hasText();
     @Property(selector = "autocapitalizationType")
@@ -434,6 +433,16 @@ import org.robovm.apple.coremedia.CMTextMarkupAttributes;
      */
     @Property(selector = "setMathExpressionCompletionType:")
     public native void setMathExpressionCompletionType(UITextMathExpressionCompletionType v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "grammarCheckingType")
+    public native UITextGrammarCheckingType getGrammarCheckingType();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setGrammarCheckingType:")
+    public native void setGrammarCheckingType(UITextGrammarCheckingType v);
     @Property(selector = "keyboardType")
     public native UIKeyboardType getKeyboardType();
     @Property(selector = "setKeyboardType:")

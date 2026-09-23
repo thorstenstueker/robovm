@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -59,6 +57,9 @@ import org.robovm.apple.uikit.*;
     /*<properties>*/
     @Property(selector = "timebase")
     CMTimebase getTimebase();
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Property(selector = "isReadyForMoreMediaData")
     boolean isReadyForMoreMediaData();
     /**
@@ -68,12 +69,24 @@ import org.robovm.apple.uikit.*;
     boolean hasSufficientMediaDataForReliablePlaybackStart();
     /*</properties>*/
     /*<methods>*/
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Method(selector = "enqueueSampleBuffer:")
     void enqueueSampleBuffer(CMSampleBuffer sampleBuffer);
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Method(selector = "flush")
     void flush();
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Method(selector = "requestMediaDataWhenReadyOnQueue:usingBlock:")
     void requestMediaDataWhenReadyOnQueue(DispatchQueue queue, @Block Runnable block);
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Method(selector = "stopRequestingMediaData")
     void stopRequestingMediaData();
     /*</methods>*/

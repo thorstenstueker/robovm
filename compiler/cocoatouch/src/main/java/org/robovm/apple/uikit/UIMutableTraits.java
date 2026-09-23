@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -177,6 +171,16 @@ import org.robovm.apple.symbols.*;
      */
     @Property(selector = "setResolvesNaturalAlignmentWithBaseWritingDirection:")
     void setResolvesNaturalAlignmentWithBaseWritingDirection(boolean v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "systemPrefersReducedResourceUsage")
+    boolean isSystemPrefersReducedResourceUsage();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setSystemPrefersReducedResourceUsage:")
+    void setSystemPrefersReducedResourceUsage(boolean v);
     /*</properties>*/
     /*<methods>*/
     @Method(selector = "setCGFloatValue:forTrait:")

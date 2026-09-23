@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -61,6 +55,10 @@ import org.robovm.apple.symbols.*;
     String getTitle();
     @Property(selector = "setTitle:")
     void setTitle(String v);
+    @Property(selector = "subtitle")
+    String getSubtitle();
+    @Property(selector = "setSubtitle:")
+    void setSubtitle(String v);
     @Property(selector = "image")
     UIImage getImage();
     @Property(selector = "setImage:")
@@ -75,6 +73,16 @@ import org.robovm.apple.symbols.*;
      */
     @Property(selector = "setSelectedImage:")
     void setSelectedImage(UIImage v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "preferredImageVisibility")
+    UIMenuElementImageVisibility getPreferredImageVisibility();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setPreferredImageVisibility:")
+    void setPreferredImageVisibility(UIMenuElementImageVisibility v);
     @Property(selector = "discoverabilityTitle")
     String getDiscoverabilityTitle();
     @Property(selector = "setDiscoverabilityTitle:")

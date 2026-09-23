@@ -30,11 +30,9 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.imageio.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 import org.robovm.apple.avfoundation.*;
 /*</imports>*/
@@ -209,15 +207,15 @@ import org.robovm.apple.avfoundation.*;
         @GlobalValue(symbol="kCIContextName", optional=true)
         public static native NSString Name();
         /**
-         * @since Available in iOS 19.0 and later.
-         */
-        @GlobalValue(symbol="kCIContextCVMetalTextureCache", optional=true)
-        public static native NSString CVMetalTextureCache();
-        /**
          * @since Available in iOS 17.0 and later.
          */
         @GlobalValue(symbol="kCIContextMemoryLimit", optional=true)
         public static native NSString MemoryLimit();
+        /**
+         * @since Available in iOS 26.0 and later.
+         */
+        @GlobalValue(symbol="kCIContextCVMetalTextureCache", optional=true)
+        public static native NSString CVMetalTextureCache();
     }
     /*</keys>*/
 }

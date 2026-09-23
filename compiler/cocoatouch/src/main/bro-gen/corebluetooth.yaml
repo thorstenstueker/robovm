@@ -144,6 +144,8 @@ classes:
             'services':
                 type: NSArray<CBService>
         methods:
+            # tsbMobile, iOS 27 SDK: channel sounding (CBChannelSounding*) is not bound
+            '-startChannelSoundingSession:': {exclude: true}
             '-discoverServices:':
                 trim_after_first_colon: true
                 parameters:
@@ -275,6 +277,8 @@ protocols:
                 name: didDisconnectPeripheral
     CBPeripheralDelegate: # DONE
         methods:
+            # tsbMobile, iOS 27 SDK: channel sounding (CBChannelSounding*) is not bound
+            '-peripheral:didReceiveChannelSoundingProcedureResults:error:': {exclude: true}
             '-peripheralDidUpdateName:':
                 name: didUpdateName
             '-peripheralDidInvalidateServices:':

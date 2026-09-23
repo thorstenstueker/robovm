@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -71,6 +69,16 @@ import org.robovm.apple.uikit.*;
     public native boolean isConnected();
     @Property(selector = "uuid")
     public native NSUUID getUuid();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "reasonsNotRecommendedForCaptureUse")
+    public native NSSet<NSString> getReasonsNotRecommendedForCaptureUse();
+    /**
+     * @since Available in iOS 17.0 and later.
+     * @deprecated Deprecated in iOS 27.0. Use reasonsNotRecommendedForCaptureUse instead
+     */
+    @Deprecated
     @Property(selector = "isNotRecommendedForCaptureUse")
     public native boolean isNotRecommendedForCaptureUse();
     @Property(selector = "authorizationStatus")

@@ -1,43 +1,24 @@
 package org.robovm.compiler;
 
-import org.apache.commons.lang3.JavaVersion;
-import org.apache.commons.lang3.SystemUtils;
 import soot.SourceLocator;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Simple helper to help resolving BC on both 1.8 and 9+ javas
+ * Simple helper to resolve the boot classpath of the host JDK (9+) for tests.
+ * The RoboVM toolchain requires JDK 17+ to build, so the legacy
+ * {@code sun.boot.class.path} lookup for Java 8 is gone.
  * @author dkimitsa
  */
 public class ClassPathUtils {
 
     public static String getBcPath() {
-        if (isJavaVersionAtLeast9()) {
-            return SourceLocator.DUMMY_CLASSPATH_JDK9_FS;
-        } else {
-            return System.getProperty("sun.boot.class.path");
-        }
+        return SourceLocator.DUMMY_CLASSPATH_JDK9_FS;
     }
 
     public static List<File> getBcPaths() {
-        if (isJavaVersionAtLeast9()) {
-            return Collections.singletonList(new File(SourceLocator.DUMMY_CLASSPATH_JDK9_FS));
-        } else {
-            List<File> result = new ArrayList<>();
-            String[] bcEntries = System.getProperty("sun.boot.class.path").split(File.pathSeparator);
-            for (String entry : bcEntries)
-                result.add(new File(entry));
-            return result;
-        }
-    }
-
-    public static boolean isJavaVersionAtLeast9() {
-        // before java 9 version had number 1.x, this changed with Java9
-        return !System.getProperty("java.version").startsWith("1.");
+        return Collections.singletonList(new File(SourceLocator.DUMMY_CLASSPATH_JDK9_FS));
     }
 }

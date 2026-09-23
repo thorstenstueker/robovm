@@ -1537,4 +1537,13 @@ public final class Pattern
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
                 new MatcherIterator(), Spliterator.ORDERED | Spliterator.NONNULL), false);
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Creates a predicate that tests if this pattern matches a given input string (Java 11).
+     */
+    public Predicate<String> asMatchPredicate() {
+        return s -> matcher(s).matches();
+    }
 }

@@ -191,12 +191,12 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.0</version>
+                <version>9.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm-commons</artifactId>
-                <version>9.0</version>
+                <version>9.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.bcel</groupId>
@@ -346,13 +346,13 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- compiler: produce Java8 code everywhere by default -->
+                <!-- compiler: produce Java 17 code everywhere by default -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                     <configuration>
-                        <release>9</release>
+                        <release>17</release>
                         <debug>true</debug>
                         <encoding>UTF-8</encoding>
                     </configuration>
@@ -423,7 +423,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.6.0</version>
                 </plugin>
 
                 <plugin>
@@ -525,7 +525,7 @@
                 <configuration>
                     <quiet>true</quiet>
                     <doclint>none</doclint>
-                    <release>9</release>
+                    <release>17</release>
                     <detectJavaApiLink>false</detectJavaApiLink>
                     <notree>true</notree>
                     <noindex>true</noindex>

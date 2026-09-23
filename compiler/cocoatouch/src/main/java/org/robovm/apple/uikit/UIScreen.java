@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -247,6 +241,10 @@ import org.robovm.apple.symbols.*;
     @GlobalValue(symbol="UIScreenReferenceDisplayModeStatusDidChangeNotification", optional=true)
     public static native NSString ReferenceDisplayModeStatusDidChangeNotification();
     
+    /**
+     * @deprecated Deprecated in iOS 27.0. Use the equivalent display link API on UIWindowScene
+     */
+    @Deprecated
     @WeaklyLinked
     @Method(selector = "displayLinkWithTarget:selector:")
     public native CADisplayLink getDisplayLink(NSObject target, Selector sel);

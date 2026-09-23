@@ -86,5 +86,20 @@ import org.robovm.apple.uikit.*;
      */
     @Bridge(symbol="CGPDFContextEndTag", optional=true)
     public native void endTag();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Bridge(symbol="CGPDFContextBeginNonStructuralMarkedContentSequence", optional=true)
+    public native void beginNonStructuralMarkedContentSequence(CGPDFTagType tagType);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Bridge(symbol="CGPDFContextEndMarkedContentSequence", optional=true)
+    public native void endMarkedContentSequence();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Bridge(symbol="CGPDFContextEndObjectReference", optional=true)
+    public native void endObjectReference();
     /*</methods>*/
 }

@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -82,6 +76,21 @@ import org.robovm.apple.symbols.*;
     public void requestsDecorationContainerView(UIWritingToolsCoordinator writingToolsCoordinator, @ByVal NSRange range, UIWritingToolsCoordinatorContext context, @Block VoidBlock1<UIView> completion) {}
     @NotImplemented("writingToolsCoordinator:willChangeToState:completion:")
     public void willChangeToState(UIWritingToolsCoordinator writingToolsCoordinator, UIWritingToolsCoordinatorState newState, @Block Runnable completion) {}
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @NotImplemented("writingToolsCoordinator:requestsPreviewForTextAnimation:ofRange:inContext:textDecoration:completion:")
+    public void writingToolsCoordinator$requestsPreviewForTextAnimation$ofRange$inContext$textDecoration$completion$(UIWritingToolsCoordinator writingToolsCoordinator, UIWritingToolsCoordinatorTextAnimation textAnimation, @ByVal NSRange range, UIWritingToolsCoordinatorContext context, UIWritingToolsCoordinatorTextDecoration textDecoration, @Block VoidBlock1<UITargetedPreview> completion) {}
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @NotImplemented("writingToolsCoordinator:requestsGrammarResultsForContext:completion:")
+    public void writingToolsCoordinator$requestsGrammarResultsForContext$completion$(UIWritingToolsCoordinator writingToolsCoordinator, UIWritingToolsCoordinatorContext context, @Block VoidBlock1<NSArray<NSTextCheckingResult>> completion) {}
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @NotImplemented("writingToolsCoordinator:setGrammarCheckingEnabled:")
+    public void writingToolsCoordinator$setGrammarCheckingEnabled$(UIWritingToolsCoordinator writingToolsCoordinator, boolean enabled) {}
     /**
      * @since Available in iOS 18.2 and later.
      * @deprecated Deprecated in iOS 18.4. In iOS 18.4 and later and visionOS 2.4 and later, UIWritingToolsCoordinator automatically determines the location of the character at the specified point in your view's coordinate system and no longer calls this method.

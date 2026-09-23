@@ -30,8 +30,6 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 /*</imports>*/
 
@@ -147,9 +145,13 @@ import org.robovm.apple.iosurface.*;
      * @since Available in iOS 26.0 and later.
      */
     public static final CVImageBufferAttribute DisplayMaskRectangleStereoRight = new CVImageBufferAttribute("DisplayMaskRectangleStereoRight");
+    /**
+     * @since Available in iOS 17.0 and later.
+     */
+    public static final CVImageBufferAttribute HorizontalDisparityAdjustment = new CVImageBufferAttribute("HorizontalDisparityAdjustment");
     /*</constants>*/
     
-    private static /*<name>*/CVImageBufferAttribute/*</name>*/[] values = new /*<name>*/CVImageBufferAttribute/*</name>*/[] {/*<value_list>*/CGColorSpace, CleanAperture, PreferredCleanAperture, FieldCount, FieldDetail, PixelAspectRatio, DisplayDimensions, GammaLevel, ICCProfile, YCbCrMatrix, ColorPrimaries, TransferFunction, ChromaLocationTopField, ChromaLocationBottomField, ChromaSubsampling, AlphaChannelIsOpaque, AlphaChannelMode, MasteringDisplayColorVolume, ContentLightLevelInfo, AmbientViewingEnvironment, SceneIllumination, RegionOfInterest, LogTransferFunction, DisplayMaskRectangle, DisplayMaskRectangleStereoLeft, DisplayMaskRectangleStereoRight/*</value_list>*/};
+    private static /*<name>*/CVImageBufferAttribute/*</name>*/[] values = new /*<name>*/CVImageBufferAttribute/*</name>*/[] {/*<value_list>*/CGColorSpace, CleanAperture, PreferredCleanAperture, FieldCount, FieldDetail, PixelAspectRatio, DisplayDimensions, GammaLevel, ICCProfile, YCbCrMatrix, ColorPrimaries, TransferFunction, ChromaLocationTopField, ChromaLocationBottomField, ChromaSubsampling, AlphaChannelIsOpaque, AlphaChannelMode, MasteringDisplayColorVolume, ContentLightLevelInfo, AmbientViewingEnvironment, SceneIllumination, RegionOfInterest, LogTransferFunction, DisplayMaskRectangle, DisplayMaskRectangleStereoLeft, DisplayMaskRectangleStereoRight, HorizontalDisparityAdjustment/*</value_list>*/};
     
     /*<name>*/CVImageBufferAttribute/*</name>*/ (String getterName) {
         super(Values.class, getterName);
@@ -257,6 +259,11 @@ import org.robovm.apple.iosurface.*;
          */
         @GlobalValue(symbol="kCVImageBufferDisplayMaskRectangleStereoRightKey", optional=true)
         public static native CFString DisplayMaskRectangleStereoRight();
+        /**
+         * @since Available in iOS 17.0 and later.
+         */
+        @GlobalValue(symbol="kCVImageBufferHorizontalDisparityAdjustmentKey", optional=true)
+        public static native CFString HorizontalDisparityAdjustment();
         /*</values>*/
     }
 }

@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -58,6 +56,9 @@ import org.robovm.apple.uikit.*;
     /*<properties>*/
     @NotImplemented("timebase")
     public CMTimebase getTimebase() { return null; }
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @NotImplemented("isReadyForMoreMediaData")
     public boolean isReadyForMoreMediaData() { return false; }
     /**
@@ -68,12 +69,24 @@ import org.robovm.apple.uikit.*;
     /*</properties>*/
     /*<members>*//*</members>*/
     /*<methods>*/
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @NotImplemented("enqueueSampleBuffer:")
     public void enqueueSampleBuffer(CMSampleBuffer sampleBuffer) {}
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @NotImplemented("flush")
     public void flush() {}
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @NotImplemented("requestMediaDataWhenReadyOnQueue:usingBlock:")
     public void requestMediaDataWhenReadyOnQueue(DispatchQueue queue, @Block Runnable block) {}
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @NotImplemented("stopRequestingMediaData")
     public void stopRequestingMediaData() {}
     /*</methods>*/

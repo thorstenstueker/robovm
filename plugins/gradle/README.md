@@ -38,6 +38,13 @@ dependencies {
 robovm {
     // Configure robovm
 }
+
+// RoboVM compiles class files up to Java 17
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 ```
 
 ## Tasks

@@ -30,11 +30,9 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.imageio.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 import org.robovm.apple.avfoundation.*;
 /*</imports>*/
@@ -75,11 +73,6 @@ import org.robovm.apple.avfoundation.*;
     @Deprecated
     @Method(selector = "initWithTexture:size:flipped:colorSpace:")
     public CIImage(int name, @ByVal CGSize size, boolean flipped, CGColorSpace colorSpace) { super((SkipInit) null); initObject(init(name, size, flipped, colorSpace)); }
-    /**
-     * @since Available in iOS 9.0 and later.
-     */
-    @Method(selector = "initWithMTLTexture:options:")
-    public CIImage(MTLTexture texture, CIImageOptions options) { super((SkipInit) null); initObject(init(texture, options)); }
     @Method(selector = "initWithContentsOfURL:")
     public CIImage(NSURL url) { super((SkipInit) null); initObject(init(url)); }
     @Method(selector = "initWithContentsOfURL:options:")
@@ -217,7 +210,7 @@ import org.robovm.apple.avfoundation.*;
     @Property(selector = "contentHeadroom")
     public native float getContentHeadroom();
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Property(selector = "contentAverageLightLevel")
     public native float getContentAverageLightLevel();
@@ -231,11 +224,6 @@ import org.robovm.apple.avfoundation.*;
      */
     @Property(selector = "CGImage")
     public native CGImage getCGImage();
-    /**
-     * @since Available in iOS 18.0 and later.
-     */
-    @Property(selector = "metalTexture")
-    public native MTLTexture getMetalTexture();
     /**
      * @since Available in iOS 11.0 and later.
      */
@@ -293,11 +281,6 @@ import org.robovm.apple.avfoundation.*;
     @Deprecated
     @Method(selector = "initWithTexture:size:flipped:colorSpace:")
     protected native @Pointer long init(int name, @ByVal CGSize size, boolean flipped, CGColorSpace colorSpace);
-    /**
-     * @since Available in iOS 9.0 and later.
-     */
-    @Method(selector = "initWithMTLTexture:options:")
-    protected native @Pointer long init(MTLTexture texture, CIImageOptions options);
     @Method(selector = "initWithContentsOfURL:")
     protected native @Pointer long init(NSURL url);
     @Method(selector = "initWithContentsOfURL:options:")
@@ -421,7 +404,7 @@ import org.robovm.apple.avfoundation.*;
     @Method(selector = "imageByInsertingIntermediate:")
     public native CIImage newImageByInsertingIntermediate(boolean cache);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "imageByInsertingTiledIntermediate")
     public native CIImage newImageByInsertingTiledIntermediate();
@@ -436,12 +419,12 @@ import org.robovm.apple.avfoundation.*;
     @Method(selector = "imageByApplyingGainMap:headroom:")
     public native CIImage newImageByApplyingGainMap(CIImage gainmap, float headroom);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "imageBySettingContentHeadroom:")
     public native CIImage newImageBySettingContentHeadroom(float headroom);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "imageBySettingContentAverageLightLevel:")
     public native CIImage newImageBySettingContentAverageLightLevel(float average);

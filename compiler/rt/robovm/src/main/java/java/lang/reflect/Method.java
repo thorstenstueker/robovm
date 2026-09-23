@@ -493,6 +493,15 @@ public final class Method extends AccessibleObject implements GenericDeclaration
      *
      * @return the parameter types
      */
+    /**
+     * Returns the number of formal parameters of this method.
+     *
+     * @since 1.8
+     */
+    public int getParameterCount() {
+        return getParameterTypes().length;
+    }
+
     public Class<?>[] getParameterTypes() {
         return getParameterTypes(true);
     }

@@ -3784,4 +3784,93 @@ public final class Files {
     public static Stream<String> lines(Path path) throws IOException {
         return lines(path, StandardCharsets.UTF_8);
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Reads all content from a file into a string, decoding from bytes to characters using the
+     * UTF-8 charset (Java 11).
+     */
+    public static String readString(Path path) throws IOException {
+        return readString(path, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Reads all characters from a file into a string, decoding from bytes to characters using
+     * the specified charset (Java 11).
+     */
+    public static String readString(Path path, Charset cs) throws IOException {
+        Objects.requireNonNull(path);
+        Objects.requireNonNull(cs);
+        byte[] ba = readAllBytes(path);
+        CharsetDecoder decoder = cs.newDecoder()
+                .onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+                .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT);
+        try {
+            return decoder.decode(java.nio.ByteBuffer.wrap(ba)).toString();
+        } catch (java.nio.charset.CharacterCodingException e) {
+            throw new java.nio.charset.MalformedInputException(0);
+        }
+    }
+
+    /**
+     * Write a {@linkplain java.lang.CharSequence CharSequence} to a file using the UTF-8 charset (Java 11).
+     */
+    public static Path writeString(Path path, CharSequence csq, OpenOption... options)
+            throws IOException {
+        return writeString(path, csq, StandardCharsets.UTF_8, options);
+    }
+
+    /**
+     * Write a {@linkplain java.lang.CharSequence CharSequence} to a file using the specified charset (Java 11).
+     */
+    public static Path writeString(Path path, CharSequence csq, Charset cs, OpenOption... options)
+            throws IOException {
+        Objects.requireNonNull(path);
+        Objects.requireNonNull(csq);
+        Objects.requireNonNull(cs);
+        CharsetEncoder encoder = cs.newEncoder()
+                .onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+                .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT);
+        java.nio.ByteBuffer bb;
+        try {
+            bb = encoder.encode(java.nio.CharBuffer.wrap(csq));
+        } catch (java.nio.charset.CharacterCodingException e) {
+            throw new java.nio.charset.UnmappableCharacterException(0);
+        }
+        byte[] bytes = new byte[bb.remaining()];
+        bb.get(bytes);
+        write(path, bytes, options);
+        return path;
+    }
+
+    /**
+     * Finds and returns the position of the first mismatched byte in the content of two files,
+     * or {@code -1L} if there is no mismatch (Java 12).
+     */
+    public static long mismatch(Path path, Path path2) throws IOException {
+        if (isSameFile(path, path2)) {
+            return -1;
+        }
+        byte[] buffer1 = new byte[8192];
+        byte[] buffer2 = new byte[8192];
+        try (InputStream in1 = Files.newInputStream(path);
+             InputStream in2 = Files.newInputStream(path2)) {
+            long totalRead = 0;
+            while (true) {
+                int nRead1 = in1.readNBytes(buffer1, 0, 8192);
+                int nRead2 = in2.readNBytes(buffer2, 0, 8192);
+
+                int i = java.util.Arrays.mismatch(buffer1, 0, nRead1, buffer2, 0, nRead2);
+                if (i > -1) {
+                    return totalRead + i;
+                }
+                if (nRead1 < 8192) {
+                    // we've reached the end of the files, but found no mismatch
+                    return -1;
+                }
+                totalRead += nRead1;
+            }
+        }
+    }
 }

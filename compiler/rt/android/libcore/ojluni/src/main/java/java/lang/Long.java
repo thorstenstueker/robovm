@@ -1622,4 +1622,113 @@ public final class Long extends Number implements Comparable<Long> {
 
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
     @Native private static final long serialVersionUID = 4290774380558885855L;
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Parses the {@link CharSequence} argument as a signed {@code long} in the specified radix,
+     * beginning at the specified {@code beginIndex} and extending to {@code endIndex - 1} (Java 9).
+     */
+    public static long parseLong(CharSequence s, int beginIndex, int endIndex, int radix)
+                throws NumberFormatException {
+        if (s == null) {
+            throw new NumberFormatException("Cannot parse null string");
+        }
+        if (beginIndex < 0 || beginIndex > endIndex || endIndex > s.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (radix < Character.MIN_RADIX) {
+            throw new NumberFormatException("radix " + radix +
+                                            " less than Character.MIN_RADIX");
+        }
+        if (radix > Character.MAX_RADIX) {
+            throw new NumberFormatException("radix " + radix +
+                                            " greater than Character.MAX_RADIX");
+        }
+
+        boolean negative = false;
+        int i = beginIndex;
+        long limit = -Long.MAX_VALUE;
+
+        if (i < endIndex) {
+            char firstChar = s.charAt(i);
+            if (firstChar < '0') { // Possible leading "+" or "-"
+                if (firstChar == '-') {
+                    negative = true;
+                    limit = Long.MIN_VALUE;
+                } else if (firstChar != '+') {
+                    throw new NumberFormatException("Error at index " + (i - beginIndex) + " in: \"" + s.subSequence(beginIndex, endIndex) + "\"");
+                }
+                i++;
+            }
+            if (i >= endIndex) { // Cannot have lone "+", "-" or ""
+                throw new NumberFormatException("Error at index " + (i - beginIndex) + " in: \"" + s.subSequence(beginIndex, endIndex) + "\"");
+            }
+            long multmin = limit / radix;
+            long result = 0;
+            while (i < endIndex) {
+                // Accumulating negatively avoids surprises near MAX_VALUE
+                int digit = Character.digit(s.charAt(i), radix);
+                if (digit < 0 || result < multmin) {
+                    throw new NumberFormatException("Error at index " + (i - beginIndex) + " in: \"" + s.subSequence(beginIndex, endIndex) + "\"");
+                }
+                result *= radix;
+                if (result < limit + digit) {
+                    throw new NumberFormatException("Error at index " + (i - beginIndex) + " in: \"" + s.subSequence(beginIndex, endIndex) + "\"");
+                }
+                i++;
+                result -= digit;
+            }
+            return negative ? result : -result;
+        } else {
+            throw new NumberFormatException("For input string: \"\"");
+        }
+    }
+
+    /**
+     * Parses the {@link CharSequence} argument as an unsigned {@code long} in the specified radix,
+     * beginning at the specified {@code beginIndex} and extending to {@code endIndex - 1} (Java 9).
+     */
+    public static long parseUnsignedLong(CharSequence s, int beginIndex, int endIndex, int radix)
+                throws NumberFormatException {
+        if (s == null) {
+            throw new NumberFormatException("Cannot parse null string");
+        }
+        if (beginIndex < 0 || beginIndex > endIndex || endIndex > s.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        int start = beginIndex, len = endIndex - beginIndex;
+
+        if (len > 0) {
+            char firstChar = s.charAt(start);
+            if (firstChar == '-') {
+                throw new NumberFormatException(String.format("Illegal leading minus sign " +
+                        "on unsigned string %s.", s.subSequence(start, start + len)));
+            } else {
+                if (len <= 12 || // Long.MAX_VALUE in Character.MAX_RADIX is 13 digits
+                    (radix == 10 && len <= 18) ) { // Long.MAX_VALUE in base 10 is 19 digits
+                    return parseLong(s, start, start + len, radix);
+                }
+
+                // No need for range checks on end due to testing above.
+                long first = parseLong(s, start, start + len - 1, radix);
+                int second = Character.digit(s.charAt(start + len - 1), radix);
+                if (second < 0) {
+                    throw new NumberFormatException("Bad digit at end of " +
+                            s.subSequence(start, start + len));
+                }
+                long result = first * radix + second;
+
+                int guard = radix * (int) (first >>> 57);
+                if (guard >= 128 ||
+                        (result >= 0 && guard >= 128 - Character.MAX_RADIX)) {
+                    throw new NumberFormatException(String.format("String value %s exceeds " +
+                            "range of unsigned long.", s.subSequence(start, start + len)));
+                }
+                return result;
+            }
+        } else {
+            throw new NumberFormatException("For input string: \"\"");
+        }
+    }
 }

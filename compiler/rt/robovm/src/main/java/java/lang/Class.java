@@ -59,10 +59,12 @@ import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.net.URL;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -1153,5 +1155,181 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
         }
 
         throw new IllegalArgumentException("Unrecognized prim name: " + prim);
+    }
+
+    // ------------------------------------------------------------------
+    // RoboVM Note: Java 8 - 17 additions (records, sealed classes, nestmates)
+    // ------------------------------------------------------------------
+
+    /**
+     * Returns an informative string for the name of this type (Java 8).
+     */
+    public String getTypeName() {
+        if (isArray()) {
+            Class<?> cl = this;
+            int dimensions = 0;
+            while (cl.isArray()) {
+                dimensions++;
+                cl = cl.getComponentType();
+            }
+            StringBuilder sb = new StringBuilder(cl.getName());
+            for (int i = 0; i < dimensions; i++) {
+                sb.append("[]");
+            }
+            return sb.toString();
+        }
+        return getName();
+    }
+
+    /**
+     * Returns {@code true} if and only if this class is a record class (Java 16).
+     * RoboVM note: the {@code Record} class file attribute is not retained by the VM,
+     * the check relies on the fact that javac only allows record classes to extend
+     * {@code java.lang.Record}.
+     */
+    public boolean isRecord() {
+        return getSuperclass() == Record.class && !isInterface();
+    }
+
+    /**
+     * Returns an array of {@code RecordComponent} objects representing all the record
+     * components of this record class, or {@code null} if this class is not a record class
+     * (Java 16).
+     * RoboVM note: derived from the declared instance fields (in declaration order, which is
+     * the component order for javac compiled records) and their accessor methods.
+     */
+    public RecordComponent[] getRecordComponents() {
+        if (!isRecord()) {
+            return null;
+        }
+        ArrayList<RecordComponent> components = new ArrayList<RecordComponent>();
+        for (Field field : getDeclaredFields()) {
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
+            Method accessor = null;
+            try {
+                accessor = getDeclaredMethod(field.getName());
+            } catch (NoSuchMethodException ignored) {
+            }
+            components.add(new RecordComponent(this, field, accessor));
+        }
+        return components.toArray(new RecordComponent[components.size()]);
+    }
+
+    /**
+     * Returns {@code true} if this class or interface is sealed (Java 17).
+     * RoboVM note: the {@code PermittedSubclasses} attribute is not retained, always {@code false}.
+     */
+    public boolean isSealed() {
+        return false;
+    }
+
+    /**
+     * Returns the permitted subclasses of a sealed class (Java 17).
+     * RoboVM note: the {@code PermittedSubclasses} attribute is not retained, always {@code null}.
+     */
+    public Class<?>[] getPermittedSubclasses() {
+        return null;
+    }
+
+    /**
+     * Returns the nest host of the nest to which this class belongs (Java 11).
+     * RoboVM note: the {@code NestHost} attribute is not retained; the outermost enclosing
+     * class is returned which is what javac declares as nest host.
+     */
+    public Class<?> getNestHost() {
+        if (isPrimitive() || isArray()) {
+            return this;
+        }
+        Class<?> host = this;
+        Class<?> enclosing = host.getEnclosingClass();
+        while (enclosing != null) {
+            host = enclosing;
+            enclosing = host.getEnclosingClass();
+        }
+        return host;
+    }
+
+    /**
+     * Determines if the given class is a nestmate of this class (Java 11).
+     */
+    public boolean isNestmateOf(Class<?> c) {
+        if (this == c) {
+            return true;
+        }
+        if (isPrimitive() || isArray() || c.isPrimitive() || c.isArray()) {
+            return false;
+        }
+        return getNestHost() == c.getNestHost();
+    }
+
+    /**
+     * Returns the nest host and nest members (Java 11).
+     * RoboVM note: the {@code NestMembers} attribute is not retained, only the nest host is returned.
+     */
+    public Class<?>[] getNestMembers() {
+        return new Class<?>[] { getNestHost() };
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns the fully qualified package name (Java 9).
+     */
+    public String getPackageName() {
+        Class<?> c = this;
+        while (c.isArray()) {
+            c = c.getComponentType();
+        }
+        if (c.isPrimitive()) {
+            return "java.lang";
+        }
+        String cn = c.getName();
+        int dot = cn.lastIndexOf('.');
+        return (dot != -1) ? cn.substring(0, dot) : "";
+    }
+
+    /**
+     * Returns the component type of this class if it is an array, {@code null} otherwise (Java 12).
+     */
+    public Class<?> componentType() {
+        return isArray() ? getComponentType() : null;
+    }
+
+    /**
+     * Returns a {@code Class} for an array type whose component type is this class (Java 12).
+     */
+    public Class<?> arrayType() {
+        return java.lang.reflect.Array.newInstance(this, 0).getClass();
+    }
+
+    /**
+     * Returns the descriptor string of this class (Java 12).
+     */
+    public String descriptorString() {
+        if (isPrimitive()) {
+            if (this == boolean.class) return "Z";
+            if (this == byte.class) return "B";
+            if (this == char.class) return "C";
+            if (this == short.class) return "S";
+            if (this == int.class) return "I";
+            if (this == long.class) return "J";
+            if (this == float.class) return "F";
+            if (this == double.class) return "D";
+            return "V";
+        }
+        if (isArray()) {
+            return "[" + getComponentType().descriptorString();
+        }
+        return "L" + getName().replace('.', '/') + ";";
+    }
+
+    /**
+     * Returns {@code true} if this class is a hidden class (Java 15). RoboVM does not support
+     * hidden classes, always {@code false}.
+     */
+    public boolean isHidden() {
+        return false;
     }
 }

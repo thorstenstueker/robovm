@@ -27,6 +27,7 @@ package java.util;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 // Android-changed: removed ValueBased paragraph.
 /**
@@ -244,5 +245,48 @@ public final class OptionalInt {
         return isPresent
                 ? String.format("OptionalInt[%s]", value)
                 : "OptionalInt.empty";
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * If a value is not present, returns {@code true}, otherwise {@code false} (Java 11).
+     */
+    public boolean isEmpty() {
+        return !isPresent;
+    }
+
+    /**
+     * If a value is present, performs the given action with the value, otherwise performs
+     * the given empty-based action (Java 9).
+     */
+    public void ifPresentOrElse(IntConsumer action, Runnable emptyAction) {
+        if (isPresent) {
+            action.accept(value);
+        } else {
+            emptyAction.run();
+        }
+    }
+
+    /**
+     * If a value is present, returns a sequential stream containing only that value,
+     * otherwise returns an empty stream (Java 9).
+     */
+    public IntStream stream() {
+        if (isPresent) {
+            return IntStream.of(value);
+        } else {
+            return IntStream.empty();
+        }
+    }
+
+    /**
+     * If a value is present, returns the value, otherwise throws {@code NoSuchElementException} (Java 10).
+     */
+    public int orElseThrow() {
+        if (!isPresent) {
+            throw new NoSuchElementException("No value present");
+        }
+        return value;
     }
 }

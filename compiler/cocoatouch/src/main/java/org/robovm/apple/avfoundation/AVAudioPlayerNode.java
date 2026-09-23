@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -148,10 +146,28 @@ import org.robovm.apple.uikit.*;
     public native void stop();
     @Method(selector = "prepareWithFrameCount:")
     public native void prepare(int frameCount);
+    /**
+     * @deprecated Deprecated in iOS 27.0. Use playAndReturnError:
+     */
+    @Deprecated
     @Method(selector = "play")
     public native void play();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "playAndReturnError:")
+    public native boolean playAndReturnError(NSError.NSErrorPtr outError);
+    /**
+     * @deprecated Deprecated in iOS 27.0. Use playAtTime:error:
+     */
+    @Deprecated
     @Method(selector = "playAtTime:")
     public native void playAtTime(AVAudioTime when);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "playAtTime:error:")
+    public native boolean playAtTime$error$(AVAudioTime when, NSError.NSErrorPtr outError);
     @Method(selector = "pause")
     public native void pause();
     @Method(selector = "nodeTimeForPlayerTime:")

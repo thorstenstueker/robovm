@@ -59,6 +59,7 @@
                     <compilerArgs>
                         <arg>-bootclasspath</arg>
                         <arg>""</arg>
+                        <arg>-Xlint:-options</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

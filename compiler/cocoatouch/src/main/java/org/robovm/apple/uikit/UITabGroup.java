@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -77,14 +71,14 @@ import org.robovm.apple.symbols.*;
     public native NSArray<UITab> getChildren();
     @Property(selector = "setChildren:")
     public native void setChildren(NSArray<UITab> v);
-    @Property(selector = "displayOrderIdentifiers")
-    public native NSArray<NSString> getDisplayOrderIdentifiers();
-    @Property(selector = "setDisplayOrderIdentifiers:")
-    public native void setDisplayOrderIdentifiers(NSArray<NSString> v);
     @Property(selector = "allowsReordering")
     public native boolean allowsReordering();
     @Property(selector = "setAllowsReordering:")
     public native void setAllowsReordering(boolean v);
+    @Property(selector = "displayOrderIdentifiers")
+    public native NSArray<NSString> getDisplayOrderIdentifiers();
+    @Property(selector = "setDisplayOrderIdentifiers:")
+    public native void setDisplayOrderIdentifiers(NSArray<NSString> v);
     @Property(selector = "displayOrder")
     public native NSArray<UITab> getDisplayOrder();
     @Property(selector = "managingNavigationController")
@@ -109,6 +103,16 @@ import org.robovm.apple.symbols.*;
      */
     @Property(selector = "setIsSidebarDestination:")
     public native void setIsSidebarDestination(boolean v);
+    /**
+     * @since Available in iOS 26.1 and later.
+     */
+    @Property(selector = "isCollapsedByDefault")
+    public native boolean isCollapsedByDefault();
+    /**
+     * @since Available in iOS 26.1 and later.
+     */
+    @Property(selector = "setCollapsedByDefault:")
+    public native void setCollapsedByDefault(boolean v);
     /*</properties>*/
     /*<members>*//*</members>*/
     /*<methods>*/

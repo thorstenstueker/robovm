@@ -48,6 +48,12 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.IntConsumer;
+import java.util.function.LongConsumer;
+import java.util.function.DoubleConsumer;
 
 /**
  * A sequence of elements supporting sequential and parallel aggregate
@@ -1141,5 +1147,176 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
          */
         Stream<T> build();
 
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns a stream consisting of the longest prefix of elements taken from this stream that
+     * match the given predicate (Java 9).
+     */
+    default Stream<T> takeWhile(Predicate<? super T> predicate) {
+        Objects.requireNonNull(predicate);
+        final Spliterator<T> source = spliterator();
+        Spliterator<T> sp = new Spliterators.AbstractSpliterator<T>(source.estimateSize(),
+                source.characteristics() & ~(Spliterator.SIZED | Spliterator.SUBSIZED)) {
+            boolean taking = true;
+            T element;
+            @Override
+            public boolean tryAdvance(Consumer<? super T> action) {
+                if (!taking) {
+                    return false;
+                }
+                if (source.tryAdvance(e -> element = e)) {
+                    T t = element;
+                    element = null;
+                    if (predicate.test(t)) {
+                        action.accept(t);
+                        return true;
+                    }
+                    taking = false;
+                }
+                return false;
+            }
+        };
+        return StreamSupport.stream(sp, isParallel()).onClose(this::close);
+    }
+
+    /**
+     * Returns a stream consisting of the remaining elements of this stream after dropping the
+     * longest prefix of elements that match the given predicate (Java 9).
+     */
+    default Stream<T> dropWhile(Predicate<? super T> predicate) {
+        Objects.requireNonNull(predicate);
+        final Spliterator<T> source = spliterator();
+        Spliterator<T> sp = new Spliterators.AbstractSpliterator<T>(source.estimateSize(),
+                source.characteristics() & ~(Spliterator.SIZED | Spliterator.SUBSIZED)) {
+            boolean dropping = true;
+            T element;
+            @Override
+            public boolean tryAdvance(Consumer<? super T> action) {
+                while (dropping) {
+                    if (!source.tryAdvance(e -> element = e)) {
+                        return false;
+                    }
+                    T t = element;
+                    element = null;
+                    if (!predicate.test(t)) {
+                        dropping = false;
+                        action.accept(t);
+                        return true;
+                    }
+                }
+                return source.tryAdvance(action);
+            }
+        };
+        return StreamSupport.stream(sp, isParallel()).onClose(this::close);
+    }
+
+    /**
+     * Returns a stream consisting of the results of replacing each element of this stream with
+     * multiple elements, specifically zero or more elements (Java 16).
+     */
+    default <R> Stream<R> mapMulti(BiConsumer<? super T, ? super Consumer<R>> mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMap(e -> {
+            Stream.Builder<R> buffer = Stream.builder();
+            mapper.accept(e, buffer);
+            return buffer.build();
+        });
+    }
+
+    default IntStream mapMultiToInt(BiConsumer<? super T, ? super IntConsumer> mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMapToInt(e -> {
+            IntStream.Builder buffer = IntStream.builder();
+            mapper.accept(e, buffer);
+            return buffer.build();
+        });
+    }
+
+    default LongStream mapMultiToLong(BiConsumer<? super T, ? super LongConsumer> mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMapToLong(e -> {
+            LongStream.Builder buffer = LongStream.builder();
+            mapper.accept(e, buffer);
+            return buffer.build();
+        });
+    }
+
+    default DoubleStream mapMultiToDouble(BiConsumer<? super T, ? super DoubleConsumer> mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMapToDouble(e -> {
+            DoubleStream.Builder buffer = DoubleStream.builder();
+            mapper.accept(e, buffer);
+            return buffer.build();
+        });
+    }
+
+    /**
+     * Accumulates the elements of this stream into an unmodifiable {@code List} (Java 16).
+     */
+    @SuppressWarnings("unchecked")
+    default List<T> toList() {
+        return (List<T>) Collections.unmodifiableList(new ArrayList<>(Arrays.asList(this.toArray())));
+    }
+
+    /**
+     * Returns a sequential {@code Stream} containing a single element, if non-null, otherwise
+     * returns an empty {@code Stream} (Java 9).
+     */
+    public static<T> Stream<T> ofNullable(T t) {
+        return t == null ? Stream.empty() : Stream.of(t);
+    }
+
+    /**
+     * Returns a sequential ordered {@code Stream} produced by iterative application of the given
+     * {@code next} function to an initial element, conditioned on satisfying the given
+     * {@code hasNext} predicate (Java 9).
+     */
+    public static<T> Stream<T> iterate(T seed, Predicate<? super T> hasNext, UnaryOperator<T> next) {
+        Objects.requireNonNull(next);
+        Objects.requireNonNull(hasNext);
+        Spliterator<T> spliterator = new Spliterators.AbstractSpliterator<T>(Long.MAX_VALUE,
+               Spliterator.ORDERED | Spliterator.IMMUTABLE) {
+            T prev;
+            boolean started, finished;
+
+            @Override
+            public boolean tryAdvance(Consumer<? super T> action) {
+                Objects.requireNonNull(action);
+                if (finished)
+                    return false;
+                T t;
+                if (started)
+                    t = next.apply(prev);
+                else {
+                    t = seed;
+                    started = true;
+                }
+                if (!hasNext.test(t)) {
+                    prev = null;
+                    finished = true;
+                    return false;
+                }
+                action.accept(prev = t);
+                return true;
+            }
+
+            @Override
+            public void forEachRemaining(Consumer<? super T> action) {
+                Objects.requireNonNull(action);
+                if (finished)
+                    return;
+                finished = true;
+                T t = started ? next.apply(prev) : seed;
+                prev = null;
+                while (hasNext.test(t)) {
+                    action.accept(t);
+                    t = next.apply(t);
+                }
+            }
+        };
+        return StreamSupport.stream(spliterator, false);
     }
 }

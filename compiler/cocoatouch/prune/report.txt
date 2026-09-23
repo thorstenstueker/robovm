@@ -1,0 +1,30 @@
+cocoatouch prune report
+kept 3089 of 7084 classes, deleted 3995, stripped 0 members in 0 classes, 0 classes with phantom references
+
+kept per package (kept / total; packages with 0 kept are omitted)
+  (other)                    1 /     1
+  avfoundation             414 /  1310
+  coreanimation             54 /   173
+  coreaudio                 16 /    40
+  corebluetooth             90 /    90
+  corefoundation           118 /   310
+  coregraphics             126 /   153
+  coreimage                 56 /   139
+  corelocation              77 /    77
+  coremedia                124 /   252
+  coremotion                99 /    99
+  coreservices               8 /    89
+  coretext                  86 /   136
+  corevideo                 87 /   144
+  dispatch                  12 /    26
+  foundation               428 /  1031
+  imageio                  132 /   165
+  iosurface                  8 /    17
+  uikit                   1133 /  2218
+  uniformtypeid              4 /     6
+  usernotifications         16 /    58
+
+stripped members (class: member…)
+
+phantom references left in method bodies (class -> excluded class); RoboVM compiles them,
+they throw NoClassDefFoundError only if that code path runs

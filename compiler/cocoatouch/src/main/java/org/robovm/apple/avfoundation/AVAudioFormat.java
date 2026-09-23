@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -73,9 +71,9 @@ import org.robovm.apple.uikit.*;
     @Method(selector = "initWithSettings:")
     public AVAudioFormat(AVAudioSettings settings) { super((SkipInit) null); initObject(init(settings)); }
     /**
-     * @since Available in iOS 9.0 and later.
+     * @since Available in iOS 27.0 and later.
      */
-    @Method(selector = "initWithCMAudioFormatDescription:")
+    @Method(selector = "initWithFormatDescription:")
     public AVAudioFormat(CMAudioFormatDescription formatDescription) { super((SkipInit) null); initObject(init(formatDescription)); }
     @Method(selector = "initWithCoder:")
     public AVAudioFormat(NSCoder coder) { super((SkipInit) null); initObject(init(coder)); }
@@ -134,9 +132,9 @@ import org.robovm.apple.uikit.*;
     @Method(selector = "initWithSettings:")
     protected native @Pointer long init(AVAudioSettings settings);
     /**
-     * @since Available in iOS 9.0 and later.
+     * @since Available in iOS 27.0 and later.
      */
-    @Method(selector = "initWithCMAudioFormatDescription:")
+    @Method(selector = "initWithFormatDescription:")
     protected native @Pointer long init(CMAudioFormatDescription formatDescription);
     @Method(selector = "isEqual:")
     public native boolean equalsTo(AVAudioFormat object);

@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -64,9 +62,6 @@ import org.robovm.apple.uikit.*;
     public native int getTrackID();
     @Property(selector = "audioTimePitchAlgorithm")
     public native AVAudioTimePitchAlgorithm getAudioTimePitchAlgorithm();
-    @WeaklyLinked
-    @Property(selector = "audioTapProcessor")
-    public native MTAudioProcessingTap getAudioTapProcessor();
     /*</properties>*/
     /*<members>*//*</members>*/
     public AVTimeRamp<Float> getVolumeRamp(CMTime time) {

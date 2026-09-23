@@ -28,6 +28,7 @@ package java.util;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import java.util.function.IntFunction;
 
 /**
  * The root interface in the <i>collection hierarchy</i>.  A collection
@@ -600,5 +601,15 @@ public interface Collection<E> extends Iterable<E> {
      */
     default Stream<E> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns an array containing all of the elements in this collection, using the provided
+     * {@code generator} function to allocate the returned array (Java 11).
+     */
+    default <T> T[] toArray(IntFunction<T[]> generator) {
+        return toArray(generator.apply(0));
     }
 }

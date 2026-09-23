@@ -30,7 +30,6 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coreaudio.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.avfoundation.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
@@ -117,7 +116,7 @@ import org.robovm.apple.uikit.*;
      * @since Available in iOS 15.0 and later.
      */
     @Property(selector = "scheduleMIDIEventListBlock")
-    public native @Block Block3<AUEventSampleTime, Byte, MIDIEventList, OSStatus> getScheduleMIDIEventListBlock();
+    public native ObjCBlock getScheduleMIDIEventListBlock();
     /**
      * @since Available in iOS 11.0 and later.
      */
@@ -142,27 +141,12 @@ import org.robovm.apple.uikit.*;
      * @since Available in iOS 15.0 and later.
      */
     @Property(selector = "MIDIOutputEventListBlock")
-    public native @Block Block3<AUEventSampleTime, Byte, MIDIEventList, OSStatus> getMIDIOutputEventListBlock();
+    public native ObjCBlock getMIDIOutputEventListBlock();
     /**
      * @since Available in iOS 15.0 and later.
      */
     @Property(selector = "setMIDIOutputEventListBlock:")
-    public native void setMIDIOutputEventListBlock(@Block Block3<AUEventSampleTime, Byte, MIDIEventList, OSStatus> v);
-    /**
-     * @since Available in iOS 15.0 and later.
-     */
-    @Property(selector = "AudioUnitMIDIProtocol")
-    public native MIDIProtocolID getAudioUnitMIDIProtocol();
-    /**
-     * @since Available in iOS 15.0 and later.
-     */
-    @Property(selector = "hostMIDIProtocol")
-    public native MIDIProtocolID getHostMIDIProtocol();
-    /**
-     * @since Available in iOS 15.0 and later.
-     */
-    @Property(selector = "setHostMIDIProtocol:")
-    public native void setHostMIDIProtocol(MIDIProtocolID v);
+    public native void setMIDIOutputEventListBlock(ObjCBlock v);
     @Property(selector = "fullState")
     public native NSDictionary<NSString, ?> getFullState();
     @Property(selector = "setFullState:")
@@ -243,12 +227,12 @@ import org.robovm.apple.uikit.*;
      * @since Available in iOS 12.0 and later.
      */
     @Property(selector = "profileChangedBlock")
-    public native @Block VoidBlock4<Byte, Byte, MIDICIProfile, Boolean> getProfileChangedBlock();
+    public native ObjCBlock getProfileChangedBlock();
     /**
      * @since Available in iOS 12.0 and later.
      */
     @Property(selector = "setProfileChangedBlock:")
-    public native void setProfileChangedBlock(@Block VoidBlock4<Byte, Byte, MIDICIProfile, Boolean> v);
+    public native void setProfileChangedBlock(ObjCBlock v);
     @Property(selector = "canPerformInput")
     public native boolean canPerformInput();
     @Property(selector = "canPerformOutput")
@@ -347,21 +331,6 @@ import org.robovm.apple.uikit.*;
      */
     @Method(selector = "presetStateFor:error:")
     private native NSDictionary<NSString, ?> getPresetState(AUAudioUnitPreset userPreset, NSError.NSErrorPtr outError);
-    /**
-     * @since Available in iOS 12.0 and later.
-     */
-    @Method(selector = "profileStateForCable:channel:")
-    public native MIDICIProfileState getProfileState(byte cable, byte channel);
-    /**
-     * @since Available in iOS 12.0 and later.
-     */
-    @Method(selector = "enableProfile:cable:onChannel:error:")
-    public native boolean enableProfile(MIDICIProfile profile, byte cable, byte channel, NSError.NSErrorPtr outError);
-    /**
-     * @since Available in iOS 12.0 and later.
-     */
-    @Method(selector = "disableProfile:cable:onChannel:error:")
-    public native boolean disableProfile(MIDICIProfile profile, byte cable, byte channel, NSError.NSErrorPtr outError);
     /**
      * @since Available in iOS 16.0 and later.
      */

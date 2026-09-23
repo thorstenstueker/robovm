@@ -76,8 +76,7 @@ package java.lang;
  */
 public final class StringBuilder
     extends AbstractStringBuilder
-    implements java.io.Serializable, CharSequence
-{
+    implements java.io.Serializable, CharSequence, Comparable<StringBuilder> {
 
     /** use serialVersionUID for interoperability */
     static final long serialVersionUID = 4383685877147921099L;
@@ -442,4 +441,13 @@ public final class StringBuilder
         value = (char[]) s.readObject();
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Compares two {@code StringBuilder} instances lexicographically (Java 11).
+     */
+    @Override
+    public int compareTo(StringBuilder another) {
+        return CharSequence.compare(this, another);
+    }
 }

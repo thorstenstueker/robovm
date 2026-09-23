@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -79,6 +73,11 @@ import org.robovm.apple.symbols.*;
     void enumerateContainerBoundariesFromLocation(NSTextLocation location, boolean reverse, @Block VoidBlock2<NSTextLocation, BooleanPtr> block);
     @Method(selector = "textLayoutOrientationAtLocation:")
     NSTextSelectionNavigationLayoutOrientation textLayoutOrientationAtLocation(NSTextLocation location);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "convertInteractionPoint:toContainerAtLocation:")
+    @ByVal CGPoint convertInteractionPoint$toContainerAtLocation$(@ByVal CGPoint point, NSTextLocation containerLocation);
     /*</methods>*/
     /*<adapter>*/
     /*</adapter>*/

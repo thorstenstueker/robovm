@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -107,6 +105,46 @@ import org.robovm.apple.uikit.*;
      */
     @Property(selector = "setSpatialVideoCaptureEnabled:")
     public native void setSpatialVideoCaptureEnabled(boolean v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "isCinematicVideoMetadataCaptureSupported")
+    public native boolean isCinematicVideoMetadataCaptureSupported();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "automaticallyAdjustsCinematicVideoMetadataCaptureEnabled")
+    public native boolean automaticallyAdjustsCinematicVideoMetadataCaptureEnabled();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setAutomaticallyAdjustsCinematicVideoMetadataCaptureEnabled:")
+    public native void setAutomaticallyAdjustsCinematicVideoMetadataCaptureEnabled(boolean v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "isCinematicVideoMetadataCaptureEnabled")
+    public native boolean isCinematicVideoMetadataCaptureEnabled();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setCinematicVideoMetadataCaptureEnabled:")
+    public native void setCinematicVideoMetadataCaptureEnabled(boolean v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "isProVideoStorageSupported")
+    public native boolean isProVideoStorageSupported();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "usesProVideoStorage")
+    public native boolean usesProVideoStorage();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setUsesProVideoStorage:")
+    public native void setUsesProVideoStorage(boolean v);
     /*</properties>*/
     /*<members>*//*</members>*/
     /*<methods>*/

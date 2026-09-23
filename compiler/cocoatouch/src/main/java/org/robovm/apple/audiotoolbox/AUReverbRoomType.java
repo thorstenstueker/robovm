@@ -30,7 +30,6 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coreaudio.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.avfoundation.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
@@ -53,7 +52,11 @@ public enum /*<name>*/AUReverbRoomType/*</name>*/ implements ValuedEnum {
     LargeRoom2(9L),
     MediumHall2(10L),
     MediumHall3(11L),
-    LargeHall2(12L);
+    LargeHall2(12L),
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    OutdoorGeneral(24L);
     /*</values>*/
 
     /*<bind>*/

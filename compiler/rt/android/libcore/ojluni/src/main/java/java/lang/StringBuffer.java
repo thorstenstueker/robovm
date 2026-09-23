@@ -96,8 +96,7 @@ import java.util.Arrays;
  */
  public final class StringBuffer
     extends AbstractStringBuilder
-    implements java.io.Serializable, CharSequence
-{
+    implements java.io.Serializable, CharSequence, Comparable<StringBuffer> {
 
     /**
      * A cache of the last value returned by toString. Cleared
@@ -711,5 +710,15 @@ import java.util.Arrays;
         java.io.ObjectInputStream.GetField fields = s.readFields();
         value = (char[])fields.get("value", null);
         count = fields.get("count", 0);
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Compares two {@code StringBuffer} instances lexicographically (Java 11).
+     */
+    @Override
+    public int compareTo(StringBuffer another) {
+        return CharSequence.compare(this, another);
     }
 }

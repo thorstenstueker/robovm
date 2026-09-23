@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -118,6 +112,16 @@ import org.robovm.apple.symbols.*;
      */
     @NotImplemented("setMathExpressionCompletionType:")
     public void setMathExpressionCompletionType(UITextMathExpressionCompletionType v) {}
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @NotImplemented("grammarCheckingType")
+    public UITextGrammarCheckingType getGrammarCheckingType() { return null; }
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @NotImplemented("setGrammarCheckingType:")
+    public void setGrammarCheckingType(UITextGrammarCheckingType v) {}
     @NotImplemented("keyboardType")
     public UIKeyboardType getKeyboardType() { return null; }
     @NotImplemented("setKeyboardType:")

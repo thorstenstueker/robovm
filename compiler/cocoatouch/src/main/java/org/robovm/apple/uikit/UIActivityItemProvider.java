@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -82,15 +76,5 @@ import org.robovm.apple.symbols.*;
     public native String getDataTypeIdentifier(UIActivityViewController activityViewController, String activityType);
     @Method(selector = "activityViewController:thumbnailImageForActivityType:suggestedSize:")
     public native UIImage getThumbnailImage(UIActivityViewController activityViewController, String activityType, @ByVal CGSize size);
-    /**
-     * @since Available in iOS 13.0 and later.
-     */
-    @Method(selector = "activityViewControllerLinkMetadata:")
-    public native LPLinkMetadata activityViewControllerLinkMetadata(UIActivityViewController activityViewController);
-    /**
-     * @since Available in iOS 18.0 and later.
-     */
-    @Method(selector = "activityViewControllerShareRecipients:")
-    public native NSArray<INPerson> activityViewControllerShareRecipients(UIActivityViewController activityViewController);
     /*</methods>*/
 }

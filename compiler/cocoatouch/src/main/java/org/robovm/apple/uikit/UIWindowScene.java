@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -116,6 +110,16 @@ import org.robovm.apple.symbols.*;
     @Property(selector = "isFullScreen")
     public native boolean isFullScreen();
     /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "closureConfirmation")
+    public native UISceneClosureConfirmation getClosureConfirmation();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setClosureConfirmation:")
+    public native void setClosureConfirmation(UISceneClosureConfirmation v);
+    /**
      * @since Available in iOS 17.0 and later.
      */
     @Property(selector = "traitOverrides")
@@ -140,6 +144,11 @@ import org.robovm.apple.symbols.*;
      */
     @Method(selector = "requestGeometryUpdateWithPreferences:errorHandler:")
     public native void requestGeometryUpdate(UIWindowSceneGeometryPreferences geometryPreferences, @Block VoidBlock1<NSError> errorHandler);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "displayLinkWithTarget:selector:")
+    public native CADisplayLink displayLinkWithTarget$selector$(NSObject target, Selector sel);
     /**
      * @deprecated Deprecated in iOS 17.0. Use the trait change registration APIs declared in the UITraitChangeObservable protocol
      */

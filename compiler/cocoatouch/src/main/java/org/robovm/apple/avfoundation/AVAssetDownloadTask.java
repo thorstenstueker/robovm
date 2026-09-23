@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -72,14 +70,14 @@ import org.robovm.apple.uikit.*;
     public native NSURL getDestinationURL();
     /**
      * @since Available in iOS 9.0 and later.
-     * @deprecated Use AVAssetDownloadConfiguration instead
+     * @deprecated Deprecated in iOS 27.0. Use AVAssetDownloadConfiguration instead
      */
     @Deprecated
     @Property(selector = "options")
     public native AVAssetDownloadTaskOptions getOptions();
     /**
      * @since Available in iOS 9.0 and later.
-     * @deprecated Use NSURLSessionTask.progress instead
+     * @deprecated Deprecated in iOS 27.0. Use NSURLSessionTask.progress instead
      */
     @Deprecated
     @Property(selector = "loadedTimeRanges")

@@ -153,7 +153,15 @@ public class ProcessProxy extends Process {
             @Override
             public ExecutorService scheduleTask(Runnable r) {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.execute(r);
+                // shut the executor down once the task is complete, otherwise its non-daemon
+                // thread keeps the JVM alive after the process exited (or the launch failed)
+                executor.execute(() -> {
+                    try {
+                        r.run();
+                    } finally {
+                        executor.shutdown();
+                    }
+                });
                 return executor;
             }
 

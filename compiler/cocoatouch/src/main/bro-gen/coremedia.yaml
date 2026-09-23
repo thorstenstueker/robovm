@@ -1430,6 +1430,10 @@ values:
         name: 'Value__#{g[0]}'
 
 constants:
+    # tsbMobile, iOS 27 SDK (23.09.2026): new in the headers, not needed by the consumers, kept out so
+    # the generator neither dumps them into FIXME.java nor into the default class. Map instead of
+    # exclude when somebody needs them.
+    kCMClockError_PreferredStartTimeNotAvailable: {exclude: true}
     # CMBlockBuffer
     kCMBlockBufferCustomBlockSource(Version):
         class: CMBlockBufferCustomBlockSource

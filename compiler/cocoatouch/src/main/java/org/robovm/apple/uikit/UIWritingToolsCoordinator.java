@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -112,6 +106,21 @@ import org.robovm.apple.symbols.*;
     public native void update(@ByVal NSRange range, NSAttributedString replacementText, UIWritingToolsCoordinatorTextUpdateReason reason, NSUUID contextID);
     @Method(selector = "updateForReflowedTextInContextWithIdentifier:")
     public native void updateForReflowedTextInContext(NSUUID contextID);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "startTextAnimation:forRange:inContext:writingDirection:")
+    public native NSUUID startTextAnimation$forRange$inContext$writingDirection$(UIWritingToolsCoordinatorTextAnimation textAnimation, @ByVal NSRange range, UIWritingToolsCoordinatorContext context, NSWritingDirection writingDirection);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "cancelTextAnimationsWithIdentifiers:")
+    public native void cancelTextAnimationsWithIdentifiers(NSArray<NSUUID> identifiers);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "showGrammarPresentationForRange:inContext:")
+    public native boolean showGrammarPresentationForRange$inContext$(@ByVal NSRange range, UIWritingToolsCoordinatorContext context);
     @Method(selector = "willMoveToView:")
     public native void willMoveToView(UIView view);
     @Method(selector = "didMoveToView:")

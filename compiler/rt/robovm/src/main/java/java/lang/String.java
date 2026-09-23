@@ -31,6 +31,10 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
 import libcore.util.EmptyArray;
+import java.util.ArrayList;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An immutable sequence of characters/code units ({@code char}s). A
@@ -2339,5 +2343,265 @@ outer:
             }
             return start - sourceOffset + 1;
         }
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns {@code true} if the string is empty or contains only white space codepoints (Java 11).
+     */
+    public boolean isBlank() {
+        return indexOfNonWhitespace() == length();
+    }
+
+    private int indexOfNonWhitespace() {
+        int length = length();
+        int left = 0;
+        while (left < length) {
+            int codepoint = codePointAt(left);
+            if (codepoint != ' ' && codepoint != '\t' && !Character.isWhitespace(codepoint)) {
+                break;
+            }
+            left += Character.charCount(codepoint);
+        }
+        return left;
+    }
+
+    private int lastIndexOfNonWhitespace() {
+        int right = length();
+        while (0 < right) {
+            int codepoint = codePointBefore(right);
+            if (codepoint != ' ' && codepoint != '\t' && !Character.isWhitespace(codepoint)) {
+                break;
+            }
+            right -= Character.charCount(codepoint);
+        }
+        return right;
+    }
+
+    /**
+     * Returns a string whose value is this string, with all leading and trailing
+     * white space removed (Java 11).
+     */
+    public String strip() {
+        int left = indexOfNonWhitespace();
+        if (left == length()) {
+            return "";
+        }
+        int right = lastIndexOfNonWhitespace();
+        return ((left > 0) || (right < length())) ? substring(left, right) : this;
+    }
+
+    /**
+     * Returns a string whose value is this string, with all leading white space removed (Java 11).
+     */
+    public String stripLeading() {
+        int left = indexOfNonWhitespace();
+        return (left == length()) ? "" : (left != 0) ? substring(left) : this;
+    }
+
+    /**
+     * Returns a string whose value is this string, with all trailing white space removed (Java 11).
+     */
+    public String stripTrailing() {
+        int right = lastIndexOfNonWhitespace();
+        return (right == 0) ? "" : (right != length()) ? substring(0, right) : this;
+    }
+
+    /**
+     * Returns a stream of lines extracted from this string, separated by line terminators (Java 11).
+     */
+    public Stream<String> lines() {
+        ArrayList<String> result = new ArrayList<String>();
+        int length = length();
+        int start = 0;
+        int i = 0;
+        while (i < length) {
+            char c = charAt(i);
+            if (c == '\n' || c == '\r') {
+                result.add(substring(start, i));
+                if (c == '\r' && i + 1 < length && charAt(i + 1) == '\n') {
+                    i++;
+                }
+                start = i + 1;
+            }
+            i++;
+        }
+        if (start < length) {
+            result.add(substring(start));
+        }
+        return result.stream();
+    }
+
+    /**
+     * Returns a string whose value is the concatenation of this string repeated {@code count} times (Java 11).
+     */
+    public String repeat(int count) {
+        if (count < 0) {
+            throw new IllegalArgumentException("count is negative: " + count);
+        }
+        if (count == 1) {
+            return this;
+        }
+        final int len = length();
+        if (len == 0 || count == 0) {
+            return "";
+        }
+        if (Integer.MAX_VALUE / count < len) {
+            throw new OutOfMemoryError("Required length exceeds implementation limit");
+        }
+        StringBuilder sb = new StringBuilder(len * count);
+        for (int i = 0; i < count; i++) {
+            sb.append(this);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Adjusts the indentation of each line of this string based on the value of {@code n},
+     * and normalizes line termination characters (Java 12).
+     */
+    public String indent(int n) {
+        if (isEmpty()) {
+            return "";
+        }
+        Stream<String> stream = lines();
+        if (n > 0) {
+            final String spaces = " ".repeat(n);
+            stream = stream.map(s -> spaces + s);
+        } else if (n == Integer.MIN_VALUE) {
+            stream = stream.map(s -> s.stripLeading());
+        } else if (n < 0) {
+            stream = stream.map(s -> s.substring(Math.min(-n, s.indexOfNonWhitespace())));
+        }
+        return stream.collect(Collectors.joining("\n", "", "\n"));
+    }
+
+    private static int outdent(java.util.List<String> lines) {
+        // Note: outdent is guaranteed to be zero or positive
+        int outdent = Integer.MAX_VALUE;
+        for (String line : lines) {
+            int leadingWhitespace = line.indexOfNonWhitespace();
+            if (leadingWhitespace != line.length()) {
+                outdent = Integer.min(outdent, leadingWhitespace);
+            }
+        }
+        String lastLine = lines.get(lines.size() - 1);
+        if (lastLine.isBlank()) {
+            outdent = Integer.min(outdent, lastLine.length());
+        }
+        return outdent;
+    }
+
+    /**
+     * Returns a string whose value is this string, with incidental white space removed
+     * from the beginning and end of every line (Java 15).
+     */
+    public String stripIndent() {
+        int length = length();
+        if (length == 0) {
+            return "";
+        }
+        char lastChar = charAt(length - 1);
+        boolean optOut = lastChar == '\n' || lastChar == '\r';
+        java.util.List<String> lines = lines().collect(Collectors.toList());
+        final int outdent = optOut ? 0 : outdent(lines);
+        return lines.stream()
+            .map(line -> {
+                int firstNonWhitespace = line.indexOfNonWhitespace();
+                int lastNonWhitespace = line.lastIndexOfNonWhitespace();
+                int incidentalWhitespace = Math.min(outdent, firstNonWhitespace);
+                return firstNonWhitespace > lastNonWhitespace
+                    ? "" : line.substring(incidentalWhitespace, lastNonWhitespace);
+            })
+            .collect(Collectors.joining("\n", "", optOut ? "\n" : ""));
+    }
+
+    /**
+     * Returns a string whose value is this string, with escape sequences translated
+     * as if in a string literal (Java 15).
+     */
+    public String translateEscapes() {
+        if (isEmpty()) {
+            return "";
+        }
+        char[] chars = toCharArray();
+        int length = chars.length;
+        int from = 0;
+        int to = 0;
+        while (from < length) {
+            char ch = chars[from++];
+            if (ch == '\\') {
+                ch = from < length ? chars[from++] : '\0';
+                switch (ch) {
+                case 'b':
+                    ch = '\b';
+                    break;
+                case 'f':
+                    ch = '\f';
+                    break;
+                case 'n':
+                    ch = '\n';
+                    break;
+                case 'r':
+                    ch = '\r';
+                    break;
+                case 's':
+                    ch = ' ';
+                    break;
+                case 't':
+                    ch = '\t';
+                    break;
+                case '\'':
+                case '\"':
+                case '\\':
+                    // as is
+                    break;
+                case '0': case '1': case '2': case '3':
+                case '4': case '5': case '6': case '7':
+                    int limit = Integer.min(from + (ch <= '3' ? 2 : 1), length);
+                    int code = ch - '0';
+                    while (from < limit) {
+                        ch = chars[from];
+                        if (ch < '0' || '7' < ch) {
+                            break;
+                        }
+                        from++;
+                        code = (code << 3) | (ch - '0');
+                    }
+                    ch = (char)code;
+                    break;
+                case '\n':
+                    continue;
+                case '\r':
+                    if (from < length && chars[from] == '\n') {
+                        from++;
+                    }
+                    continue;
+                default: {
+                    String msg = String.format(
+                        "Invalid escape sequence: \\%c \\\\u%04X",
+                        ch, (int)ch);
+                    throw new IllegalArgumentException(msg);
+                }
+                }
+            }
+            chars[to++] = ch;
+        }
+        return new String(chars, 0, to);
+    }
+
+    /**
+     * This method allows the application of a function to {@code this} string (Java 12).
+     */
+    public <R> R transform(Function<? super String, ? extends R> f) {
+        return f.apply(this);
+    }
+
+    /**
+     * Formats using this string as the format string, and the supplied arguments (Java 15).
+     */
+    public String formatted(Object... args) {
+        return new Formatter().format(this, args).toString();
     }
 }

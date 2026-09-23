@@ -219,4 +219,17 @@ public class URLDecoder {
         return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
     }
     // END Android-added: App compat. Forbid non-hex chars after '%'.
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Decodes an {@code application/x-www-form-urlencoded} string using a specific Charset (Java 10).
+     */
+    public static String decode(String s, java.nio.charset.Charset charset) {
+        try {
+            return decode(s, charset.name());
+        } catch (java.io.UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 }

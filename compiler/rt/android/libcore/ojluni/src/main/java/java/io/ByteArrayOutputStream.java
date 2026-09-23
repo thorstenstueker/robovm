@@ -280,4 +280,19 @@ public class ByteArrayOutputStream extends OutputStream {
     public void close() throws IOException {
     }
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Writes the complete contents of the specified byte array to this output stream (Java 11).
+     */
+    public void writeBytes(byte[] b) {
+        write(b, 0, b.length);
+    }
+
+    /**
+     * Converts the buffer's contents into a string by decoding the bytes using the specified charset (Java 10).
+     */
+    public synchronized String toString(java.nio.charset.Charset charset) {
+        return new String(buf, 0, count, charset);
+    }
 }

@@ -42,7 +42,7 @@ class RoboVmSdkType : SdkType(SDK_NAME) {
         val SUGGESTED_SDK_NAME = if (RoboVmLocations.roboVmHome.isDev) "$SDK_NAME (DEV)" else SDK_NAME
 
         @JvmField
-        val REQUIRED_JAVA_LANGUAGE_LEVEL: LanguageLevel = LanguageLevel.JDK_1_8
+        val REQUIRED_JAVA_LANGUAGE_LEVEL: LanguageLevel = LanguageLevel.JDK_17
 
         /**
          * Setups RoboVM SDK

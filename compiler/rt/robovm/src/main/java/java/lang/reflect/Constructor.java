@@ -354,6 +354,15 @@ public final class Constructor<T> extends AccessibleObject implements GenericDec
      *
      * @return the parameter types
      */
+    /**
+     * Returns the number of formal parameters of this constructor.
+     *
+     * @since 1.8
+     */
+    public int getParameterCount() {
+        return getParameterTypes().length;
+    }
+
     public Class<?>[] getParameterTypes() {
         return getParameterTypes(true);
     }

@@ -116,4 +116,15 @@ public interface Predicate<T> {
                 ? Objects::isNull
                 : object -> targetRef.equals(object);
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns a predicate that is the negation of the supplied predicate (Java 11).
+     */
+    @SuppressWarnings("unchecked")
+    static <T> Predicate<T> not(Predicate<? super T> target) {
+        Objects.requireNonNull(target);
+        return (Predicate<T>)target.negate();
+    }
 }

@@ -30,11 +30,9 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.imageio.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 import org.robovm.apple.avfoundation.*;
 /*</imports>*/
@@ -148,7 +146,7 @@ import org.robovm.apple.avfoundation.*;
         @GlobalValue(symbol="kCIImageColorSpace", optional=true)
         public static native CFString ColorSpace();
         /**
-         * @since Available in iOS 19.0 and later.
+         * @since Available in iOS 26.0 and later.
          */
         @GlobalValue(symbol="kCIImageApplyCleanAperture", optional=true)
         public static native CFString ApplyCleanAperture();
@@ -168,7 +166,7 @@ import org.robovm.apple.avfoundation.*;
         @GlobalValue(symbol="kCIImageContentHeadroom", optional=true)
         public static native CFString ContentHeadroom();
         /**
-         * @since Available in iOS 19.0 and later.
+         * @since Available in iOS 26.0 and later.
          */
         @GlobalValue(symbol="kCIImageContentAverageLightLevel", optional=true)
         public static native CFString ContentAverageLightLevel();
@@ -186,6 +184,21 @@ import org.robovm.apple.avfoundation.*;
          */
         @GlobalValue(symbol="kCIImageApplyOrientationProperty", optional=true)
         public static native CFString ApplyOrientationProperty();
+        /**
+         * @since Available in iOS 27.0 and later.
+         */
+        @GlobalValue(symbol="kCIImageSubsampleFactor", optional=true)
+        public static native CFString SubsampleFactor();
+        /**
+         * @since Available in iOS 27.0 and later.
+         */
+        @GlobalValue(symbol="kCIImageTypeIdentifierHint", optional=true)
+        public static native CFString TypeIdentifierHint();
+        /**
+         * @since Available in iOS 27.0 and later.
+         */
+        @GlobalValue(symbol="kCIImageUseHardwareAcceleration", optional=true)
+        public static native CFString UseHardwareAcceleration();
         /**
          * @since Available in iOS 11.0 and later.
          */

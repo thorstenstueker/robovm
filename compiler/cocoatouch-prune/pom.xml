@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.mobidevelop.robovm</groupId>
+        <artifactId>robovm-compiler-parent</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>robovm-cocoatouch-prune</artifactId>
+    <name>RoboVM Cocoa Touch Bindings Pruner</name>
+    <packaging>jar</packaging>
+
+    <!-- Cuts the compiled CocoaTouch bindings down to what the tsbMobile consumers reach: a seed
+         list, a closure over every class reference, an exclusion list of frameworks whose members
+         are stripped from kept classes. Runs in compiler/cocoatouch's process-classes phase, see
+         compiler/cocoatouch/prune/UPDATE.md. The sources of the bindings stay identical to upstream,
+         which is what keeps `git merge upstream/dev/3.0.0` conflict-free. -->
+
+    <dependencies>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-tree</artifactId>
+            <version>9.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+</project>

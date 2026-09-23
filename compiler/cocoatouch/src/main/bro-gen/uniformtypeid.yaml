@@ -1,5 +1,5 @@
 package: org.robovm.apple.uniformtypeid
-include: [foundation, uikit]
+include: [foundation.yaml, uikit.yaml]
 library: UniformTypeIdentifiers
 framework: UniformTypeIdentifiers
 clang_args: ['-x', 'objective-c']

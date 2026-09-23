@@ -276,12 +276,19 @@ public class TrampolineCompiler {
     
     private void createTrampolineAliasForMethod(Invoke t, SootMethod rm) {
         String fnName = null;
-        if (t instanceof Invokeinterface) {
+        /*
+         * Private methods are never dispatched dynamically: no vtable/itable lookup wrappers
+         * are generated for them. Since Java 11 (JEP 181, nest based access control) javac
+         * emits invokevirtual for private methods of nestmates and invokeinterface for private
+         * interface methods, so such invokes have to be bound directly to the method.
+         */
+        boolean isPrivate = Modifier.isPrivate(rm.getModifiers());
+        if (t instanceof Invokeinterface && !isPrivate) {
             fnName = Symbols.lookupWrapperSymbol(rm);
         } else if (t instanceof Invokevirtual 
                 && !Modifier.isFinal(rm.getDeclaringClass().getModifiers()) 
                 && !Modifier.isFinal(rm.getModifiers())
-                && !Modifier.isPrivate(rm.getModifiers())) {
+                && !isPrivate) {
             fnName = Symbols.lookupWrapperSymbol(rm);
         } else if (rm.isSynchronized()) {
             fnName = Symbols.synchronizedWrapperSymbol(rm);
@@ -467,6 +474,9 @@ public class TrampolineCompiler {
     }
     
     private void throwNoSuchMethodError(Function f, Invoke invoke) {
+        config.getLogger().warn("Unresolved method %s.%s%s referenced from %s: NoSuchMethodError will be thrown at runtime",
+                invoke.getTarget().replace('/', '.'), invoke.getMethodName(), invoke.getMethodDesc(),
+                invoke.getCallingClass().replace('/', '.'));
         call(f, BC_THROW_NO_SUCH_METHOD_ERROR, f.getParameterRef(0), 
                 mb.getString(String.format(NO_SUCH_METHOD_ERROR, 
                         invoke.getTarget().replace('/', '.'), 
@@ -475,6 +485,9 @@ public class TrampolineCompiler {
     }
     
     private void throwNoSuchFieldError(Function f, FieldAccessor accessor) {
+        config.getLogger().warn("Unresolved field %s.%s referenced from %s: NoSuchFieldError will be thrown at runtime",
+                accessor.getTarget().replace('/', '.'), accessor.getFieldName(),
+                accessor.getCallingClass().replace('/', '.'));
         call(f, BC_THROW_NO_SUCH_FIELD_ERROR, f.getParameterRef(0), 
                 mb.getString(String.format(NO_SUCH_FIELD_ERROR, 
                         accessor.getTarget().replace('/', '.'), 

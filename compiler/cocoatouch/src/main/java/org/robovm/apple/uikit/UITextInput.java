@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -97,6 +91,11 @@ import org.robovm.apple.symbols.*;
      */
     @Property(selector = "isEditable")
     boolean isEditable();
+    /**
+     * @since Available in iOS 26.4 and later.
+     */
+    @Property(selector = "unobscuredContentRect")
+    @ByVal CGRect getUnobscuredContentRect();
     /*</properties>*/
     /*<methods>*/
     @Method(selector = "textInRange:")

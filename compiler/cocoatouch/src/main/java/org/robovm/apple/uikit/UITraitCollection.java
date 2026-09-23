@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -224,6 +218,11 @@ import org.robovm.apple.symbols.*;
      */
     @Property(selector = "resolvesNaturalAlignmentWithBaseWritingDirection")
     public native boolean isResolvesNaturalAlignmentWithBaseWritingDirection();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "systemPrefersReducedResourceUsage")
+    public native boolean isSystemPrefersReducedResourceUsage();
     @Property(selector = "systemTraitsAffectingColorAppearance")
     public static native NSArray<?> getSystemTraitsAffectingColorAppearance();
     @Property(selector = "systemTraitsAffectingImageLookup")
@@ -352,6 +351,11 @@ import org.robovm.apple.symbols.*;
      */
     @Method(selector = "traitCollectionWithResolvesNaturalAlignmentWithBaseWritingDirection:")
     protected static native @Pointer long create(boolean resolvesNaturalAlignmentWithBaseWritingDirection);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "traitCollectionWithSystemPrefersReducedResourceUsage:")
+    public static native UITraitCollection traitCollectionWithSystemPrefersReducedResourceUsage(boolean systemPrefersReducedResourceUsage);
     @Method(selector = "traitCollectionByModifyingTraits:")
     public native UITraitCollection traitCollectionByModifyingTraits(@Block VoidBlock1<UIMutableTraits> mutations);
     @Method(selector = "traitCollectionByReplacingCGFloatValue:forTrait:")

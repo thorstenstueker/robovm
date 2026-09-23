@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -91,6 +85,10 @@ import org.robovm.apple.symbols.*;
     public native void setState(UIMenuElementState v);
     @Property(selector = "alternates")
     public native NSArray<UICommandAlternate> getAlternates();
+    @Property(selector = "subtitle")
+    public native String getSubtitle();
+    @Property(selector = "setSubtitle:")
+    public native void setSubtitle(String v);
     /**
      * @since Available in iOS 17.0 and later.
      */
@@ -101,6 +99,16 @@ import org.robovm.apple.symbols.*;
      */
     @Property(selector = "setSelectedImage:")
     public native void setSelectedImage(UIImage v);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "preferredImageVisibility")
+    public native UIMenuElementImageVisibility getPreferredImageVisibility();
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Property(selector = "setPreferredImageVisibility:")
+    public native void setPreferredImageVisibility(UIMenuElementImageVisibility v);
     @Property(selector = "repeatBehavior")
     public native UIMenuElementRepeatBehavior getRepeatBehavior();
     @Property(selector = "setRepeatBehavior:")

@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -76,6 +70,16 @@ import org.robovm.apple.symbols.*;
     public native @org.robovm.rt.bro.annotation.Marshaler(NSArray.AsStringListMarshaler.class) List<String> getCompletionsForPartialWord(@ByVal NSRange range, String string, String language);
     @Method(selector = "ignoreWord:")
     public native void ignoreWord(String wordToIgnore);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "requestGrammarCheckingOfString:range:waitForAllResults:completionHandler:")
+    public native void requestGrammarCheckingOfString$range$waitForAllResults$completionHandler$(String stringToCheck, @ByVal NSRange range, boolean waitForAllResults, @Block VoidBlock1<NSArray<NSTextCheckingResult>> completionHandler);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "ignoreGrammarRange:inSentence:")
+    public native void ignoreGrammarRange$inSentence$(@ByVal NSRange grammarRange, String sentence);
     @Method(selector = "learnWord:")
     public static native void learnWord(String word);
     @Method(selector = "hasLearnedWord:")

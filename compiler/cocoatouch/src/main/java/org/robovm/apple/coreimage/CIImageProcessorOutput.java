@@ -30,11 +30,9 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.imageio.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 import org.robovm.apple.avfoundation.*;
 /*</imports>*/
@@ -66,10 +64,6 @@ import org.robovm.apple.avfoundation.*;
     IOSurface getSurface();
     @Property(selector = "pixelBuffer")
     CVPixelBuffer getPixelBuffer();
-    @Property(selector = "metalTexture")
-    MTLTexture getMetalTexture();
-    @Property(selector = "metalCommandBuffer")
-    MTLCommandBuffer getMetalCommandBuffer();
     /**
      * @since Available in iOS 16.0 and later.
      */
@@ -77,7 +71,16 @@ import org.robovm.apple.avfoundation.*;
     long getDigest();
     /*</properties>*/
     /*<methods>*/
-    
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "temporarySurfaceWithIdentifier:format:width:height:")
+    IOSurface temporarySurfaceWithIdentifier$format$width$height$(String identifier, int format, @MachineSizedUInt long width, @MachineSizedUInt long height);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "temporaryPixelBufferWithIdentifier:format:width:height:attributes:")
+    CVPixelBuffer temporaryPixelBufferWithIdentifier$format$width$height$attributes$(String identifier, int format, @MachineSizedUInt long width, @MachineSizedUInt long height, NSDictionary<?, ?> attributes);
     /*</methods>*/
     /*<adapter>*/
     /*</adapter>*/

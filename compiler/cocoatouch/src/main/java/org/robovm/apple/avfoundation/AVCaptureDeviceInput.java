@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -144,6 +142,21 @@ import org.robovm.apple.uikit.*;
      */
     @Property(selector = "setWindNoiseRemovalEnabled:")
     public native void setWindNoiseRemovalEnabled(boolean v);
+    /**
+     * @since Available in iOS 26.4 and later.
+     */
+    @Property(selector = "isAudioZoomSupported")
+    public native boolean isAudioZoomSupported();
+    /**
+     * @since Available in iOS 26.4 and later.
+     */
+    @Property(selector = "isAudioZoomEnabled")
+    public native boolean isAudioZoomEnabled();
+    /**
+     * @since Available in iOS 26.4 and later.
+     */
+    @Property(selector = "setAudioZoomEnabled:")
+    public native void setAudioZoomEnabled(boolean v);
     /**
      * @since Available in iOS 26.0 and later.
      */

@@ -1,5 +1,7 @@
 package: org.robovm.apple.corevideo
-include: [foundation.yaml, corefoundation.yaml, coregraphics.yaml, opengles.yaml, metal.yaml, iosurface.yaml]
+# tsbMobile (23.09.2026): the bindings are ours and only these frameworks exist; members typed with
+# a class of opengles, metal are skipped by the generator and listed in bro-gen/skipped.txt.
+include: [foundation.yaml, corefoundation.yaml, coregraphics.yaml, iosurface.yaml]
 library: CoreVideo
 framework: CoreVideo
 clang_args: ['-x', 'objective-c', '-DCOREVIDEO_USE_DERIVED_ENUMS_FOR_CONSTANTS=1']

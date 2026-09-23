@@ -12,6 +12,10 @@
     <name>RoboVM Cocoa Touch Bindings</name>
     <packaging>jar</packaging>
 
+    <properties>
+        <cocoatouch.prune.skip>false</cocoatouch.prune.skip>
+    </properties>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -37,12 +41,6 @@
     </dependencies>
 
     <build>
-        <!-- adds META-INF/robovm.xml where available -->
-        <resources>
-            <resource>
-                <directory>src/main/robopods</directory>
-            </resource>
-        </resources>
 
         <plugins>
             <plugin>
@@ -56,6 +54,7 @@
                     <compilerArgs>
                         <arg>-bootclasspath</arg>
                         <arg>""</arg>
+                        <arg>-Xlint:-options</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -76,19 +75,37 @@
                     <nodeprecated>true</nodeprecated>
                 </configuration>
             </plugin>
+            <!-- The cut: after javac, before the jar. The sources are upstream's, unchanged; what the
+                 jar contains is decided by prune/seeds.txt and prune/exclude.txt, and prune/report.txt
+                 says what happened. See prune/UPDATE.md. -Dcocoatouch.prune.skip=true gives the full jar. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.mobidevelop.robovm</groupId>
+                        <artifactId>robovm-cocoatouch-prune</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
-                        <id>build-binaries</id>
-                        <phase>generate-resources</phase>
+                        <id>prune-bindings</id>
+                        <phase>process-classes</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>java</goal>
                         </goals>
                         <configuration>
-                            <workingDirectory>${project.basedir}</workingDirectory>
-                            <executable>${project.basedir}/build-natives.sh</executable>
+                            <skip>${cocoatouch.prune.skip}</skip>
+                            <mainClass>org.robovm.cocoatouch.prune.Prune</mainClass>
+                            <includeProjectDependencies>false</includeProjectDependencies>
+                            <includePluginDependencies>true</includePluginDependencies>
+                            <arguments>
+                                <argument>${project.build.outputDirectory}</argument>
+                                <argument>${project.basedir}/prune/seeds.txt</argument>
+                                <argument>${project.basedir}/prune/exclude.txt</argument>
+                                <argument>${project.basedir}/prune/report.txt</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

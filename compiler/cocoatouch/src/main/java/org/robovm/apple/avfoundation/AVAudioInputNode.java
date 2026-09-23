@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -159,6 +157,11 @@ import org.robovm.apple.uikit.*;
      */
     @Method(selector = "setManualRenderingInputPCMFormat:inputBlock:")
     public native boolean setManualRenderingInputPCMFormat(AVAudioFormat format, @Block Block1<Integer, AudioBufferList> block);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "setRealtimeSafeManualRenderingInputPCMFormat:inputBlock:")
+    public native boolean setRealtimeSafeManualRenderingInputPCMFormat$inputBlock$(AVAudioFormat format, @Block Block1<Integer, AudioBufferList> block);
     /**
      * @since Available in iOS 17.0 and later.
      */

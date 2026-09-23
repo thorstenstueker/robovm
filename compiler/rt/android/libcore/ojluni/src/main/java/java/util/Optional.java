@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 // Android-changed: removed ValueBased paragraph.
 /**
@@ -341,5 +342,63 @@ public final class Optional<T> {
         return value != null
             ? String.format("Optional[%s]", value)
             : "Optional.empty";
+    }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * If a value is not present, returns {@code true}, otherwise {@code false} (Java 11).
+     */
+    public boolean isEmpty() {
+        return value == null;
+    }
+
+    /**
+     * If a value is present, performs the given action with the value, otherwise performs
+     * the given empty-based action (Java 9).
+     */
+    public void ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction) {
+        if (value != null) {
+            action.accept(value);
+        } else {
+            emptyAction.run();
+        }
+    }
+
+    /**
+     * If a value is present, returns an {@code Optional} describing the value, otherwise returns
+     * an {@code Optional} produced by the supplying function (Java 9).
+     */
+    @SuppressWarnings("unchecked")
+    public Optional<T> or(Supplier<? extends Optional<? extends T>> supplier) {
+        Objects.requireNonNull(supplier);
+        if (isPresent()) {
+            return this;
+        } else {
+            Optional<T> r = (Optional<T>) supplier.get();
+            return Objects.requireNonNull(r);
+        }
+    }
+
+    /**
+     * If a value is present, returns a sequential {@link Stream} containing only that value,
+     * otherwise returns an empty {@code Stream} (Java 9).
+     */
+    public Stream<T> stream() {
+        if (!isPresent()) {
+            return Stream.empty();
+        } else {
+            return Stream.of(value);
+        }
+    }
+
+    /**
+     * If a value is present, returns the value, otherwise throws {@code NoSuchElementException} (Java 10).
+     */
+    public T orElseThrow() {
+        if (value == null) {
+            throw new NoSuchElementException("No value present");
+        }
+        return value;
     }
 }

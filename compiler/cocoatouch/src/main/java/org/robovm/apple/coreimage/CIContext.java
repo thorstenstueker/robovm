@@ -30,11 +30,9 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.opengles.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.imageio.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 import org.robovm.apple.avfoundation.*;
 /*</imports>*/
@@ -59,32 +57,6 @@ import org.robovm.apple.avfoundation.*;
     public CIContext(CGContext cgctx, CIContextOptions options) { super((Handle) null, create(cgctx, options)); retain(getHandle()); }
     public CIContext(CIContextOptions options) { super((Handle) null, create(options)); retain(getHandle()); }
     public CIContext() { super((Handle) null, create()); retain(getHandle()); }
-    /**
-     * @deprecated Deprecated in iOS 12.0. Core Image OpenGLES API deprecated. (Define CI_SILENCE_GL_DEPRECATION to silence these warnings)
-     */
-    @Deprecated
-    public CIContext(EAGLContext eaglContext) { super((Handle) null, create(eaglContext)); retain(getHandle()); }
-    /**
-     * @deprecated Deprecated in iOS 12.0. Core Image OpenGLES API deprecated. (Define CI_SILENCE_GL_DEPRECATION to silence these warnings)
-     */
-    @Deprecated
-    public CIContext(EAGLContext eaglContext, CIContextOptions options) { super((Handle) null, create(eaglContext, options)); retain(getHandle()); }
-    /**
-     * @since Available in iOS 9.0 and later.
-     */
-    public CIContext(MTLDevice device) { super((Handle) null, create(device)); retain(getHandle()); }
-    /**
-     * @since Available in iOS 9.0 and later.
-     */
-    public CIContext(MTLDevice device, CIContextOptions options) { super((Handle) null, create(device, options)); retain(getHandle()); }
-    /**
-     * @since Available in iOS 13.0 and later.
-     */
-    public CIContext(MTLCommandQueue commandQueue) { super((Handle) null, create(commandQueue)); retain(getHandle()); }
-    /**
-     * @since Available in iOS 13.0 and later.
-     */
-    public CIContext(MTLCommandQueue commandQueue, CIContextOptions options) { super((Handle) null, create(commandQueue, options)); retain(getHandle()); }
     /*</constructors>*/
     
     /*<properties>*/
@@ -116,12 +88,6 @@ import org.robovm.apple.avfoundation.*;
     @Method(selector = "render:toCVPixelBuffer:bounds:colorSpace:")
     public native void render(CIImage image, CVPixelBuffer buffer, @ByVal CGRect bounds, CGColorSpace colorSpace);
     /**
-     * @since Available in iOS 9.0 and later.
-     */
-    @WeaklyLinked
-    @Method(selector = "render:toMTLTexture:commandBuffer:bounds:colorSpace:")
-    public native void render(CIImage image, MTLTexture texture, MTLCommandBuffer commandBuffer, @ByVal CGRect bounds, CGColorSpace colorSpace);
-    /**
      * @since Available in iOS 10.0 and later.
      */
     @Method(selector = "clearCaches")
@@ -139,38 +105,6 @@ import org.robovm.apple.avfoundation.*;
     protected static native @Pointer long create(CIContextOptions options);
     @Method(selector = "context")
     protected static native @Pointer long create();
-    /**
-     * @deprecated Deprecated in iOS 12.0. Core Image OpenGLES API deprecated. (Define CI_SILENCE_GL_DEPRECATION to silence these warnings)
-     */
-    @Deprecated
-    @Method(selector = "contextWithEAGLContext:")
-    protected static native @Pointer long create(EAGLContext eaglContext);
-    /**
-     * @deprecated Deprecated in iOS 12.0. Core Image OpenGLES API deprecated. (Define CI_SILENCE_GL_DEPRECATION to silence these warnings)
-     */
-    @Deprecated
-    @Method(selector = "contextWithEAGLContext:options:")
-    protected static native @Pointer long create(EAGLContext eaglContext, CIContextOptions options);
-    /**
-     * @since Available in iOS 9.0 and later.
-     */
-    @Method(selector = "contextWithMTLDevice:")
-    protected static native @Pointer long create(MTLDevice device);
-    /**
-     * @since Available in iOS 9.0 and later.
-     */
-    @Method(selector = "contextWithMTLDevice:options:")
-    protected static native @Pointer long create(MTLDevice device, CIContextOptions options);
-    /**
-     * @since Available in iOS 13.0 and later.
-     */
-    @Method(selector = "contextWithMTLCommandQueue:")
-    protected static native @Pointer long create(MTLCommandQueue commandQueue);
-    /**
-     * @since Available in iOS 13.0 and later.
-     */
-    @Method(selector = "contextWithMTLCommandQueue:options:")
-    protected static native @Pointer long create(MTLCommandQueue commandQueue, CIContextOptions options);
     @WeaklyLinked
     @Method(selector = "createCGImage:fromRect:")
     public native @org.robovm.rt.bro.annotation.Marshaler(CFType.NoRetainMarshaler.class) CGImage createCGImage(CIImage image, @ByVal CGRect fromRect);
@@ -184,28 +118,28 @@ import org.robovm.apple.avfoundation.*;
     @Method(selector = "createCGImage:fromRect:format:colorSpace:deferred:")
     public native @org.robovm.rt.bro.annotation.Marshaler(CFType.NoRetainMarshaler.class) CGImage createCGImage(CIImage image, @ByVal CGRect fromRect, int format, CGColorSpace colorSpace, boolean deferred);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @WeaklyLinked
     @Method(selector = "createCGImage:fromRect:format:colorSpace:deferred:calculateHDRStats:")
     public native @org.robovm.rt.bro.annotation.Marshaler(CFType.NoRetainMarshaler.class) CGImage createCGImage(CIImage image, @ByVal CGRect fromRect, int format, CGColorSpace colorSpace, boolean deferred, boolean calculateHDRStats);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "calculateHDRStatsForIOSurface:")
     public native void calculateHDRStatsForIOSurface(IOSurface surface);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "calculateHDRStatsForCVPixelBuffer:")
     public native void calculateHDRStatsForCVPixelBuffer(CVPixelBuffer buffer);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "calculateHDRStatsForCGImage:")
     public native CGImage calculateHDRStatsForCGImage(CGImage cgimage);
     /**
-     * @since Available in iOS 19.0 and later.
+     * @since Available in iOS 26.0 and later.
      */
     @Method(selector = "calculateHDRStatsForImage:")
     public native CIImage calculateHDRStatsForImage(CIImage image);
@@ -309,6 +243,11 @@ import org.robovm.apple.avfoundation.*;
      */
     @Method(selector = "prepareRender:fromRect:toDestination:atPoint:error:")
     public native boolean prepareRender(CIImage image, @ByVal CGRect fromRect, CIRenderDestination destination, @ByVal CGPoint atPoint, NSError.NSErrorPtr error);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "estimateRender:fromRect:toDestination:atPoint:error:")
+    public native CIRenderTask estimateRender$fromRect$toDestination$atPoint$error$(CIImage image, @ByVal CGRect fromRect, CIRenderDestination destination, @ByVal CGPoint atPoint, NSError.NSErrorPtr error);
     /**
      * @since Available in iOS 11.0 and later.
      */

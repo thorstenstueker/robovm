@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -104,7 +102,7 @@ import org.robovm.apple.uikit.*;
     @Method(selector = "initWithURL:options:")
     protected native @Pointer long init(NSURL URL, AVURLAssetOptions options);
     /**
-     * @deprecated Use audiovisualContentTypes instead
+     * @deprecated Deprecated in iOS 27.0. Use audiovisualContentTypes instead
      */
     @Deprecated
     @Method(selector = "audiovisualTypes")

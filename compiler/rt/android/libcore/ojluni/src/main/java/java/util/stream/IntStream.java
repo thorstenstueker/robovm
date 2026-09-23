@@ -909,4 +909,82 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
          */
         IntStream build();
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns a stream consisting of the longest prefix of elements taken from this stream that
+     * match the given predicate (Java 9).
+     */
+    default IntStream takeWhile(IntPredicate predicate) {
+        Objects.requireNonNull(predicate);
+        return boxed().takeWhile(v -> predicate.test(v)).mapToInt(Integer::intValue);
+    }
+
+    /**
+     * Returns a stream consisting of the remaining elements of this stream after dropping the
+     * longest prefix of elements that match the given predicate (Java 9).
+     */
+    default IntStream dropWhile(IntPredicate predicate) {
+        Objects.requireNonNull(predicate);
+        return boxed().dropWhile(v -> predicate.test(v)).mapToInt(Integer::intValue);
+    }
+
+    /**
+     * Returns a stream consisting of the results of replacing each element of this stream with
+     * multiple elements, specifically zero or more elements (Java 16).
+     */
+    default IntStream mapMulti(IntMapMultiConsumer mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMap(e -> {
+            IntStream.Builder buffer = IntStream.builder();
+            mapper.accept(e, buffer);
+            return buffer.build();
+        });
+    }
+
+    /**
+     * Represents an operation that accepts a {@code int}-valued argument and a
+     * {@code IntConsumer}, and returns no result (Java 16).
+     */
+    @FunctionalInterface
+    interface IntMapMultiConsumer {
+        void accept(int value, IntConsumer ic);
+    }
+
+    /**
+     * Returns a sequential ordered {@code IntStream} produced by iterative application of the given
+     * {@code next} function to an initial element, conditioned on satisfying the given
+     * {@code hasNext} predicate (Java 9).
+     */
+    public static IntStream iterate(int seed, IntPredicate hasNext, IntUnaryOperator next) {
+        Objects.requireNonNull(next);
+        Objects.requireNonNull(hasNext);
+        Spliterator.OfInt spliterator = new Spliterators.AbstractIntSpliterator(Long.MAX_VALUE,
+               Spliterator.ORDERED | Spliterator.IMMUTABLE) {
+            int prev;
+            boolean started, finished;
+
+            @Override
+            public boolean tryAdvance(IntConsumer action) {
+                Objects.requireNonNull(action);
+                if (finished)
+                    return false;
+                int t;
+                if (started)
+                    t = next.applyAsInt(prev);
+                else {
+                    t = seed;
+                    started = true;
+                }
+                if (!hasNext.test(t)) {
+                    finished = true;
+                    return false;
+                }
+                action.accept(prev = t);
+                return true;
+            }
+        };
+        return StreamSupport.intStream(spliterator, false);
+    }
 }

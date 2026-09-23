@@ -65,3 +65,9 @@ released under the Apache License 2.0. http://hc.apache.org
 The RoboVM Runtime Library includes the OkHttp library which is copyright 2014
 Square, Inc. and released under the Apache License 2.0.
 http://square.github.io/okhttp/
+
+The RoboVM Runtime Library includes code derived from OpenJDK 17 (java.util.HexFormat,
+java.lang.Runtime.Version and Java 9 - 17 additions to existing classes, marked with
+"RoboVM Note: added for Java 17 API parity") which is copyright Oracle and/or its
+affiliates and released under the GNU General Public License version 2 with the
+Classpath exception, see LICENSE_GPL_CE.txt.

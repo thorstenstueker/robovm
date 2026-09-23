@@ -28,9 +28,7 @@ import org.robovm.rt.bro.*;
 import org.robovm.rt.bro.annotation.*;
 import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
-import org.robovm.apple.addressbook.*;
 import org.robovm.apple.corebluetooth.*;
-import org.robovm.apple.contacts.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -43,7 +41,11 @@ public enum /*<name>*/CLLiveUpdateConfiguration/*</name>*/ implements ValuedEnum
     AutomotiveNavigation(1L),
     OtherNavigation(2L),
     Fitness(3L),
-    Airborne(4L);
+    Airborne(4L),
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    Maritime(5L);
     /*</values>*/
 
     /*<bind>*/

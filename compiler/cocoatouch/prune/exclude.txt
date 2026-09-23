@@ -1,0 +1,8 @@
+# Frameworks the bindings never keep: a kept class loses every field and method whose descriptor,
+# signature, exceptions or annotations name one of these; a kept class that extends or implements
+# one of these fails the build. Package names under org.robovm.apple, "*" matches anything.
+#
+# Empty since 23.09.2026: the sources under src/main/java hold only the 22 frameworks the fork
+# binds (see bro-gen/generate.sh), so there is nothing left to exclude — the cut only drops the
+# classes of those 22 that no seed reaches. The report's "stripped 0 members" and "0 classes with
+# phantom references" lines are the check that this stays true.

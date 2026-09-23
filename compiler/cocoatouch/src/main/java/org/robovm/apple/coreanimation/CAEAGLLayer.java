@@ -31,8 +31,6 @@ import org.robovm.apple.foundation.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
-import org.robovm.apple.opengles.*;
-import org.robovm.apple.metal.*;
 import org.robovm.apple.corevideo.*;
 /*</imports>*/
 
@@ -44,7 +42,7 @@ import org.robovm.apple.corevideo.*;
 /*<annotations>*/@Library("QuartzCore") @NativeClass @Deprecated @WeaklyLinked/*</annotations>*/
 /*<visibility>*/public/*</visibility>*/ class /*<name>*/CAEAGLLayer/*</name>*/ 
     extends /*<extends>*/CALayer/*</extends>*/ 
-    /*<implements>*/implements EAGLDrawable/*</implements>*/ {
+    /*<implements>*//*</implements>*/ {
 
     /*<ptr>*/public static class CAEAGLLayerPtr extends Ptr<CAEAGLLayer, CAEAGLLayerPtr> {}/*</ptr>*/
     /*<bind>*/static { ObjCRuntime.bind(CAEAGLLayer.class); }/*</bind>*/
@@ -67,10 +65,6 @@ import org.robovm.apple.corevideo.*;
      */
     @Property(selector = "setPresentsWithTransaction:")
     public native void setPresentsWithTransaction(boolean v);
-    @Property(selector = "drawableProperties")
-    public native EAGLDrawableProperties getDrawableProperties();
-    @Property(selector = "setDrawableProperties:")
-    public native void setDrawableProperties(EAGLDrawableProperties v);
     @Property(selector = "supportsSecureCoding")
     public static native boolean supportsSecureCoding();
     /*</properties>*/

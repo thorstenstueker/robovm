@@ -655,23 +655,6 @@ import org.robovm.apple.dispatch.*;
         set(Keys.UseAuthenticationUI(), CFBoolean.valueOf(usesAuthenticationUI));
         return this;
     }
-    /**
-     * @since Available in iOS 9.0 and later.
-     */
-    public org.robovm.apple.localauthentication.LAContext getUseAuthenticationContext() {
-        if (has(Keys.UseAuthenticationContext())) {
-            org.robovm.apple.localauthentication.LAContext val = get(Keys.UseAuthenticationContext(), org.robovm.apple.localauthentication.LAContext.class);
-            return val;
-        }
-        return null;
-    }
-    /**
-     * @since Available in iOS 9.0 and later.
-     */
-    public SecAttributes setUseAuthenticationContext(org.robovm.apple.localauthentication.LAContext useAuthenticationContext) {
-        set(Keys.UseAuthenticationContext(), useAuthenticationContext);
-        return this;
-    }
     /*</methods>*/
     
     /*<keys>*/

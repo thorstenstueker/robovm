@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -61,8 +59,14 @@ import org.robovm.apple.uikit.*;
     protected AVSampleBufferAudioRenderer(SkipInit skipInit) { super(skipInit); }
     /*</constructors>*/
     /*<properties>*/
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Property(selector = "status")
     public native AVQueuedSampleBufferRenderingStatus getStatus();
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Property(selector = "error")
     public native NSError getError();
     @Property(selector = "audioTimePitchAlgorithm")
@@ -79,6 +83,16 @@ import org.robovm.apple.uikit.*;
      */
     @Property(selector = "setAllowedAudioSpatializationFormats:")
     public native void setAllowedAudioSpatializationFormats(AVAudioSpatializationFormats v);
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
+    @Property(selector = "isReadyForMoreMediaData")
+    public native boolean isReadyForMoreMediaData();
+    /**
+     * @since Available in iOS 14.5 and later.
+     */
+    @Property(selector = "hasSufficientMediaDataForReliablePlaybackStart")
+    public native boolean hasSufficientMediaDataForReliablePlaybackStart();
     @Property(selector = "volume")
     public native float getVolume();
     @Property(selector = "setVolume:")
@@ -89,13 +103,6 @@ import org.robovm.apple.uikit.*;
     public native void setMuted(boolean v);
     @Property(selector = "timebase")
     public native CMTimebase getTimebase();
-    @Property(selector = "isReadyForMoreMediaData")
-    public native boolean isReadyForMoreMediaData();
-    /**
-     * @since Available in iOS 14.5 and later.
-     */
-    @Property(selector = "hasSufficientMediaDataForReliablePlaybackStart")
-    public native boolean hasSufficientMediaDataForReliablePlaybackStart();
     /*</properties>*/
     /*<members>*//*</members>*/
     /*<methods>*/
@@ -120,15 +127,30 @@ import org.robovm.apple.uikit.*;
         public static native String OutputConfigurationDidChange();
     }
     
-    @Method(selector = "flushFromSourceTime:completionHandler:")
-    public native void flushFromSourceTime(@ByVal CMTime time, @Block VoidBooleanBlock completionHandler);
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Method(selector = "enqueueSampleBuffer:")
     public native void enqueueSampleBuffer(CMSampleBuffer sampleBuffer);
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Method(selector = "flush")
     public native void flush();
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Method(selector = "requestMediaDataWhenReadyOnQueue:usingBlock:")
     public native void requestMediaDataWhenReadyOnQueue(DispatchQueue queue, @Block Runnable block);
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
     @Method(selector = "stopRequestingMediaData")
     public native void stopRequestingMediaData();
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
+    @Method(selector = "flushFromSourceTime:completionHandler:")
+    public native void flushFromSourceTime(@ByVal CMTime time, @Block VoidBooleanBlock completionHandler);
     /*</methods>*/
 }

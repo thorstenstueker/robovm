@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -141,9 +139,13 @@ import org.robovm.apple.uikit.*;
      * @since Available in iOS 14.0 and later.
      */
     public static final AVAudioSessionPort Thunderbolt = new AVAudioSessionPort("Thunderbolt");
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    public static final AVAudioSessionPort MediaDeviceExtension = new AVAudioSessionPort("MediaDeviceExtension");
     /*</constants>*/
     
-    private static /*<name>*/AVAudioSessionPort/*</name>*/[] values = new /*<name>*/AVAudioSessionPort/*</name>*/[] {/*<value_list>*/ContinuityMicrophone, LineIn, BuiltInMic, HeadsetMic, LineOut, Headphones, BluetoothA2DP, BuiltInReceiver, BuiltInSpeaker, HDMI, AirPlay, BluetoothLE, BluetoothHFP, USBAudio, CarAudio, Virtual, PCI, FireWire, DisplayPort, AVB, Thunderbolt/*</value_list>*/};
+    private static /*<name>*/AVAudioSessionPort/*</name>*/[] values = new /*<name>*/AVAudioSessionPort/*</name>*/[] {/*<value_list>*/ContinuityMicrophone, LineIn, BuiltInMic, HeadsetMic, LineOut, Headphones, BluetoothA2DP, BuiltInReceiver, BuiltInSpeaker, HDMI, AirPlay, BluetoothLE, BluetoothHFP, USBAudio, CarAudio, Virtual, PCI, FireWire, DisplayPort, AVB, Thunderbolt, MediaDeviceExtension/*</value_list>*/};
     
     /*<name>*/AVAudioSessionPort/*</name>*/ (String getterName) {
         super(Values.class, getterName);
@@ -229,6 +231,11 @@ import org.robovm.apple.uikit.*;
          */
         @GlobalValue(symbol="AVAudioSessionPortThunderbolt", optional=true)
         public static native NSString Thunderbolt();
+        /**
+         * @since Available in iOS 27.0 and later.
+         */
+        @GlobalValue(symbol="AVAudioSessionPortMediaDeviceExtension", optional=true)
+        public static native NSString MediaDeviceExtension();
         /*</values>*/
     }
 }

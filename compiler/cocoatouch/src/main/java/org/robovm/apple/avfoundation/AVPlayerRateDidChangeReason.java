@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -115,9 +113,17 @@ import org.robovm.apple.uikit.*;
      * @since Available in iOS 15.0 and later.
      */
     public static final AVPlayerRateDidChangeReason AppBackgrounded = new AVPlayerRateDidChangeReason("AppBackgrounded");
+    /**
+     * @since Available in iOS 26.4 and later.
+     */
+    public static final AVPlayerRateDidChangeReason PlayheadReachedLiveEdge = new AVPlayerRateDidChangeReason("PlayheadReachedLiveEdge");
+    /**
+     * @since Available in iOS 26.4 and later.
+     */
+    public static final AVPlayerRateDidChangeReason ReversePlaybackReachedStartOfSeekableRange = new AVPlayerRateDidChangeReason("ReversePlaybackReachedStartOfSeekableRange");
     /*</constants>*/
     
-    private static /*<name>*/AVPlayerRateDidChangeReason/*</name>*/[] values = new /*<name>*/AVPlayerRateDidChangeReason/*</name>*/[] {/*<value_list>*/SetRateCalled, SetRateFailed, AudioSessionInterrupted, AppBackgrounded/*</value_list>*/};
+    private static /*<name>*/AVPlayerRateDidChangeReason/*</name>*/[] values = new /*<name>*/AVPlayerRateDidChangeReason/*</name>*/[] {/*<value_list>*/SetRateCalled, SetRateFailed, AudioSessionInterrupted, AppBackgrounded, PlayheadReachedLiveEdge, ReversePlaybackReachedStartOfSeekableRange/*</value_list>*/};
     
     /*<name>*/AVPlayerRateDidChangeReason/*</name>*/ (String getterName) {
         super(Values.class, getterName);
@@ -160,6 +166,16 @@ import org.robovm.apple.uikit.*;
          */
         @GlobalValue(symbol="AVPlayerRateDidChangeReasonAppBackgrounded", optional=true)
         public static native NSString AppBackgrounded();
+        /**
+         * @since Available in iOS 26.4 and later.
+         */
+        @GlobalValue(symbol="AVPlayerRateDidChangeReasonPlayheadReachedLiveEdge", optional=true)
+        public static native NSString PlayheadReachedLiveEdge();
+        /**
+         * @since Available in iOS 26.4 and later.
+         */
+        @GlobalValue(symbol="AVPlayerRateDidChangeReasonReversePlaybackReachedStartOfSeekableRange", optional=true)
+        public static native NSString ReversePlaybackReachedStartOfSeekableRange();
         /*</values>*/
     }
 }

@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -70,6 +64,12 @@ import org.robovm.apple.symbols.*;
     @Method(selector = "attributedStringWithAttachment:attributes:")
     protected static native @Pointer long create(ObjCClass clazz, NSTextAttachment attachment, NSDictionary<NSString, ?> attributes);
     public static @Pointer long create(NSTextAttachment attachment, NSDictionary<NSString, ?> attributes) { return create(ObjCClass.getByType(NSAttributedString.class), attachment, attributes); }
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
+    @Method(selector = "attributedStringWithAdaptiveImageGlyph:attributes:")
+    protected static native @Pointer long create(ObjCClass clazz, NSAdaptiveImageGlyph adaptiveImageGlyph, NSDictionary<NSString, ?> attributes);
+    public static @Pointer long create(NSAdaptiveImageGlyph adaptiveImageGlyph, NSDictionary<NSString, ?> attributes) { return create(ObjCClass.getByType(NSAttributedString.class), adaptiveImageGlyph, attributes); }
     /**
      * @since Available in iOS 9.0 and later.
      */
@@ -144,11 +144,5 @@ import org.robovm.apple.symbols.*;
     public static native void draw(NSAttributedString thiz, @ByVal CGRect rect, NSStringDrawingOptions options, NSStringDrawingContext context);
     @Method(selector = "boundingRectWithSize:options:context:")
     public static native @ByVal CGRect getBoundingRect(NSAttributedString thiz, @ByVal CGSize size, NSStringDrawingOptions options, NSStringDrawingContext context);
-    /**
-     * @since Available in iOS 18.0 and later.
-     */
-    @Method(selector = "attributedStringWithAdaptiveImageGlyph:attributes:")
-    protected static native @Pointer long create(ObjCClass clazz, NSAdaptiveImageGlyph adaptiveImageGlyph, NSDictionary<NSString, ?> attributes);
-    public static @Pointer long create(NSAdaptiveImageGlyph adaptiveImageGlyph, NSDictionary<NSString, ?> attributes) { return create(ObjCClass.getByType(NSAttributedString.class), adaptiveImageGlyph, attributes); }
     /*</methods>*/
 }

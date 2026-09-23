@@ -289,4 +289,17 @@ public class URLEncoder {
 
         return (needToChange? out.toString() : s);
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Translates a string into {@code application/x-www-form-urlencoded} format using a specific Charset (Java 10).
+     */
+    public static String encode(String s, java.nio.charset.Charset charset) {
+        try {
+            return encode(s, charset.name());
+        } catch (java.io.UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 }

@@ -259,4 +259,91 @@ public abstract class Reader implements Readable, Closeable {
      */
      abstract public void close() throws IOException;
 
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    private static final int ROBOVM_TRANSFER_BUFFER_SIZE = 8192;
+
+    /**
+     * Returns a new {@code Reader} that reads no characters (Java 11).
+     */
+    public static Reader nullReader() {
+        return new Reader() {
+            private volatile boolean closed;
+
+            private void ensureOpen() throws IOException {
+                if (closed) {
+                    throw new IOException("Stream closed");
+                }
+            }
+
+            @Override
+            public int read() throws IOException {
+                ensureOpen();
+                return -1;
+            }
+
+            @Override
+            public int read(char[] cbuf, int off, int len) throws IOException {
+                java.util.Objects.requireNonNull(cbuf);
+                if (off < 0 || len < 0 || len > cbuf.length - off) {
+                    throw new IndexOutOfBoundsException();
+                }
+                ensureOpen();
+                if (len == 0) {
+                    return 0;
+                }
+                return -1;
+            }
+
+            @Override
+            public int read(java.nio.CharBuffer target) throws IOException {
+                java.util.Objects.requireNonNull(target);
+                ensureOpen();
+                if (target.hasRemaining()) {
+                    return -1;
+                }
+                return 0;
+            }
+
+            @Override
+            public boolean ready() throws IOException {
+                ensureOpen();
+                return false;
+            }
+
+            @Override
+            public long skip(long n) throws IOException {
+                ensureOpen();
+                return 0L;
+            }
+
+            @Override
+            public long transferTo(Writer out) throws IOException {
+                java.util.Objects.requireNonNull(out);
+                ensureOpen();
+                return 0L;
+            }
+
+            @Override
+            public void close() {
+                closed = true;
+            }
+        };
+    }
+
+    /**
+     * Reads all characters from this reader and writes the characters to the given writer in
+     * the order that they are read (Java 10).
+     */
+    public long transferTo(Writer out) throws IOException {
+        java.util.Objects.requireNonNull(out, "out");
+        long transferred = 0;
+        char[] buffer = new char[ROBOVM_TRANSFER_BUFFER_SIZE];
+        int nRead;
+        while ((nRead = read(buffer, 0, ROBOVM_TRANSFER_BUFFER_SIZE)) >= 0) {
+            out.write(buffer, 0, nRead);
+            transferred += nRead;
+        }
+        return transferred;
+    }
 }

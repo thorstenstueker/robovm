@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -61,6 +55,11 @@ import org.robovm.apple.symbols.*;
     protected UISceneConfiguration(SkipInit skipInit) { super(skipInit); }
     @Method(selector = "initWithName:sessionRole:")
     public UISceneConfiguration(String name, UISceneSessionRole sessionRole) { super((SkipInit) null); initObject(init(name, sessionRole)); }
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "initWithName:")
+    public UISceneConfiguration(String name) { super((SkipInit) null); initObject(initWithName(name)); }
     @Method(selector = "initWithCoder:")
     public UISceneConfiguration(NSCoder coder) { super((SkipInit) null); initObject(init(coder)); }
     /*</constructors>*/
@@ -88,6 +87,11 @@ import org.robovm.apple.symbols.*;
     /*<methods>*/
     @Method(selector = "initWithName:sessionRole:")
     protected native @Pointer long init(String name, UISceneSessionRole sessionRole);
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @Method(selector = "initWithName:")
+    protected native @Pointer long initWithName(String name);
     @Method(selector = "encodeWithCoder:")
     public native void encode(NSCoder coder);
     @Method(selector = "initWithCoder:")

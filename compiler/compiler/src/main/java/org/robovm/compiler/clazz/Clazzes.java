@@ -29,6 +29,9 @@ import java.util.Set;
 
 import org.robovm.compiler.config.Config;
 
+import soot.ClassProvider;
+import soot.CoffiClassProvider;
+import soot.CoffiJava9ClassProvider;
 import soot.Scene;
 import soot.SootClass;
 import soot.SourceLocator;
@@ -262,6 +265,24 @@ public class Clazzes {
         Options.v().set_allow_phantom_refs(true);
         Options.v().set_keep_line_number(true);
         Options.v().set_soot_classpath(getSootClasspath(clazzes));
+
+        /*
+         * Install RoboVM's class provider in front of Soot's default ones. It pre-processes
+         * class files Soot 2.5 can't parse as is (records, see RewritingClassProvider) and
+         * reports unsupported class file features with a clear message.
+         * The JDK9+ jrt provider is only required when the host JDK runtime image is part of
+         * the class path (used by unit tests).
+         */
+        List<ClassProvider> classProviders = new ArrayList<>();
+        classProviders.add(new RewritingClassProvider(clazzes.config != null ? clazzes.config.getLogger() : null));
+        classProviders.add(new CoffiClassProvider());
+        for (Path p : clazzes.getPaths()) {
+            if (p instanceof Java9RuntimePath) {
+                classProviders.add(new CoffiJava9ClassProvider());
+                break;
+            }
+        }
+        SourceLocator.v().setClassProviders(classProviders);
 
         /*
          * Enable the use-original-names phase to merge local variables and

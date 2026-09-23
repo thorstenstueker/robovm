@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -63,21 +57,21 @@ import org.robovm.apple.symbols.*;
     public NSTextTab(NSCoder coder) { super((SkipInit) null); initObject(init(coder)); }
     /*</constructors>*/
     /*<properties>*/
+    @Property(selector = "alignment")
+    public native NSTextAlignment getAlignment();
     @Property(selector = "location")
     public native @MachineSizedFloat double getLocation();
     @Property(selector = "options")
     public native NSTextTabOptions getOptions();
-    @Property(selector = "alignment")
-    public native NSTextAlignment getAlignment();
     @Property(selector = "supportsSecureCoding")
     public static native boolean supportsSecureCoding();
     /*</properties>*/
     /*<members>*//*</members>*/
     /*<methods>*/
-    @Method(selector = "columnTerminatorsForLocale:")
-    public static native NSCharacterSet getColumnTerminators(NSLocale aLocale);
     @Method(selector = "initWithTextAlignment:location:options:")
     protected native @Pointer long init(NSTextAlignment alignment, @MachineSizedFloat double loc, NSTextTabOptions options);
+    @Method(selector = "columnTerminatorsForLocale:")
+    public static native NSCharacterSet getColumnTerminators(NSLocale aLocale);
     @Method(selector = "encodeWithCoder:")
     public native void encode(NSCoder coder);
     @Method(selector = "initWithCoder:")

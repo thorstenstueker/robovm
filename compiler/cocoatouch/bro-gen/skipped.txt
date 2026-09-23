@@ -1,0 +1,93 @@
+AUAudioUnit -disableProfile:cable:onChannel:error:: Failed to resolve type 'MIDICIProfile *': MIDICIProfile is configured in no YAML (this one or its includes) — add an entry or an include
+AUAudioUnit -enableProfile:cable:onChannel:error:: Failed to resolve type 'MIDICIProfile *': MIDICIProfile is configured in no YAML (this one or its includes) — add an entry or an include
+AUAudioUnit -profileStateForCable:channel:: Failed to resolve type 'MIDICIProfileState *': MIDICIProfileState is configured in no YAML (this one or its includes) — add an entry or an include
+AUAudioUnit AudioUnitMIDIProtocol: Failed to resolve type 'MIDIProtocolID': MIDIProtocolID is configured in no YAML (this one or its includes) — add an entry or an include
+AUAudioUnit hostMIDIProtocol: Failed to resolve type 'MIDIProtocolID': MIDIProtocolID is configured in no YAML (this one or its includes) — add an entry or an include
+AVAudioMixInputParameters audioTapProcessor: Failed to resolve type 'const struct opaqueMTAudioProcessingTap': opaqueMTAudioProcessingTap is configured in no YAML (this one or its includes) — add an entry or an include
+AVAudioUnitMIDIInstrument -sendMIDIEventList:: Failed to resolve type 'const struct MIDIEventList': MIDIEventList is configured in no YAML (this one or its includes) — add an entry or an include
+AVMutableAudioMixInputParameters audioTapProcessor: Failed to resolve type 'const struct opaqueMTAudioProcessingTap': opaqueMTAudioProcessingTap is configured in no YAML (this one or its includes) — add an entry or an include
+CAMetalDrawable texture: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CAMetalDrawableAdapter texture: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CAMetalLayer device: Failed to resolve type 'id<MTLDevice>': MTLDevice is configured in no YAML (this one or its includes) — add an entry or an include
+CAMetalLayer pixelFormat: Failed to resolve type 'MTLPixelFormat': MTLPixelFormat is configured in no YAML (this one or its includes) — add an entry or an include
+CAMetalLayer preferredDevice: Failed to resolve type 'id<MTLDevice>': MTLDevice is configured in no YAML (this one or its includes) — add an entry or an include
+CAMetalLayer residencySet: Failed to resolve type 'id<MTLResidencySet>': MTLResidencySet is configured in no YAML (this one or its includes) — add an entry or an include
+CARenderer -setDestination:: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CARenderer +rendererWithMTLTexture:options:: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIContext -render:toMTLTexture:commandBuffer:bounds:colorSpace:: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIContext +contextWithEAGLContext:: Failed to resolve type 'EAGLContext *': EAGLContext is configured in no YAML (this one or its includes) — add an entry or an include
+CIContext +contextWithEAGLContext:options:: Failed to resolve type 'EAGLContext *': EAGLContext is configured in no YAML (this one or its includes) — add an entry or an include
+CIContext +contextWithMTLCommandQueue:: Failed to resolve type 'id<MTLCommandQueue>': MTLCommandQueue is configured in no YAML (this one or its includes) — add an entry or an include
+CIContext +contextWithMTLCommandQueue:options:: Failed to resolve type 'id<MTLCommandQueue>': MTLCommandQueue is configured in no YAML (this one or its includes) — add an entry or an include
+CIContext +contextWithMTLDevice:: Failed to resolve type 'id<MTLDevice>': MTLDevice is configured in no YAML (this one or its includes) — add an entry or an include
+CIContext +contextWithMTLDevice:options:: Failed to resolve type 'id<MTLDevice>': MTLDevice is configured in no YAML (this one or its includes) — add an entry or an include
+CIImage -initWithMTLTexture:options:: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIImage metalTexture: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIImageProcessorInput metalTexture: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIImageProcessorInputAdapter metalTexture: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIImageProcessorOutput metalCommandBuffer: Failed to resolve type 'id<MTLCommandBuffer>': MTLCommandBuffer is configured in no YAML (this one or its includes) — add an entry or an include
+CIImageProcessorOutput metalTexture: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIImageProcessorOutputAdapter metalCommandBuffer: Failed to resolve type 'id<MTLCommandBuffer>': MTLCommandBuffer is configured in no YAML (this one or its includes) — add an entry or an include
+CIImageProcessorOutputAdapter metalTexture: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIRenderDestination -initWithMTLTexture:commandBuffer:: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+CIRenderDestination -initWithWidth:height:pixelFormat:commandBuffer:mtlTextureProvider:: Failed to resolve type 'MTLPixelFormat': MTLPixelFormat is configured in no YAML (this one or its includes) — add an entry or an include
+CLGeocoder -geocodePostalAddress:completionHandler:: Failed to resolve type 'CNPostalAddress *': CNPostalAddress is configured in no YAML (this one or its includes) — add an entry or an include
+CLGeocoder -geocodePostalAddress:preferredLocale:completionHandler:: Failed to resolve type 'CNPostalAddress *': CNPostalAddress is configured in no YAML (this one or its includes) — add an entry or an include
+CLPlacemark postalAddress: Failed to resolve type 'CNPostalAddress *': CNPostalAddress is configured in no YAML (this one or its includes) — add an entry or an include
+function CVMetalBufferCacheCreate: Failed to resolve type 'id<MTLDevice>': MTLDevice is configured in no YAML (this one or its includes) — add an entry or an include
+function CVMetalBufferGetBuffer: Failed to resolve type 'id<MTLBuffer>': MTLBuffer is configured in no YAML (this one or its includes) — add an entry or an include
+function CVMetalTextureCacheCreate: Failed to resolve type 'id<MTLDevice>': MTLDevice is configured in no YAML (this one or its includes) — add an entry or an include
+function CVMetalTextureCacheCreateTextureFromImage: Failed to resolve type 'MTLPixelFormat': MTLPixelFormat is configured in no YAML (this one or its includes) — add an entry or an include
+function CVMetalTextureGetTexture: Failed to resolve type 'id<MTLTexture>': MTLTexture is configured in no YAML (this one or its includes) — add an entry or an include
+function CVOpenGLESTextureCacheCreate: Failed to resolve type 'EAGLContext *': EAGLContext is configured in no YAML (this one or its includes) — add an entry or an include
+function MusicDeviceMIDIEventList: Failed to resolve type 'const struct MIDIEventList': MIDIEventList is configured in no YAML (this one or its includes) — add an entry or an include
+NSFileProviderExtension -itemForIdentifier:error:: Failed to resolve type 'id<NSFileProviderItem>': NSFileProviderItem is configured in no YAML (this one or its includes) — add an entry or an include
+UIActivityItemProvider -activityViewControllerLinkMetadata:: Failed to resolve type 'LPLinkMetadata *': LPLinkMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UIActivityItemProvider -activityViewControllerShareRecipients:: Failed to resolve type 'NSArray<INPerson *> *': INPerson is configured in no YAML (this one or its includes) — add an entry or an include
+UIActivityItemSource -activityViewControllerLinkMetadata:: Failed to resolve type 'LPLinkMetadata *': LPLinkMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UIActivityItemSource -activityViewControllerShareRecipients:: Failed to resolve type 'NSArray<INPerson *> *': INPerson is configured in no YAML (this one or its includes) — add an entry or an include
+UIActivityItemSourceAdapter -activityViewControllerLinkMetadata:: Failed to resolve type 'LPLinkMetadata *': LPLinkMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UIActivityItemSourceAdapter -activityViewControllerShareRecipients:: Failed to resolve type 'NSArray<INPerson *> *': INPerson is configured in no YAML (this one or its includes) — add an entry or an include
+UIApplicationDelegate -application:handleIntent:completionHandler:: Failed to resolve type 'INIntent *': INIntent is configured in no YAML (this one or its includes) — add an entry or an include
+UIApplicationDelegate -application:handlerForIntent:: Failed to resolve type 'INIntent *': INIntent is configured in no YAML (this one or its includes) — add an entry or an include
+UIApplicationDelegate -application:userDidAcceptCloudKitShareWithMetadata:: Failed to resolve type 'CKShareMetadata *': CKShareMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UIApplicationDelegateAdapter -application:handleIntent:completionHandler:: Failed to resolve type 'INIntent *': INIntent is configured in no YAML (this one or its includes) — add an entry or an include
+UIApplicationDelegateAdapter -application:handlerForIntent:: Failed to resolve type 'INIntent *': INIntent is configured in no YAML (this one or its includes) — add an entry or an include
+UIApplicationDelegateAdapter -application:userDidAcceptCloudKitShareWithMetadata:: Failed to resolve type 'CKShareMetadata *': CKShareMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -addSymbolEffect:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -addSymbolEffect:options:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -addSymbolEffect:options:animated:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -removeAllSymbolEffectsWithOptions:: Failed to resolve type 'NSSymbolEffectOptions *': NSSymbolEffectOptions is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -removeAllSymbolEffectsWithOptions:animated:: Failed to resolve type 'NSSymbolEffectOptions *': NSSymbolEffectOptions is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -removeSymbolEffectOfType:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -removeSymbolEffectOfType:options:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -removeSymbolEffectOfType:options:animated:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -setSymbolImage:withContentTransition:: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UIBarButtonItem -setSymbolImage:withContentTransition:options:: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UICloudSharingController -initWithShare:container:: Failed to resolve type 'CKShare *': CKShare is configured in no YAML (this one or its includes) — add an entry or an include
+UICloudSharingController share: Failed to resolve type 'CKShare *': CKShare is configured in no YAML (this one or its includes) — add an entry or an include
+UIDocumentProperties -initWithMetadata:: Failed to resolve type 'LPLinkMetadata *': LPLinkMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UIDocumentProperties metadata: Failed to resolve type 'LPLinkMetadata *': LPLinkMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -addSymbolEffect:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -addSymbolEffect:options:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -addSymbolEffect:options:animated:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -addSymbolEffect:options:animated:completion:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -removeAllSymbolEffectsWithOptions:: Failed to resolve type 'NSSymbolEffectOptions *': NSSymbolEffectOptions is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -removeAllSymbolEffectsWithOptions:animated:: Failed to resolve type 'NSSymbolEffectOptions *': NSSymbolEffectOptions is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -removeSymbolEffectOfType:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -removeSymbolEffectOfType:options:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -removeSymbolEffectOfType:options:animated:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -removeSymbolEffectOfType:options:animated:completion:: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -setSymbolImage:withContentTransition:: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -setSymbolImage:withContentTransition:options:: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UIImageView -setSymbolImage:withContentTransition:options:completion:: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UISceneConnectionOptions cloudKitShareMetadata: Failed to resolve type 'CKShareMetadata *': CKShareMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UISymbolContentTransition +transitionWithContentTransition:: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UISymbolContentTransition +transitionWithContentTransition:options:: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UISymbolContentTransition contentTransition: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UISymbolContentTransition options: Failed to resolve type 'NSSymbolEffectOptions *': NSSymbolEffectOptions is configured in no YAML (this one or its includes) — add an entry or an include
+UISymbolEffectCompletionContext contentTransition: Failed to resolve type 'NSSymbolContentTransition *': NSSymbolContentTransition is configured in no YAML (this one or its includes) — add an entry or an include
+UISymbolEffectCompletionContext effect: Failed to resolve type 'NSSymbolEffect *': NSSymbolEffect is configured in no YAML (this one or its includes) — add an entry or an include
+UIWindowSceneDelegate -windowScene:userDidAcceptCloudKitShareWithMetadata:: Failed to resolve type 'CKShareMetadata *': CKShareMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UIWindowSceneDelegateAdapter -windowScene:userDidAcceptCloudKitShareWithMetadata:: Failed to resolve type 'CKShareMetadata *': CKShareMetadata is configured in no YAML (this one or its includes) — add an entry or an include
+UNNotificationAttributedMessageContext +contextWithSendMessageIntent:attributedContent:: Failed to resolve type 'INSendMessageIntent *': INSendMessageIntent is configured in no YAML (this one or its includes) — add an entry or an include

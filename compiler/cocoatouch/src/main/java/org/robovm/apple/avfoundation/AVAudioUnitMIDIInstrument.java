@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -142,11 +140,6 @@ import org.robovm.apple.uikit.*;
     public native void sendMIDIEvent(byte midiStatus, byte data1);
     @Method(selector = "sendMIDISysExEvent:")
     public native void sendMIDISysExEvent(NSData midiData);
-    /**
-     * @since Available in iOS 16.0 and later.
-     */
-    @Method(selector = "sendMIDIEventList:")
-    public native void sendMIDIEventList(MIDIEventList eventList);
     /**
      * @since Available in iOS 9.0 and later.
      */

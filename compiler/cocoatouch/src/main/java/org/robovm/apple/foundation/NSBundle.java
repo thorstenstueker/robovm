@@ -31,7 +31,6 @@ import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.coreanimation.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.security.*;
@@ -231,12 +230,16 @@ import org.robovm.apple.dispatch.*;
     public static native @org.robovm.rt.bro.annotation.Marshaler(NSArray.AsStringListMarshaler.class) List<String> getPreferredLocalizations(@org.robovm.rt.bro.annotation.Marshaler(NSArray.AsStringListMarshaler.class) List<String> localizationsArray, @org.robovm.rt.bro.annotation.Marshaler(NSArray.AsStringListMarshaler.class) List<String> preferencesArray);
     /**
      * @since Available in iOS 9.0 and later.
+     * @deprecated Deprecated in iOS 27.0. Use Background Assets instead.
      */
+    @Deprecated
     @Method(selector = "setPreservationPriority:forTags:")
     public native void setPreservationPriority(double priority, NSSet<NSString> tags);
     /**
      * @since Available in iOS 9.0 and later.
+     * @deprecated Deprecated in iOS 27.0. Use Background Assets instead.
      */
+    @Deprecated
     @Method(selector = "preservationPriorityForTag:")
     public native double preservationPriorityForTag(String tag);
     /*</methods>*/

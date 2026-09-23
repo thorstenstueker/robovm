@@ -30,16 +30,10 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
-import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
-import org.robovm.apple.cloudkit.*;
-import org.robovm.apple.fileprovider.*;
-import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
-import org.robovm.apple.linkpresentation.*;
-import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -75,10 +69,13 @@ import org.robovm.apple.symbols.*;
      */
     @NotImplemented("windowScene:didUpdateEffectiveGeometry:")
     public void didUpdateEffectiveGeometry(UIWindowScene windowScene, UIWindowSceneGeometry previousEffectiveGeometry) {}
+    /**
+     * @since Available in iOS 27.0 and later.
+     */
+    @NotImplemented("supportedInterfaceOrientationsForWindowScene:")
+    public UIInterfaceOrientationMask supportedInterfaceOrientationsForWindowScene(UIWindowScene windowScene) { return null; }
     @NotImplemented("windowScene:performActionForShortcutItem:completionHandler:")
     public void performAction(UIWindowScene windowScene, UIApplicationShortcutItem shortcutItem, @Block VoidBooleanBlock completionHandler) {}
-    @NotImplemented("windowScene:userDidAcceptCloudKitShareWithMetadata:")
-    public void userDidAcceptCloudKitShare(UIWindowScene windowScene, CKShareMetadata cloudKitShareMetadata) {}
     /**
      * @since Available in iOS 26.0 and later.
      */

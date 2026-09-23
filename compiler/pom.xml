@@ -24,6 +24,7 @@
         <module>cacerts</module>
         <module>bro-bridge</module>
         <module>objc</module>
+        <module>cocoatouch-prune</module>
         <module>cocoatouch</module>
         <module>llvm</module>
         <module>libimobiledevice</module>

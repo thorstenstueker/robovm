@@ -36,9 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
-import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
-import org.robovm.apple.coremidi.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
 
@@ -76,6 +74,16 @@ import org.robovm.apple.uikit.*;
     public native boolean isOptimizesAuxiliaryContentConfigurations();
     @Property(selector = "setOptimizesAuxiliaryContentConfigurations:")
     public native void setOptimizesAuxiliaryContentConfigurations(boolean v);
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
+    @Property(selector = "downloadsInterstitialAssets")
+    public native boolean isDownloadsInterstitialAssets();
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
+    @Property(selector = "setDownloadsInterstitialAssets:")
+    public native void setDownloadsInterstitialAssets(boolean v);
     /*</properties>*/
     /*<members>*//*</members>*/
     /*<methods>*/

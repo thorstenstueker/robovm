@@ -917,4 +917,82 @@ public interface LongStream extends BaseStream<Long, LongStream> {
          */
         LongStream build();
     }
+
+    // RoboVM Note: added for Java 17 API parity (from OpenJDK 17u, adapted)
+
+    /**
+     * Returns a stream consisting of the longest prefix of elements taken from this stream that
+     * match the given predicate (Java 9).
+     */
+    default LongStream takeWhile(LongPredicate predicate) {
+        Objects.requireNonNull(predicate);
+        return boxed().takeWhile(v -> predicate.test(v)).mapToLong(Long::longValue);
+    }
+
+    /**
+     * Returns a stream consisting of the remaining elements of this stream after dropping the
+     * longest prefix of elements that match the given predicate (Java 9).
+     */
+    default LongStream dropWhile(LongPredicate predicate) {
+        Objects.requireNonNull(predicate);
+        return boxed().dropWhile(v -> predicate.test(v)).mapToLong(Long::longValue);
+    }
+
+    /**
+     * Returns a stream consisting of the results of replacing each element of this stream with
+     * multiple elements, specifically zero or more elements (Java 16).
+     */
+    default LongStream mapMulti(LongMapMultiConsumer mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMap(e -> {
+            LongStream.Builder buffer = LongStream.builder();
+            mapper.accept(e, buffer);
+            return buffer.build();
+        });
+    }
+
+    /**
+     * Represents an operation that accepts a {@code long}-valued argument and a
+     * {@code LongConsumer}, and returns no result (Java 16).
+     */
+    @FunctionalInterface
+    interface LongMapMultiConsumer {
+        void accept(long value, LongConsumer ic);
+    }
+
+    /**
+     * Returns a sequential ordered {@code LongStream} produced by iterative application of the given
+     * {@code next} function to an initial element, conditioned on satisfying the given
+     * {@code hasNext} predicate (Java 9).
+     */
+    public static LongStream iterate(long seed, LongPredicate hasNext, LongUnaryOperator next) {
+        Objects.requireNonNull(next);
+        Objects.requireNonNull(hasNext);
+        Spliterator.OfLong spliterator = new Spliterators.AbstractLongSpliterator(Long.MAX_VALUE,
+               Spliterator.ORDERED | Spliterator.IMMUTABLE) {
+            long prev;
+            boolean started, finished;
+
+            @Override
+            public boolean tryAdvance(LongConsumer action) {
+                Objects.requireNonNull(action);
+                if (finished)
+                    return false;
+                long t;
+                if (started)
+                    t = next.applyAsLong(prev);
+                else {
+                    t = seed;
+                    started = true;
+                }
+                if (!hasNext.test(t)) {
+                    finished = true;
+                    return false;
+                }
+                action.accept(prev = t);
+                return true;
+            }
+        };
+        return StreamSupport.longStream(spliterator, false);
+    }
 }

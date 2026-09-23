@@ -1,0 +1,3 @@
+[submodule "compiler/cocoatouch/bro-gen/robovm-bro-gen"]
+	path = compiler/cocoatouch/bro-gen/robovm-bro-gen
+	url = https://github.com/thorstenstueker/robovm-bro-gen.git
