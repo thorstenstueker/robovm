@@ -30,9 +30,11 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.opengles.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.imageio.*;
 import org.robovm.apple.uikit.*;
+import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 import org.robovm.apple.avfoundation.*;
 /*</imports>*/
@@ -58,6 +60,10 @@ import org.robovm.apple.avfoundation.*;
     public CIRenderDestination(CVPixelBuffer pixelBuffer) { super((SkipInit) null); initObject(init(pixelBuffer)); }
     @Method(selector = "initWithIOSurface:")
     public CIRenderDestination(IOSurface surface) { super((SkipInit) null); initObject(init(surface)); }
+    @Method(selector = "initWithMTLTexture:commandBuffer:")
+    public CIRenderDestination(MTLTexture texture, MTLCommandBuffer commandBuffer) { super((SkipInit) null); initObject(init(texture, commandBuffer)); }
+    @Method(selector = "initWithWidth:height:pixelFormat:commandBuffer:mtlTextureProvider:")
+    public CIRenderDestination(@MachineSizedUInt long width, @MachineSizedUInt long height, MTLPixelFormat pixelFormat, MTLCommandBuffer commandBuffer, @Block Block0<MTLTexture> block) { super((SkipInit) null); initObject(init(width, height, pixelFormat, commandBuffer, block)); }
     @Method(selector = "initWithGLTexture:target:width:height:")
     public CIRenderDestination(int texture, int target, @MachineSizedUInt long width, @MachineSizedUInt long height) { super((SkipInit) null); initObject(init(texture, target, width, height)); }
     @Method(selector = "initWithBitmapData:width:height:bytesPerRow:format:")
@@ -113,6 +119,10 @@ import org.robovm.apple.avfoundation.*;
     protected native @Pointer long init(CVPixelBuffer pixelBuffer);
     @Method(selector = "initWithIOSurface:")
     protected native @Pointer long init(IOSurface surface);
+    @Method(selector = "initWithMTLTexture:commandBuffer:")
+    protected native @Pointer long init(MTLTexture texture, MTLCommandBuffer commandBuffer);
+    @Method(selector = "initWithWidth:height:pixelFormat:commandBuffer:mtlTextureProvider:")
+    protected native @Pointer long init(@MachineSizedUInt long width, @MachineSizedUInt long height, MTLPixelFormat pixelFormat, MTLCommandBuffer commandBuffer, @Block Block0<MTLTexture> block);
     @Method(selector = "initWithGLTexture:target:width:height:")
     protected native @Pointer long init(int texture, int target, @MachineSizedUInt long width, @MachineSizedUInt long height);
     @Method(selector = "initWithBitmapData:width:height:bytesPerRow:format:")

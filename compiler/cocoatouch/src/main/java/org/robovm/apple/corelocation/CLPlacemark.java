@@ -28,7 +28,9 @@ import org.robovm.rt.bro.*;
 import org.robovm.rt.bro.annotation.*;
 import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
+import org.robovm.apple.addressbook.*;
 import org.robovm.apple.corebluetooth.*;
+import org.robovm.apple.contacts.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -63,6 +65,13 @@ import org.robovm.apple.corebluetooth.*;
      */
     @Property(selector = "timeZone")
     public native NSTimeZone getTimeZone();
+    /**
+     * @deprecated Deprecated in iOS 11.0. Use @properties
+     */
+    @Deprecated
+    @WeaklyLinked
+    @Property(selector = "addressDictionary")
+    public native ABPersonAddress getAddress();
     @Property(selector = "name")
     public native String getName();
     @Property(selector = "thoroughfare")
@@ -89,6 +98,13 @@ import org.robovm.apple.corebluetooth.*;
     public native String getOcean();
     @Property(selector = "areasOfInterest")
     public native @org.robovm.rt.bro.annotation.Marshaler(NSArray.AsStringListMarshaler.class) List<String> getAreasOfInterest();
+    /**
+     * @since Available in iOS 11.0 and later.
+     * @deprecated Use either GeoToolbox.PlaceDescriptor or MapKit
+     */
+    @Deprecated
+    @Property(selector = "postalAddress")
+    public native CNPostalAddress getPostalAddress();
     @Property(selector = "supportsSecureCoding")
     public static native boolean supportsSecureCoding();
     /*</properties>*/

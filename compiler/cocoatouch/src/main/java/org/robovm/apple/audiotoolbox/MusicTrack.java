@@ -30,6 +30,7 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coreaudio.*;
+import org.robovm.apple.coremidi.*;
 import org.robovm.apple.avfoundation.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
@@ -71,9 +72,29 @@ import org.robovm.apple.uikit.*;
      * @throws OSStatusException 
      * @since Available in iOS 5.0 and later.
      */
+    @WeaklyLinked
+    public void setDestMIDIEndpoint(MIDIEndpoint endpoint) throws OSStatusException {
+        OSStatus status = setDestMIDIEndpoint0(endpoint);
+        OSStatusException.throwIfNecessary(status);
+    }
+    /**
+     * @throws OSStatusException 
+     * @since Available in iOS 5.0 and later.
+     */
     public int getDestNode() throws OSStatusException {
         IntPtr ptr = new IntPtr();
         OSStatus status = getDestNode0(ptr);
+        OSStatusException.throwIfNecessary(status);
+        return ptr.get();
+    }
+    /**
+     * @throws OSStatusException 
+     * @since Available in iOS 5.0 and later.
+     */
+    @WeaklyLinked
+    public MIDIEndpoint getDestMIDIEndpoint() throws OSStatusException {
+        MIDIEndpoint.MIDIEndpointPtr ptr = new MIDIEndpoint.MIDIEndpointPtr();
+        OSStatus status = getDestMIDIEndpoint0(ptr);
         OSStatusException.throwIfNecessary(status);
         return ptr.get();
     }
@@ -241,8 +262,14 @@ import org.robovm.apple.uikit.*;
     protected native OSStatus getSequence0(MusicSequence.MusicSequencePtr outSequence);
     @Bridge(symbol="MusicTrackSetDestNode", optional=true)
     protected native OSStatus setDestNode0(int inNode);
+    @WeaklyLinked
+    @Bridge(symbol="MusicTrackSetDestMIDIEndpoint", optional=true)
+    protected native OSStatus setDestMIDIEndpoint0(MIDIEndpoint inEndpoint);
     @Bridge(symbol="MusicTrackGetDestNode", optional=true)
     protected native OSStatus getDestNode0(IntPtr outNode);
+    @WeaklyLinked
+    @Bridge(symbol="MusicTrackGetDestMIDIEndpoint", optional=true)
+    protected native OSStatus getDestMIDIEndpoint0(MIDIEndpoint.MIDIEndpointPtr outEndpoint);
     @Bridge(symbol="MusicTrackSetProperty", optional=true)
     protected native OSStatus setProperty0(MusicTrackProperty inPropertyID, VoidPtr inData, int inLength);
     @Bridge(symbol="MusicTrackGetProperty", optional=true)

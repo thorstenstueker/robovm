@@ -30,10 +30,16 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
+import org.robovm.apple.cloudkit.*;
+import org.robovm.apple.fileprovider.*;
+import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
+import org.robovm.apple.linkpresentation.*;
+import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -65,6 +71,23 @@ import org.robovm.apple.usernotifications.*;
     @Deprecated
     @Property(selector = "documentStorageURL")
     public native NSURL getDocumentStorageURL();
+    /*</properties>*/
+    /*<members>*//*</members>*/
+    /*<methods>*/
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
+    public NSFileProviderItem itemForIdentifier(NSString identifier) throws NSErrorException {
+       NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
+       NSFileProviderItem result = itemForIdentifier(identifier, ptr);
+       if (ptr.get() != null) { throw new NSErrorException(ptr.get()); }
+       return result;
+    }
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
+    @Method(selector = "itemForIdentifier:error:")
+    private native NSFileProviderItem itemForIdentifier(NSString identifier, NSError.NSErrorPtr error);
     @Method(selector = "URLForItemWithPersistentIdentifier:")
     public native NSURL getURLForItem(NSString identifier);
     @Method(selector = "persistentIdentifierForItemAtURL:")

@@ -1,0 +1,171 @@
+/*
+ * Copyright (C) 2013-2015 RoboVM AB
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.robovm.apple.healthkit;
+
+/*<imports>*/
+import java.io.*;
+import java.nio.*;
+import java.util.*;
+import org.robovm.objc.*;
+import org.robovm.objc.annotation.*;
+import org.robovm.objc.block.*;
+import org.robovm.rt.*;
+import org.robovm.rt.annotation.*;
+import org.robovm.rt.bro.*;
+import org.robovm.rt.bro.annotation.*;
+import org.robovm.rt.bro.ptr.*;
+import org.robovm.apple.foundation.*;
+import org.robovm.apple.uniformtypeid.*;
+/*</imports>*/
+
+/*<javadoc>*/
+/**
+ * @since Available in iOS 9.3 and later.
+ */
+/*</javadoc>*/
+/*<annotations>*/@Library("HealthKit") @NativeClass/*</annotations>*/
+/*<visibility>*/public/*</visibility>*/ class /*<name>*/HKActivitySummary/*</name>*/ 
+    extends /*<extends>*/NSObject/*</extends>*/ 
+    /*<implements>*/implements NSSecureCoding/*</implements>*/ {
+
+    /*<ptr>*/public static class HKActivitySummaryPtr extends Ptr<HKActivitySummary, HKActivitySummaryPtr> {}/*</ptr>*/
+    /*<bind>*/static { ObjCRuntime.bind(HKActivitySummary.class); }/*</bind>*/
+    /*<constants>*//*</constants>*/
+    /*<constructors>*/
+    public HKActivitySummary() {}
+    protected HKActivitySummary(Handle h, long handle) { super(h, handle); }
+    protected HKActivitySummary(SkipInit skipInit) { super(skipInit); }
+    @Method(selector = "initWithCoder:")
+    public HKActivitySummary(NSCoder coder) { super((SkipInit) null); initObject(init(coder)); }
+    /*</constructors>*/
+    /*<properties>*/
+    /**
+     * @since Available in iOS 14.0 and later.
+     */
+    @Property(selector = "activityMoveMode")
+    public native HKActivityMoveMode getActivityMoveMode();
+    /**
+     * @since Available in iOS 14.0 and later.
+     */
+    @Property(selector = "setActivityMoveMode:")
+    public native void setActivityMoveMode(HKActivityMoveMode v);
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
+    @Property(selector = "isPaused")
+    public native boolean isPaused();
+    /**
+     * @since Available in iOS 18.0 and later.
+     */
+    @Property(selector = "setPaused:")
+    public native void setPaused(boolean v);
+    @Property(selector = "activeEnergyBurned")
+    public native HKQuantity getActiveEnergyBurned();
+    @Property(selector = "setActiveEnergyBurned:")
+    public native void setActiveEnergyBurned(HKQuantity v);
+    /**
+     * @since Available in iOS 14.0 and later.
+     */
+    @Property(selector = "appleMoveTime")
+    public native HKQuantity getAppleMoveTime();
+    /**
+     * @since Available in iOS 14.0 and later.
+     */
+    @Property(selector = "setAppleMoveTime:")
+    public native void setAppleMoveTime(HKQuantity v);
+    @Property(selector = "appleExerciseTime")
+    public native HKQuantity getAppleExerciseTime();
+    @Property(selector = "setAppleExerciseTime:")
+    public native void setAppleExerciseTime(HKQuantity v);
+    @Property(selector = "appleStandHours")
+    public native HKQuantity getAppleStandHours();
+    @Property(selector = "setAppleStandHours:")
+    public native void setAppleStandHours(HKQuantity v);
+    @Property(selector = "activeEnergyBurnedGoal")
+    public native HKQuantity getActiveEnergyBurnedGoal();
+    @Property(selector = "setActiveEnergyBurnedGoal:")
+    public native void setActiveEnergyBurnedGoal(HKQuantity v);
+    /**
+     * @since Available in iOS 14.0 and later.
+     */
+    @Property(selector = "appleMoveTimeGoal")
+    public native HKQuantity getAppleMoveTimeGoal();
+    /**
+     * @since Available in iOS 14.0 and later.
+     */
+    @Property(selector = "setAppleMoveTimeGoal:")
+    public native void setAppleMoveTimeGoal(HKQuantity v);
+    /**
+     * @since Available in iOS 9.3 and later.
+     * @deprecated Use exerciseTimeGoal
+     */
+    @Deprecated
+    @Property(selector = "appleExerciseTimeGoal")
+    public native HKQuantity getAppleExerciseTimeGoal();
+    /**
+     * @since Available in iOS 9.3 and later.
+     * @deprecated Use exerciseTimeGoal
+     */
+    @Deprecated
+    @Property(selector = "setAppleExerciseTimeGoal:")
+    public native void setAppleExerciseTimeGoal(HKQuantity v);
+    /**
+     * @since Available in iOS 16.0 and later.
+     */
+    @Property(selector = "exerciseTimeGoal")
+    public native HKQuantity getExerciseTimeGoal();
+    /**
+     * @since Available in iOS 16.0 and later.
+     */
+    @Property(selector = "setExerciseTimeGoal:")
+    public native void setExerciseTimeGoal(HKQuantity v);
+    /**
+     * @since Available in iOS 9.3 and later.
+     * @deprecated Use standHoursGoal
+     */
+    @Deprecated
+    @Property(selector = "appleStandHoursGoal")
+    public native HKQuantity getAppleStandHoursGoal();
+    /**
+     * @since Available in iOS 9.3 and later.
+     * @deprecated Use standHoursGoal
+     */
+    @Deprecated
+    @Property(selector = "setAppleStandHoursGoal:")
+    public native void setAppleStandHoursGoal(HKQuantity v);
+    /**
+     * @since Available in iOS 16.0 and later.
+     */
+    @Property(selector = "standHoursGoal")
+    public native HKQuantity getStandHoursGoal();
+    /**
+     * @since Available in iOS 16.0 and later.
+     */
+    @Property(selector = "setStandHoursGoal:")
+    public native void setStandHoursGoal(HKQuantity v);
+    @Property(selector = "supportsSecureCoding")
+    public static native boolean supportsSecureCoding();
+    /*</properties>*/
+    /*<members>*//*</members>*/
+    /*<methods>*/
+    @Method(selector = "dateComponentsForCalendar:")
+    public native NSDateComponents dateComponentsForCalendar(NSCalendar calendar);
+    @Method(selector = "encodeWithCoder:")
+    public native void encode(NSCoder coder);
+    @Method(selector = "initWithCoder:")
+    protected native @Pointer long init(NSCoder coder);
+    /*</methods>*/
+}

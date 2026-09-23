@@ -30,10 +30,16 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.coreanimation.*;
 import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.coredata.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.corelocation.*;
+import org.robovm.apple.cloudkit.*;
+import org.robovm.apple.fileprovider.*;
+import org.robovm.apple.intents.*;
 import org.robovm.apple.usernotifications.*;
+import org.robovm.apple.linkpresentation.*;
+import org.robovm.apple.symbols.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -226,6 +232,13 @@ import org.robovm.apple.usernotifications.*;
          */
         @GlobalValue(symbol="UIImagePickerControllerLivePhoto", optional=true)
         public static native NSString LivePhoto();
+        /**
+         * @since Available in iOS 11.0 and later.
+         * @deprecated Will be removed in a future release, use PHPicker.
+         */
+        @Deprecated
+        @GlobalValue(symbol="UIImagePickerControllerPHAsset", optional=true)
+        public static native NSString PHAsset();
         /**
          * @since Available in iOS 11.0 and later.
          */

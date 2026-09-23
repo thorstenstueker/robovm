@@ -31,12 +31,17 @@ import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.coreanimation.*;
+import org.robovm.apple.coredata.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.security.*;
 import org.robovm.apple.dispatch.*;
 /*</imports>*/
 import org.robovm.apple.corelocation.CLLocationCoordinate2D;
+import org.robovm.apple.mapkit.MKCoordinateSpan;
+import org.robovm.apple.scenekit.SCNMatrix4;
+import org.robovm.apple.scenekit.SCNVector3;
+import org.robovm.apple.scenekit.SCNVector4;
 
 /*<javadoc>*/
 
@@ -189,6 +194,50 @@ import org.robovm.apple.corelocation.CLLocationCoordinate2D;
     @WeaklyLinked
     public static NSValue valueOf(CATransform3D t) {
         return org.robovm.apple.coreanimation.NSValueExtensions.create(t);
+    }
+    
+    /* MapKit extensions */
+    @WeaklyLinked
+    public CLLocationCoordinate2D coordinateValue() {
+        return org.robovm.apple.mapkit.NSValueExtensions.getMKCoordinateValue(this);
+    }
+    @WeaklyLinked
+    public MKCoordinateSpan getCoordinateSpanValue() {
+        return org.robovm.apple.mapkit.NSValueExtensions.getMKCoordinateSpanValue(this);
+    }
+    @WeaklyLinked
+    public static NSValue valueOf(CLLocationCoordinate2D coordinate) {
+        return org.robovm.apple.mapkit.NSValueExtensions.create(coordinate);
+    }
+    @WeaklyLinked
+    public static NSValue valueOf(MKCoordinateSpan span) {
+        return org.robovm.apple.mapkit.NSValueExtensions.create(span);
+    }
+    
+    /* SceneKit extensions */
+    @WeaklyLinked
+    public SCNVector3 SCNVector3Value() {
+        return org.robovm.apple.scenekit.NSValueExtensions.getSCNVector3Value(this);
+    }
+    @WeaklyLinked
+    public SCNVector4 SCNVector4Value() {
+        return org.robovm.apple.scenekit.NSValueExtensions.getSCNVector4Value(this);
+    }
+    @WeaklyLinked
+    public SCNMatrix4 SCNMatrix4Value() {
+        return org.robovm.apple.scenekit.NSValueExtensions.getSCNMatrix4Value(this);
+    }
+    @WeaklyLinked
+    public static NSValue valueOf(SCNVector3 vector3) {
+        return org.robovm.apple.scenekit.NSValueExtensions.create(vector3);
+    }
+    @WeaklyLinked
+    public static NSValue valueOf(SCNVector4 vector4) {
+        return org.robovm.apple.scenekit.NSValueExtensions.create(vector4);
+    }
+    @WeaklyLinked
+    public static NSValue valueOf(SCNMatrix4 matrix4) {
+        return org.robovm.apple.scenekit.NSValueExtensions.create(matrix4);
     }
     /*<methods>*/
     /**

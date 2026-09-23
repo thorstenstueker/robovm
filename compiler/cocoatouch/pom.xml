@@ -12,6 +12,10 @@
     <name>RoboVM Cocoa Touch Bindings</name>
     <packaging>jar</packaging>
 
+    <properties>
+        <cocoatouch.prune.skip>false</cocoatouch.prune.skip>
+    </properties>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -70,6 +74,41 @@
                     <noindex>true</noindex>
                     <nodeprecated>true</nodeprecated>
                 </configuration>
+            </plugin>
+            <!-- The cut: after javac, before the jar. The sources are upstream's, unchanged; what the
+                 jar contains is decided by prune/seeds.txt and prune/exclude.txt, and prune/report.txt
+                 says what happened. See prune/UPDATE.md. -Dcocoatouch.prune.skip=true gives the full jar. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.mobidevelop.robovm</groupId>
+                        <artifactId>robovm-cocoatouch-prune</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>prune-bindings</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${cocoatouch.prune.skip}</skip>
+                            <mainClass>org.robovm.cocoatouch.prune.Prune</mainClass>
+                            <includeProjectDependencies>false</includeProjectDependencies>
+                            <includePluginDependencies>true</includePluginDependencies>
+                            <arguments>
+                                <argument>${project.build.outputDirectory}</argument>
+                                <argument>${project.basedir}/prune/seeds.txt</argument>
+                                <argument>${project.basedir}/prune/exclude.txt</argument>
+                                <argument>${project.basedir}/prune/report.txt</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>

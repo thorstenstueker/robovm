@@ -37,6 +37,7 @@ import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.audiotoolbox.*;
 import org.robovm.apple.avfoundation.AVVideoSettings.Keys;
+import org.robovm.apple.mediatoolbox.*;
 /*</imports>*/
 
 /*<javadoc>*/

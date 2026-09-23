@@ -514,6 +514,11 @@ import org.robovm.apple.uikit.*;
         /**
          * @since Available in iOS 14.0 and later.
          */
+        @GlobalValue(symbol="UTTypeARReferenceObject", optional=true)
+        public static native UTType ARReferenceObject();
+        /**
+         * @since Available in iOS 14.0 and later.
+         */
         @GlobalValue(symbol="UTTypeAudiovisualContent", optional=true)
         public static native UTType AudiovisualContent();
         /**
@@ -591,6 +596,11 @@ import org.robovm.apple.uikit.*;
          */
         @GlobalValue(symbol="UTTypeWAV", optional=true)
         public static native UTType WAV();
+        /**
+         * @since Available in iOS 14.0 and later.
+         */
+        @GlobalValue(symbol="UTTypeMIDI", optional=true)
+        public static native UTType MIDI();
         /**
          * @since Available in iOS 14.0 and later.
          */

@@ -31,6 +31,8 @@ import org.robovm.apple.foundation.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
+import org.robovm.apple.opengles.*;
+import org.robovm.apple.metal.*;
 import org.robovm.apple.corevideo.*;
 /*</imports>*/
 
@@ -51,6 +53,25 @@ import org.robovm.apple.corevideo.*;
     protected CAMetalLayer(SkipInit skipInit) { super(skipInit); }
     @Method(selector = "initWithLayer:")
     public CAMetalLayer(CALayer layer) { super(layer); }
+    /*</constructors>*/
+    /*<properties>*/
+    @WeaklyLinked
+    @Property(selector = "device")
+    public native MTLDevice getDevice();
+    @WeaklyLinked
+    @Property(selector = "setDevice:")
+    public native void setDevice(MTLDevice v);
+    /**
+     * @since Available in iOS 13.0 and later.
+     */
+    @Property(selector = "preferredDevice")
+    public native MTLDevice getPreferredDevice();
+    @WeaklyLinked
+    @Property(selector = "pixelFormat")
+    public native MTLPixelFormat getPixelFormat();
+    @WeaklyLinked
+    @Property(selector = "setPixelFormat:")
+    public native void setPixelFormat(MTLPixelFormat v);
     @Property(selector = "framebufferOnly")
     public native boolean isFramebufferOnly();
     @Property(selector = "setFramebufferOnly:")
@@ -117,8 +138,18 @@ import org.robovm.apple.corevideo.*;
      */
     @Property(selector = "setDeveloperHUDProperties:")
     public native void setDeveloperHUDProperties(NSDictionary<?, ?> v);
+    /**
+     * @since Available in iOS 26.0 and later.
+     */
+    @Property(selector = "residencySet")
+    public native MTLResidencySet getResidencySet();
     @Property(selector = "supportsSecureCoding")
     public static native boolean supportsSecureCoding();
+    /*</properties>*/
+    /*<members>*//*</members>*/
+    /*<methods>*/
+    @Method(selector = "nextDrawable")
+    public native CAMetalDrawable nextDrawable();
     @Method(selector = "defaultValueForKey:")
     public static native NSObject getDefaultValue(String key);
     @Method(selector = "needsDisplayForKey:")

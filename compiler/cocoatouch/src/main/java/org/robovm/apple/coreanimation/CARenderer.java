@@ -31,6 +31,8 @@ import org.robovm.apple.foundation.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreimage.*;
 import org.robovm.apple.coretext.*;
+import org.robovm.apple.opengles.*;
+import org.robovm.apple.metal.*;
 import org.robovm.apple.corevideo.*;
 /*</imports>*/
 
@@ -49,6 +51,10 @@ import org.robovm.apple.corevideo.*;
     public CARenderer() {}
     protected CARenderer(Handle h, long handle) { super(h, handle); }
     protected CARenderer(SkipInit skipInit) { super(skipInit); }
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
+    public CARenderer(MTLTexture tex, NSDictionary<?, ?> dict) { super((Handle) null, create(tex, dict)); retain(getHandle()); }
     /*</constructors>*/
     /*<properties>*/
     @Property(selector = "layer")
@@ -82,5 +88,12 @@ import org.robovm.apple.corevideo.*;
     public native double nextFrameTime();
     @Method(selector = "endFrame")
     public native void endFrame();
+    @Method(selector = "setDestination:")
+    public native void setDestination(MTLTexture tex);
+    /**
+     * @since Available in iOS 11.0 and later.
+     */
+    @Method(selector = "rendererWithMTLTexture:options:")
+    protected static native @Pointer long create(MTLTexture tex, NSDictionary<?, ?> dict);
     /*</methods>*/
 }

@@ -31,6 +31,7 @@ import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.apple.coretext.*;
 import org.robovm.apple.coreanimation.*;
+import org.robovm.apple.coredata.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.security.*;
@@ -202,19 +203,24 @@ public enum /*<name>*/NSCocoaErrorCode/*</name>*/ implements NSErrorCode {
     /*<constants>*//*</constants>*/
     /*<methods>*//*</methods>*/
 
+    private final long n;
+
+    private /*<name>*/NSCocoaErrorCode/*</name>*/(long n) { this.n = n; }
+    public long value() { return n; }
+    @WeaklyLinked
     public static NSErrorCode valueOf(long n) {
         for (/*<name>*/NSCocoaErrorCode/*</name>*/ v : values()) {
             if (v.n == n) {
                 return v;
             }
         }
-        // RoboVM Note: CoreData error codes (same domain) are not bundled any more
+        // NSCoreDataError codes don't have their own domain. They are added to Cocoa error codes.
+        for (NSCoreDataErrorCode v : NSCoreDataErrorCode.values()) {
+            if (v.value() == n) {
+                return v;
+            }
+        }
         throw new IllegalArgumentException("No constant with value " + n + " found in " 
             + /*<name>*/NSCocoaErrorCode/*</name>*/.class.getName());
     }
-
-    private final long n;
-
-    private /*<name>*/NSCocoaErrorCode/*</name>*/(long n) { this.n = n; }
-    public long value() { return n; }
 }

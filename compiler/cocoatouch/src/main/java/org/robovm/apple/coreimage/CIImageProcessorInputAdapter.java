@@ -30,9 +30,11 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.opengles.*;
 import org.robovm.apple.corevideo.*;
 import org.robovm.apple.imageio.*;
 import org.robovm.apple.uikit.*;
+import org.robovm.apple.metal.*;
 import org.robovm.apple.iosurface.*;
 import org.robovm.apple.avfoundation.*;
 /*</imports>*/
@@ -63,6 +65,8 @@ import org.robovm.apple.avfoundation.*;
     public IOSurface getSurface() { return null; }
     @NotImplemented("pixelBuffer")
     public CVPixelBuffer getPixelBuffer() { return null; }
+    @NotImplemented("metalTexture")
+    public MTLTexture getMetalTexture() { return null; }
     /**
      * @since Available in iOS 16.0 and later.
      */

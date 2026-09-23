@@ -28,6 +28,7 @@ import org.robovm.rt.bro.*;
 import org.robovm.rt.bro.annotation.*;
 import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
+import org.robovm.apple.intents.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -47,5 +48,14 @@ import org.robovm.apple.foundation.*;
     protected UNNotificationAttributedMessageContext() {}
     protected UNNotificationAttributedMessageContext(Handle h, long handle) { super(h, handle); }
     protected UNNotificationAttributedMessageContext(SkipInit skipInit) { super(skipInit); }
+    public UNNotificationAttributedMessageContext(INSendMessageIntent sendMessageIntent, NSAttributedString attributedContent) { super((Handle) null, create(sendMessageIntent, attributedContent)); retain(getHandle()); }
+    /*</constructors>*/
+    /*<properties>*/
+    
+    /*</properties>*/
+    /*<members>*//*</members>*/
+    /*<methods>*/
+    @Method(selector = "contextWithSendMessageIntent:attributedContent:")
+    protected static native @Pointer long create(INSendMessageIntent sendMessageIntent, NSAttributedString attributedContent);
     /*</methods>*/
 }

@@ -36,6 +36,7 @@ import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.coreaudio.*;
 import org.robovm.apple.coremedia.*;
 import org.robovm.apple.corevideo.*;
+import org.robovm.apple.mediatoolbox.*;
 import org.robovm.apple.audiotoolbox.*;
 /*</imports>*/
 

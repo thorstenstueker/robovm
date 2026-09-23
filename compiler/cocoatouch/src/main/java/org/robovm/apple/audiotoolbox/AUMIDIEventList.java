@@ -30,6 +30,7 @@ import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.corefoundation.*;
 import org.robovm.apple.coreaudio.*;
+import org.robovm.apple.coremidi.*;
 import org.robovm.apple.avfoundation.*;
 import org.robovm.apple.uikit.*;
 /*</imports>*/
@@ -48,6 +49,14 @@ import org.robovm.apple.uikit.*;
     /*<constants>*//*</constants>*/
     /*<constructors>*/
     public AUMIDIEventList() {}
+    public AUMIDIEventList(AURenderEvent next, AUEventSampleTime eventSampleTime, AURenderEventType eventType, byte reserved, byte cable, MIDIEventList eventList) {
+        this.setNext(next);
+        this.setEventSampleTime(eventSampleTime);
+        this.setEventType(eventType);
+        this.setReserved(reserved);
+        this.setCable(cable);
+        this.setEventList(eventList);
+    }
     /*</constructors>*/
     /*<properties>*//*</properties>*/
     /*<members>*/
@@ -61,6 +70,8 @@ import org.robovm.apple.uikit.*;
     @StructMember(3) public native AUMIDIEventList setReserved(byte reserved);
     @StructMember(4) public native byte getCable();
     @StructMember(4) public native AUMIDIEventList setCable(byte cable);
+    @StructMember(5) public native @ByVal MIDIEventList getEventList();
+    @StructMember(5) public native AUMIDIEventList setEventList(@ByVal MIDIEventList eventList);
     /*</members>*/
     /*<methods>*//*</methods>*/
 }

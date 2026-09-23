@@ -28,7 +28,9 @@ import org.robovm.rt.bro.*;
 import org.robovm.rt.bro.annotation.*;
 import org.robovm.rt.bro.ptr.*;
 import org.robovm.apple.foundation.*;
+import org.robovm.apple.addressbook.*;
 import org.robovm.apple.corebluetooth.*;
+import org.robovm.apple.contacts.*;
 /*</imports>*/
 
 /*<javadoc>*/
@@ -68,6 +70,13 @@ import org.robovm.apple.corebluetooth.*;
     @Deprecated
     @Method(selector = "reverseGeocodeLocation:preferredLocale:completionHandler:")
     public native void reverseGeocodeLocation(CLLocation location, NSLocale locale, @Block VoidBlock2<NSArray<CLPlacemark>, NSError> completionHandler);
+    /**
+     * @deprecated Deprecated in iOS 11.0. Use MKReverseGeocodingRequest
+     */
+    @Deprecated
+    @WeaklyLinked
+    @Method(selector = "geocodeAddressDictionary:completionHandler:")
+    public native void geocodeAddress(ABPersonAddress addressDictionary, @Block VoidBlock2<NSArray<CLPlacemark>, NSError> completionHandler);
     @Method(selector = "geocodeAddressString:inRegion:completionHandler:")
     public native void geocodeAddress(String addressString, CLRegion region, @Block VoidBlock2<NSArray<CLPlacemark>, NSError> completionHandler);
     /**
@@ -89,5 +98,19 @@ import org.robovm.apple.corebluetooth.*;
     @Deprecated
     @Method(selector = "cancelGeocode")
     public native void cancelGeocode();
+    /**
+     * @since Available in iOS 11.0 and later.
+     * @deprecated Deprecated in iOS 26.0. Use MKReverseGeocodingRequest
+     */
+    @Deprecated
+    @Method(selector = "geocodePostalAddress:completionHandler:")
+    public native void geocodePostalAddress(CNPostalAddress postalAddress, @Block VoidBlock2<NSArray<CLPlacemark>, NSError> completionHandler);
+    /**
+     * @since Available in iOS 11.0 and later.
+     * @deprecated Deprecated in iOS 26.0. Use MKReverseGeocodingRequest
+     */
+    @Deprecated
+    @Method(selector = "geocodePostalAddress:preferredLocale:completionHandler:")
+    public native void geocodePostalAddress(CNPostalAddress postalAddress, NSLocale locale, @Block VoidBlock2<NSArray<CLPlacemark>, NSError> completionHandler);
     /*</methods>*/
 }
