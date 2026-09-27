@@ -17,4 +17,7 @@
 # purpose, the way robopods carry their binaries.
 /swift/build/
 /cocoatouch-prune/target/
+# CMake output of librvmcocoatouch.a — the same shape as /swift/build/, and for the same reason:
+# what ships is the copy under src/main/robopods, not the working directory it was built in.
+/cocoatouch/build/
 /target/
