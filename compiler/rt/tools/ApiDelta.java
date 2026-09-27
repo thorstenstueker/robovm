@@ -139,8 +139,37 @@ public class ApiDelta {
                 && (access & Opcodes.ACC_SYNTHETIC) == 0;
     }
 
+    /**
+     * The same bytes, with the class file version lowered so ASM will read them.
+     *
+     * <p>Run against a JDK newer than the ASM on the class path, every class throws
+     * {@code Unsupported class file major version 69} and the tool reports nothing at all — which
+     * is exactly when it is needed, because comparing against the *newest* JDK is the whole point.
+     * Measured 28.09.2026: ASM 9.8 refuses JDK 25.
+     *
+     * <p>Lowering the version is safe here and nowhere else. This reads names, descriptors and
+     * access flags out of the constant pool and the member tables, and those have not changed
+     * shape since Java 8. It never looks at code, and a class whose *bodies* need a newer reader
+     * would still be listed correctly. Anything that executed these bytes would be lied to; this
+     * tool does not.
+     */
+    static byte[] readableBy(byte[] bytes) {
+        final int CLASS_FILE_8 = 52;
+        if (bytes.length < 8) {
+            return bytes;
+        }
+        int major = ((bytes[6] & 0xff) << 8) | (bytes[7] & 0xff);
+        if (major <= CLASS_FILE_8) {
+            return bytes;
+        }
+        byte[] lowered = bytes.clone();
+        lowered[6] = (byte) (CLASS_FILE_8 >> 8);
+        lowered[7] = (byte) CLASS_FILE_8;
+        return lowered;
+    }
+
     static void addClass(Map<String, ClassApi> result, byte[] bytes) {
-        ClassReader reader = new ClassReader(bytes);
+        ClassReader reader = new ClassReader(readableBy(bytes));
         ClassApi classApi = new ClassApi();
         reader.accept(new ClassVisitor(Opcodes.ASM9) {
             String className;
