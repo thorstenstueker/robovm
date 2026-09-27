@@ -439,7 +439,15 @@ struct TrycatchContext {
     double d13;
     double d14;
     double d15;
-#elif defined(DARWIN) && defined(RVM_ARM64)
+/*
+ * Widened from DARWIN && RVM_ARM64 on 27.09.2026 (tsb) for Linux/arm64.
+ *
+ * The callee-saved set is the architecture's, not the operating system's: AAPCS64 and
+ * Apple's ARM64 convention agree exactly on x19-x28, x29, x30 and the low halves of
+ * d8-d15. Where the two really differ is stack argument slots and variadic calls, and
+ * neither of those is in this struct -- see STACK_SLOT in core/src/private.h.
+ */
+#elif defined(RVM_ARM64)
     void* sp; // x31
     void* x19;
     void* x20;

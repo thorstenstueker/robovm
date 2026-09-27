@@ -353,6 +353,11 @@ static inline void* getFramePointer(ucontext_t* context) {
         return (void*) (ptrdiff_t) context->uc_mcontext.gregs[REG_EBP];
 #   elif defined(RVM_X86_64)
         return (void*) (ptrdiff_t) context->uc_mcontext.gregs[REG_RBP];
+#   elif defined(RVM_ARM64)
+        // Added 27.09.2026 (tsb). Linux does not give aarch64 a gregs[] with names in it:
+        // uc_mcontext is a struct sigcontext, and the frame pointer is x29 by convention
+        // rather than by a register class -- so it is regs[29] and nothing symbolic.
+        return (void*) (ptrdiff_t) context->uc_mcontext.regs[29];
 #   else
 #       error Unsupported arch
 #   endif
@@ -377,6 +382,10 @@ static inline void* getPC(ucontext_t* context) {
         return (void*) (ptrdiff_t) context->uc_mcontext.gregs[REG_EIP];
 #   elif defined(RVM_X86_64)
         return (void*) (ptrdiff_t) context->uc_mcontext.gregs[REG_RIP];
+#   elif defined(RVM_ARM64)
+        // Added 27.09.2026 (tsb). Unlike the frame pointer this one is a named field:
+        // aarch64 has a real program counter register and struct sigcontext says so.
+        return (void*) (ptrdiff_t) context->uc_mcontext.pc;
 #   else
 #       error Unsupported arch
 #   endif

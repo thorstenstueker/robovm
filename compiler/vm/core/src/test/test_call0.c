@@ -330,17 +330,27 @@ static void testCall0StackAlignment1(CuTest* tc) {
 }
 static void testCall0StackAlignment2(CuTest* tc) {
 }
-#elif defined(RVM_ARM64) && defined(DARWIN)
+#elif defined(RVM_ARM64) && (defined(DARWIN) || defined(LINUX))
 /*
- * On ARM64 Darwin the stack must be 16-byte aligned before a function call. 
- * This means that (sp & 0xf) == 0 must be true when that function is entered (a 
- * separate register (lr) is used to store the return address so the stack is
- * not involved).
+ * On ARM64 the stack must be 16-byte aligned before a function call. This means that
+ * (sp & 0xf) == 0 must be true when that function is entered (a separate register (lr)
+ * is used to store the return address so the stack is not involved).
+ *
+ * 27.09.2026 (tsb): was DARWIN only. The rule is AArch64's and holds under AAPCS64 just as
+ * it does under Apple's convention; what differs is the leading underscore on the symbol,
+ * exactly as the x86 case above already handles it.
  */
+#ifdef LINUX
+asm("stackPointer:     \n\
+        mov x0, sp     \n\
+        ret            \n\
+");
+#else
 asm("_stackPointer:    \n\
         mov x0, sp     \n\
         ret            \n\
 ");
+#endif
 void* stackPointer(void);
 static void testCall0StackAlignment1(CuTest* tc) {
     // The first 8 ptr/int values are passed in registers. We need to push
@@ -401,6 +411,59 @@ static jboolean unwindCallStack(UnwindContext* ctx, void* d) {
 
     return (i < 9 && address != main) ? TRUE : FALSE;
 }
+/*
+ * Small arguments that land on the stack next to each other. Added 27.09.2026 (tsb).
+ *
+ * WHY, WHEN testCall0ManyArgsOfEach ALREADY PUSHES PLENTY
+ *
+ * Because that one cannot see the difference this test exists for. It adds its arguments as
+ * ptr, int, long, float, double and repeats -- so on the stack every int is followed by a
+ * long, and every float by a double. An 8-byte value realigns the offset whatever rule was
+ * used for the 4-byte value before it, and the two candidate layouts come out identical.
+ *
+ * Measured rather than argued: with STACK_SLOT deliberately set to the Darwin rule on Linux,
+ * all 23 tests still passed. The suite had no opinion about the one thing that differs
+ * between the two ABIs.
+ *
+ * What differs is adjacent small arguments, and clang says so plainly. Twelve ints, the last
+ * four on the stack:
+ *
+ *   aarch64-linux    str w9,[sp]   str w8,[sp,#8]   str w9,[sp,#16]  str w8,[sp,#24]
+ *   arm64-apple      stp x9, x8, [sp]              -- four ints packed into 16 bytes
+ *
+ * So AAPCS64 gives every stack argument a full 8-byte slot and Apple packs. This test puts
+ * twelve ints and twelve floats through call0, which means four of each end up adjacent on
+ * the stack, and it fails on Linux if the Darwin rule is used.
+ */
+static jint testCall0SmallArgsOnTheStack_target(
+      jint i1, jint i2, jint i3, jint i4, jint i5, jint i6,
+      jint i7, jint i8, jint i9, jint i10, jint i11, jint i12,
+      jfloat f1, jfloat f2, jfloat f3, jfloat f4, jfloat f5, jfloat f6,
+      jfloat f7, jfloat f8, jfloat f9, jfloat f10, jfloat f11, jfloat f12) {
+
+    if (i1 != 101 || i2 != 102 || i3 != 103 || i4 != 104) return 0;
+    if (i5 != 105 || i6 != 106 || i7 != 107 || i8 != 108) return 0;
+    // From here on they are on the stack, and this is what the rule decides.
+    if (i9 != 109 || i10 != 110 || i11 != 111 || i12 != 112) return 0;
+
+    if (f1 != 1.5f || f2 != 2.5f || f3 != 3.5f || f4 != 4.5f) return 0;
+    if (f5 != 5.5f || f6 != 6.5f || f7 != 7.5f || f8 != 8.5f) return 0;
+    if (f9 != 9.5f || f10 != 10.5f || f11 != 11.5f || f12 != 12.5f) return 0;
+
+    return 1;
+}
+static void testCall0SmallArgsOnTheStack(CuTest* tc) {
+    jint i;
+    CallInfo* ci = CALL0_ALLOCATE_CALL_INFO(NULL, testCall0SmallArgsOnTheStack_target,
+                                            0, 12, 0, 12, 0);
+    CuAssertPtrNotNull(tc, ci);
+    for (i = 0; i < 12; i++) call0AddInt(ci, 101 + i);
+    for (i = 0; i < 12; i++) call0AddFloat(ci, 1.5f + i);
+
+    jint (*f)(CallInfo*) = (jint (*)(CallInfo*)) _call0;
+    CuAssertIntEquals(tc, 1, f(ci));
+}
+
 void testCall0Unwind_target(void** ptrs) {
     unwindBacktrace(NULL, unwindCallStack, ptrs);
 }
@@ -454,6 +517,7 @@ int runTests(int argc, char* argv[]) {
     if (argc < 2 || !strcmp(argv[1], "testCall0ReturnDouble")) SUITE_ADD_TEST(suite, testCall0ReturnDouble);
     if (argc < 2 || !strcmp(argv[1], "testCall0OneArgOfEach")) SUITE_ADD_TEST(suite, testCall0OneArgOfEach);
     if (argc < 2 || !strcmp(argv[1], "testCall0ManyArgsOfEach")) SUITE_ADD_TEST(suite, testCall0ManyArgsOfEach);
+    if (argc < 2 || !strcmp(argv[1], "testCall0SmallArgsOnTheStack")) SUITE_ADD_TEST(suite, testCall0SmallArgsOnTheStack);
     if (argc < 2 || !strcmp(argv[1], "testCall0Unwind")) SUITE_ADD_TEST(suite, testCall0Unwind);
     if (argc < 2 || !strcmp(argv[1], "testCall0StackAlignment1")) SUITE_ADD_TEST(suite, testCall0StackAlignment1);
     if (argc < 2 || !strcmp(argv[1], "testCall0StackAlignment2")) SUITE_ADD_TEST(suite, testCall0StackAlignment2);

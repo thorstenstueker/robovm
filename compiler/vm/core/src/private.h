@@ -447,10 +447,33 @@ static inline void proxy0ReturnDouble(CallInfo* ci, jdouble d) {
     ci->returnType = RETURN_TYPE_DOUBLE;
 }
 
-#elif (MACOSX || IOS) && RVM_ARM64
+#elif (MACOSX || IOS || LINUX) && RVM_ARM64
 
 #define MAX_INT_ARGS 8
 #define MAX_FP_ARGS 8
+
+/*
+ * How much room one overflow argument takes on the stack -- and the only ABI difference
+ * between Apple's arm64 and everybody else's. Added 27.09.2026 (tsb) with Linux/arm64.
+ *
+ * Apple's ARM64 calling convention packs small arguments: an int on the stack occupies 4
+ * bytes and the next argument starts right behind it. The AAPCS64 that Linux follows does
+ * not -- every stack argument is copied to the next 8-byte slot, whatever its size.
+ *
+ * The comment above CALL0_ALLOCATE_CALL_INFO claims this code already ignores packing and
+ * gives everything 8 bytes. It does not: call0AddInt advanced by sizeof(jint). That is
+ * correct on Darwin and silently wrong on Linux, and "silently" is the word -- it needs a
+ * call with more than eight integer arguments before anything reads the wrong slot, and
+ * then it reads a number that was never passed rather than crashing.
+ *
+ * test_call0's testCall0ManyArgsOfEach is the test that catches it, which is why the
+ * measurement for this step is ctest rather than a program that prints hello.
+ */
+#if DARWIN
+#   define STACK_SLOT(size) (size)
+#else
+#   define STACK_SLOT(size) 8
+#endif
 
 typedef struct CallInfo {
     void* function;
@@ -467,10 +490,13 @@ typedef struct CallInfo {
 } CallInfo;
 
 // NOTE: On iOS ARM64 stack arguments are packed if possible but 64-bit values
-// must be 8-byte aligned. We ignore the fact that 2 ints are packed into
-// 64-bites and just allocate 8 bytes for each ints/floats. Considering that
-// ARM64 uses so many registers for parameter passing the stack should hardly
-// never be used so this is not that much of a waste anyway.
+// must be 8-byte aligned. We *allocate* 8 bytes for each int/float regardless --
+// considering that ARM64 uses so many registers for parameter passing the stack
+// should hardly ever be used, so this is not that much of a waste anyway.
+//
+// Corrected 27.09.2026 (tsb): this used to say the accessors below ignore packing
+// too, and they do not. Allocation is 8 bytes per argument; the write offset is
+// STACK_SLOT, which is the natural size on Darwin and 8 everywhere else.
 
 #define CALL0_ALLOCATE_CALL_INFO(/* Env* */ _env, /* void* */ _function, /* jint */ _ptrArgsCount, /* jint */ _intArgsCount, /* jint */ _longArgsCount, /* jint */ _floatArgsCount, /* jint */ _doubleArgsCount) ({ \
     jint _stackArgsSize = _ptrArgsCount + _intArgsCount + _longArgsCount + _floatArgsCount + _doubleArgsCount; \
@@ -501,7 +527,7 @@ static inline void call0AddInt(CallInfo* ci, jint i) {
         return;
     }
     *((jint*) &(ci->stackArgs[ci->stackArgsIndex])) = i;
-    ci->stackArgsIndex += sizeof(jint);
+    ci->stackArgsIndex += STACK_SLOT(sizeof(jint));
 }
 
 static inline void call0AddPtr(CallInfo* ci, void* p) {
@@ -520,7 +546,7 @@ static inline void call0AddFloat(CallInfo* ci, jfloat f) {
         return;
     }
     *((jfloat*) &(ci->stackArgs[ci->stackArgsIndex])) = f;
-    ci->stackArgsIndex += sizeof(jfloat);
+    ci->stackArgsIndex += STACK_SLOT(sizeof(jfloat));
 }
 
 static inline void call0AddDouble(CallInfo* ci, jdouble d) {
@@ -538,7 +564,7 @@ static inline jint proxy0NextInt(CallInfo* ci) {
         return ci->intArgs[ci->intArgsIndex++].i;
     }
     jint v = *((jint*) &(ci->stackArgs[ci->stackArgsIndex]));
-    ci->stackArgsIndex += sizeof(jint);
+    ci->stackArgsIndex += STACK_SLOT(sizeof(jint));
     return v;
 }
 
@@ -567,7 +593,7 @@ static inline jfloat proxy0NextFloat(CallInfo* ci) {
         return ci->fpArgs[ci->fpArgsIndex++].f;
     }
     jfloat v = *((jfloat*) &(ci->stackArgs[ci->stackArgsIndex]));
-    ci->stackArgsIndex += sizeof(jfloat);
+    ci->stackArgsIndex += STACK_SLOT(sizeof(jfloat));
     return v;
 }
 

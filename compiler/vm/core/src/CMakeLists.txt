@@ -65,6 +65,7 @@ add_test(testCall0ReturnFloat test_call0 "testCall0ReturnFloat")
 add_test(testCall0ReturnDouble test_call0 "testCall0ReturnDouble")
 add_test(testCall0OneArgOfEach test_call0 "testCall0OneArgOfEach")
 add_test(testCall0ManyArgsOfEach test_call0 "testCall0ManyArgsOfEach")
+add_test(testCall0SmallArgsOnTheStack test_call0 "testCall0SmallArgsOnTheStack")
 add_test(testCall0Unwind test_call0 "testCall0Unwind")
 
 add_executable(test_proxy0 test/test_proxy0.c test/CuTest.c proxy0-${OS_FAMILY}-${ARCH}.s unwind.c)
