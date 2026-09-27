@@ -48,9 +48,43 @@ NAME="robovm-$VERSION"
 TAG="tsbmobile-$VERSION"
 ASSET="robovm-dist-$VERSION.tar.gz"
 
+# iCloud copies, out of the way before anything is packaged.
+#
+# This repository sits under ~/Documents, which is mirrored, and the file service resolves what it
+# thinks are conflicts by writing "Foo 2.class" beside "Foo.class" — including inside target/, where
+# nobody looks. On 28.09.2026 the 27.0.0 release went out with **502 of them inside robovm-rt.jar**:
+# stale duplicates of real classes, carrying an older API. They declare the same internal class name
+# as the originals, so anything keyed by class name rather than by path reads whichever comes last
+# in the zip. ApiDelta did exactly that and reported 59 methods missing from java.util.Arrays that
+# have been there all along.
+#
+# Deleted rather than merely reported: a build that is one `rm` away from correct should take it.
+DUPES=$(find . -name "* [0-9].*" -not -path "./.git/*" | wc -l | tr -d ' ')
+if [ "$DUPES" != "0" ]; then
+    echo "removing $DUPES iCloud duplicates before packaging"
+    find . -name "* [0-9].*" -not -path "./.git/*" -delete
+fi
+
 echo "== packaging $NAME =="
 mvn -q -pl dist/package clean package -DskipTests -Ddist.name="$NAME"
 cp "dist/package/target/$NAME.tar.gz" "dist/package/target/$ASSET"
+
+# And the same question asked of the result, because the copies can reappear during the build.
+INSIDE=$(tar tzf "dist/package/target/$ASSET" | grep -c " [0-9]\." || true)
+if [ "$INSIDE" != "0" ]; then
+    echo "The archive holds $INSIDE duplicated paths — refusing to publish it." >&2
+    exit 1
+fi
+# The runtime jar again from inside, because that is where it actually did the damage: a duplicated
+# class sits at a path the archive listing above cannot see into.
+UNPACKED=$(mktemp -d)
+tar xzf "dist/package/target/$ASSET" -C "$UNPACKED" "$NAME/lib/robovm-rt.jar"
+INSIDE=$(unzip -l "$UNPACKED/$NAME/lib/robovm-rt.jar" | grep -c " [0-9]\.class" || true)
+rm -rf "$UNPACKED"
+if [ "$INSIDE" != "0" ]; then
+    echo "robovm-rt.jar holds $INSIDE duplicated classes — refusing to publish it." >&2
+    exit 1
+fi
 SHA1=$(shasum -a 1 "dist/package/target/$ASSET" | cut -d' ' -f1)
 SIZE=$(du -h "dist/package/target/$ASSET" | cut -f1)
 
