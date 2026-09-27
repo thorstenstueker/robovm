@@ -94,7 +94,7 @@ gh release create "$TAG" "dist/package/target/$ASSET" \
     --target "$COMMIT" \
     --title "RoboVM $VERSION (tsbMobile toolchain)" \
     --notes "$(cat <<EOF
-Toolchain build of this fork for RapidFX and RapidJ (Java 17 class files and library, reduced CocoaTouch bindings, Swing on UIView).
+Toolchain build of this fork for RapidFX and RapidJ: class files up to version 61, a runtime library being filled in against Java 25, reduced CocoaTouch bindings, Swing on UIView.
 
     asset   $ASSET ($SIZE)
     sha1    $SHA1
