@@ -1,0 +1,22 @@
+<config>
+    <frameworks>
+        <framework>RvmSwiftBridge</framework>
+    </frameworks>
+    <frameworkPaths>
+        <path>libs/</path>
+    </frameworkPaths>
+
+    <!--
+      RoboVM linkt auf Darwin immer mit -dead_strip und -exported_symbols_list
+      (AbstractTarget#build). Statische xcframework-Slices werden mit
+      force=false eingebunden (ResolvedLocations#processXCFramework), es gibt
+      also kein -force_load. Ohne diese Eintraege wuerden die C-Entrypoints
+      wegoptimiert, weil sie ausschliesslich per dlsym referenziert werden.
+      Exportierte Symbole sind Wurzeln fuer den Dead-Stripper; Wildcards sind
+      unterstuetzt (das '_'-Praefix setzt RoboVM selbst).
+    -->
+    <exportedSymbols>
+        <symbol>rvm_swift_*</symbol>
+        <symbol>rvm_demo_*</symbol>
+    </exportedSymbols>
+</config>

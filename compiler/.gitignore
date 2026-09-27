@@ -11,5 +11,10 @@
 /bro-bridge/target/
 /rt/target/
 /vm/target/
-/target/
+/swift/target/
+# build-natives.sh puts the per-slice .a files here. The ones that ship are the copies
+# under swift/src/main/robopods/.../RvmSwiftBridge.xcframework, which are checked in on
+# purpose, the way robopods carry their binaries.
+/swift/build/
 /cocoatouch-prune/target/
+/target/
