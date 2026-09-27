@@ -25,6 +25,7 @@
         <module>bro-bridge</module>
         <module>objc</module>
         <module>cocoatouch</module>
+        <module>swift</module>
         <module>llvm</module>
         <module>libimobiledevice</module>
         <!-- compiler has to be last as it contains tests that uses modules above -->
