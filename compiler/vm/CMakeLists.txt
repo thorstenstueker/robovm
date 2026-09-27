@@ -38,6 +38,19 @@ if(OS STREQUAL "linux")
     set(X86_64 YES)
     set(64_BIT YES)
     set(CARCH x86_64)
+  elseif (ARCH STREQUAL "arm64")
+    # Added 27.09.2026 (tsb). Both ARM and ARM64 on purpose: macosx/arm64 above sets only
+    # ARM and ios/arm64-simulator sets only ARM64, which is a disagreement nobody noticed
+    # because nothing downstream reads them yet. ios/arm64 sets both; this follows that one.
+    #
+    # Neither CARCH nor CTARGET, unlike every branch above, and that is deliberate: a
+    # compiler running on an aarch64 host already targets aarch64. CARCH would feed
+    # `-arch` into ASM_FLAGS, which is an Apple clang flag; CTARGET would force a
+    # cross-compilation triple onto a native build. The three flag blocks below say what
+    # to do instead of `-m64`, which aarch64 gcc rejects outright.
+    set(ARM YES)
+    set(ARM64 YES)
+    set(64_BIT YES)
   else()
     message(FATAL_ERROR "Unsupported ARCH: ${ARCH}")
   endif()
@@ -127,7 +140,14 @@ if(DARWIN)
     endif()
   endif()
   set(CPLATFORM_MIN_VERSION ${IOS_MIN_VERSION})
-else()
+elseif(NOT LINUX)
+  # 27.09.2026 (tsb): this was a bare else() with a fatal error in it, which meant the Linux
+  # build died here -- twelve lines after the OS switch above had accepted it. Not something
+  # arm64 introduced: linux-x86_64 hits it just the same, so the Linux VM build has been
+  # broken in this tree for as long as this block has looked like this.
+  #
+  # The block asks Xcode where its SDK is. Linux has no Xcode and needs no sysroot; the
+  # honest answer is to skip it, not to call the OS unsupported.
   message(FATAL_ERROR "Unsupported OS: ${OS}")
 endif()
 
@@ -141,6 +161,9 @@ if(NOT IOS)
 endif()
 if(CTARGET)
   set(C_CXX_FLAGS "${C_CXX_FLAGS} -target ${CTARGET}")
+elseif(LINUX AND ARM64)
+  # Nothing to select. -m64 and -m32 are x86 word-size switches; on aarch64 there is one
+  # word size and gcc errors on the flag rather than ignoring it.
 elseif(64_BIT)
   set(C_CXX_FLAGS "${C_CXX_FLAGS} -m64")
 else()
@@ -157,6 +180,8 @@ endif()
 set(LD_FLAGS "${LD_FLAGS} -fPIC")
 if(CTARGET)
   set(LD_FLAGS "${LD_FLAGS} -target ${CTARGET}")
+elseif(LINUX AND ARM64)
+  # See the C flags above.
 elseif(64_BIT)
   set(LD_FLAGS "${LD_FLAGS} -m64")
 else()
@@ -178,6 +203,8 @@ set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${LD_FLAGS}")
 set(ASM_FLAGS "${ASM_FLAGS} -fPIC")
 if(CARCH)
   set(ASM_FLAGS "${ASM_FLAGS} -c -arch ${CARCH}")
+elseif(LINUX AND ARM64)
+  set(ASM_FLAGS "${ASM_FLAGS} -c")
 elseif(64_BIT)
   set(ASM_FLAGS "${ASM_FLAGS} -c -m64")
 else()

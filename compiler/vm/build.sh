@@ -19,7 +19,7 @@ Options:
                           iOS:
                              ios-arm64, ios-x86_64-simulator, ios-arm64-simulator
                           Linux:
-                             linux-x86_64
+                             linux-x86_64, linux-arm64
                           Enclose multiple targets in quotes and 
                           separate with spaces or specify --target multiple
                           times. If not set the current host OS determines the
@@ -60,7 +60,12 @@ if [ "x$TARGETS" = 'x' ]; then
     TARGETS="macosx-arm64 macosx-x86_64 ios-x86_64-simulator ios-arm64-simulator ios-arm64"
     ;;
   Linux)
-    TARGETS="linux-x86_64"
+    # 27.09.2026 (tsb): ask the machine instead of assuming x86_64. A Pi or an arm64 VM
+    # used to get a build for the wrong architecture and no warning about it.
+    case $(uname -m) in
+      aarch64|arm64) TARGETS="linux-arm64" ;;
+      *)             TARGETS="linux-x86_64" ;;
+    esac
     ;;
   *)
     echo "Unsupported OS: $OS"
@@ -74,7 +79,7 @@ fi
 
 # Validate targets
 for T in $TARGETS; do
-  if ! [[ $T =~ (macosx-(x86_64|arm64))|(ios-(x86_64-simulator|arm64-simulator|thumbv7|arm64))|(linux-(x86_64)) ]] ; then
+  if ! [[ $T =~ (macosx-(x86_64|arm64))|(ios-(x86_64-simulator|arm64-simulator|thumbv7|arm64))|(linux-(x86_64|arm64)) ]] ; then
     echo "Unsupported target: $T"
     exit 1
   fi
@@ -109,8 +114,17 @@ if [ $(uname) = 'Darwin' ]; then
     CXX=$(which clang++)
   fi
 else
-  CC=$(which gcc)
-  CXX=$(which g++)
+  # 27.09.2026 (tsb): clang first on Linux, gcc only if there is no clang.
+  #
+  # This said gcc, and the rest of the build does not agree with it. CMakeLists.txt passes
+  # -Wno-error=incompatible-function-pointer-types to the bundled collector, which is a clang
+  # spelling -- gcc stops at "no option -Wincompatible-function-pointer-types" and configure
+  # then reports the useless "C compiler cannot create executables". Android's libcore under
+  # rt/ is worse: it is written with _Nullable and [[clang::fallthrough]] throughout.
+  #
+  # So the build has needed clang on Linux for a long time and asked for gcc anyway.
+  CC=$(which clang || which gcc)
+  CXX=$(which clang++ || which g++)
 fi
 
 for T in $TARGETS; do
@@ -133,7 +147,13 @@ for T in $TARGETS; do
     BUILD_TYPE=$B
     mkdir -p "$BASE/target/build/$T-$B"
     rm -rf "$BASE/binaries/$OS/$ARCH/$B"
-    bash -c "cd '$BASE/target/build/$T-$B'; cmake $SYSTEM_NAME_PARAM -DCMAKE_OSX_SYSROOT=`xcrun --show-sdk-path` -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOS=$OS -DARCH=$ARCH '$BASE'; make -j $WORKERS $VERBOSE install"
+    # 27.09.2026 (tsb): only ask xcrun where the SDK is when there is an xcrun to ask.
+    # It ran unconditionally and printed "xcrun: command not found" on every Linux build.
+    SDK_PARAM=""
+    if command -v xcrun >/dev/null 2>&1; then
+      SDK_PARAM="-DCMAKE_OSX_SYSROOT=$(xcrun --show-sdk-path)"
+    fi
+    bash -c "cd '$BASE/target/build/$T-$B'; cmake $SYSTEM_NAME_PARAM $SDK_PARAM -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOS=$OS -DARCH=$ARCH '$BASE'; make -j $WORKERS $VERBOSE install"
     R=$?
     if [[ $R != 0 ]]; then
       echo "$T-$B build failed"

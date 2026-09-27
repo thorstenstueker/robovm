@@ -62,7 +62,11 @@ public class Arch implements Comparable<Arch> {
     public static Arch[] supported(OS os) {
         switch (os) {
             case linux:
-                return new Arch[]{Arch.x86_64};
+                // arm64 added 27.09.2026 (tsb). The step before Android: the AArch64 code
+                // generator is the same one iOS and Apple Silicon already use -- what was
+                // missing on Linux was not codegen but three assembly stubs and an ABI rule.
+                // See core/src/call0-linux-arm64.s.
+                return new Arch[]{Arch.x86_64, Arch.arm64};
             case macosx:
                 return new Arch[]{Arch.x86_64, Arch.arm64};
             case ios:
