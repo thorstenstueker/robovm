@@ -19,9 +19,23 @@ set -euo pipefail
 VERSION=${1:?version, e.g. 3.0.0-tsb.20260922}
 cd "$(dirname "$0")/.."
 
-if [ -n "$(git status --porcelain)" ]; then
+# The tree must correspond to a commit — except for what the build itself regenerates.
+#
+# compiler/swift/src/main/robopods holds the xcframework build-natives.sh produces. It is tracked
+# on purpose, so that a clone without a Swift toolchain can still build, and it is therefore
+# rewritten by every build. Two measurements from 27.09.2026, after ZERO_AR_DATE=1 and after
+# sorting the xcframework's Info.plist: the archives still differ by **16 bytes** between two runs
+# over identical source — a hash inside the Swift object, not a timestamp, and not worth chasing
+# further.
+#
+# Excluding it does not weaken what this check is for. The correspondence GPL2 asks for is between
+# the released binary and the *source* it was built from, and that source — src/main/swift/*.swift
+# — is tracked and is covered here. A regenerated artefact differing in a hash is the same
+# artefact. Anything else being dirty still stops the release.
+DIRTY=$(git status --porcelain -- . ':(exclude)compiler/swift/src/main/robopods')
+if [ -n "$DIRTY" ]; then
     echo "The working tree is not clean — the release must correspond to a commit." >&2
-    git status --short >&2
+    echo "$DIRTY" >&2
     exit 1
 fi
 COMMIT=$(git rev-parse HEAD)
