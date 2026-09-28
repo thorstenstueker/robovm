@@ -64,7 +64,13 @@ def duplicates(jar):
 
 
 def members(jar, jdk_home, rt8):
-    """ApiDelta's CSV, as {class: count}."""
+    """ApiDelta's CSV as {class: count}, counting only what is genuinely absent.
+
+    A member the class does not declare may still be reachable through a supertype, and ApiDelta's
+    `inherited` column says which. Android's Properties inherits get, put, size and twenty-eight
+    more from Hashtable where OpenJDK's overrides them — nothing missing, but a declaration-level
+    count calls all thirty-one absent and sends someone off to write them.
+    """
     here = pathlib.Path(__file__).resolve().parent
     asm = next((p for p in pathlib.Path.home().glob('.gradle/caches/**/asm-9*.jar')
                 if 'sources' not in p.name), None)
@@ -75,10 +81,14 @@ def members(jar, jdk_home, rt8):
     subprocess.run([str(jdk_home / 'bin/java'), '-cp', str(asm),
                     str(here.parent / 'ApiDelta.java'), str(jar), str(csv), str(rt8)],
                    capture_output=True, text=True, check=True)
-    counts = collections.Counter()
+    counts, inherited = collections.Counter(), 0
     for line in csv.read_text().splitlines()[1:]:
-        counts[line.split(',')[0]] += 1
-    return counts
+        f = line.split(',')
+        if f[-1] == 'true':
+            inherited += 1
+        else:
+            counts[f[0]] += 1
+    return counts, inherited
 
 
 def main():
@@ -118,12 +128,15 @@ def main():
             print(f'| of those, `{prefix.replace("/", ".")}` | {len(hit)} · {why} |')
     print(f'| **of real interest** | **{len(rest)}** |')
 
-    counts = members(jar, jdk, rt8)
-    if counts is not None:
+    measured = members(jar, jdk, rt8)
+    if measured is not None:
+        counts, inherited = measured
         total = sum(counts.values())
         print(f'\n## Members of classes that do exist\n')
-        print(f'| absent | **{total}** in {len(counts)} classes |')
+        print(f'| not declared on the class | {total + inherited} |')
         print('|---|---|')
+        print(f'| of those, reached through a supertype | {inherited} |')
+        print(f'| **genuinely absent** | **{total}** in {len(counts)} classes |')
         for label, pred in (
                 ('`sun.*`', lambda c: c.startswith('sun/')),
                 ('Unicode tables', lambda c: 'Unicode' in c),

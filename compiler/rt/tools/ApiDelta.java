@@ -49,17 +49,36 @@ import java.util.stream.Stream;
  * interesting). Optionally an old rt.jar (JDK 8) can be given to mark members that are Java 9+
  * additions.
  *
+ * A member the class does not declare is not necessarily missing: it may be inherited. The
+ * `inherited` column says which, and only the rest are counted as genuinely absent — see
+ * {@link #inheritedFrom}.
+ *
  * Usage (needs asm on the classpath):
  *   java -cp asm-9.7.1.jar compiler/rt/tools/ApiDelta.java robovm-rt.jar out.csv [jdk8-rt.jar]
  *
- * Output CSV columns: class,kind,member,inJdk8
+ * Output CSV columns: class,kind,member,inJdk8,inherited
  */
 public class ApiDelta {
 
     static final class ClassApi {
         final Set<String> members = new TreeSet<>();
+        final List<String> supertypes = new ArrayList<>();
         int access;
     }
+
+    /**
+     * Class names seen more than once while reading a jar.
+     *
+     * <p>A jar can hold two entries at different paths whose class files declare the same name —
+     * iCloud writes {@code Arrays 2.class} beside {@code Arrays.class} inside {@code target/}, and
+     * the assembly packs both. This map is keyed by declared name, so the second silently replaces
+     * the first and which one wins depends on zip order. That produced a day of work against
+     * 59 methods reported missing from {@code java.util.Arrays} which have been there since Java 9.
+     *
+     * <p>Counted rather than tolerated: the run still finishes, but it says on the way out that
+     * nothing it printed can be trusted.
+     */
+    static int duplicates;
 
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
@@ -71,9 +90,11 @@ public class ApiDelta {
         Map<String, ClassApi> jdk = readJrt();
 
         int missingClasses = 0;
+        int inherited = 0;
+        int absent = 0;
         Map<String, Integer> perPackage = new TreeMap<>();
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(Paths.get(args[1])))) {
-            out.println("class,kind,member,inJdk8");
+            out.println("class,kind,member,inJdk8,inherited");
             for (Map.Entry<String, ClassApi> e : jdk.entrySet()) {
                 String cls = e.getKey();
                 ClassApi jdkApi = e.getValue();
@@ -86,18 +107,78 @@ public class ApiDelta {
                 for (String member : jdkApi.members) {
                     if (!rtApi.members.contains(member)) {
                         boolean inJdk8 = jdk8Api != null && jdk8Api.members.contains(member);
+                        boolean byInheritance = inheritedFrom(rt, cls, member) != null;
                         String kind = member.startsWith("F:") ? "field" : "method";
-                        out.println(cls + "," + kind + "," + member.substring(2) + "," + inJdk8);
-                        String pkg = cls.contains("/") ? cls.substring(0, cls.lastIndexOf('/')) : "";
-                        perPackage.merge(pkg, 1, Integer::sum);
+                        out.println(cls + "," + kind + "," + member.substring(2) + "," + inJdk8
+                                + "," + byInheritance);
+                        if (byInheritance) {
+                            inherited++;
+                        } else {
+                            absent++;
+                            String pkg = cls.contains("/") ? cls.substring(0, cls.lastIndexOf('/')) : "";
+                            perPackage.merge(pkg, 1, Integer::sum);
+                        }
                     }
                 }
             }
         }
         System.out.println("java.base classes: " + jdk.size() + ", in robovm-rt: " + (jdk.size() - missingClasses)
                 + ", missing classes: " + missingClasses);
-        System.out.println("missing members per package:");
+        System.out.println("members not declared on the class: " + (inherited + absent)
+                + " — of those " + inherited + " are reached through a supertype, "
+                + absent + " are genuinely absent");
+        System.out.println("genuinely absent members per package:");
         perPackage.forEach((p, n) -> System.out.println("  " + n + "\t" + p));
+        if (duplicates > 0) {
+            System.out.println();
+            System.out.println("!! " + duplicates + " class names occurred twice while reading."
+                    + " Every number above is unreliable: sweep the tree for iCloud's"
+                    + " \"Foo 2.class\" copies and build again.");
+        }
+    }
+
+    /**
+     * The supertype that already provides this member, or null if nothing does.
+     *
+     * <p>Comparing declared members alone overstates the gap badly. Android's {@code Properties}
+     * inherits {@code get}, {@code put}, {@code size} and twenty-eight others from
+     * {@code Hashtable}, where OpenJDK's overrides every one of them because it keeps its entries
+     * in a {@code ConcurrentHashMap} instead. Nothing is missing — a caller reaches all of them —
+     * but a declaration-level diff calls all thirty-one absent, and someone then sets out to write
+     * them.
+     *
+     * <p>Constructors are the exception the walk has to make: {@code <init>} is not inherited, so
+     * {@code Properties(int)} really is missing while its thirty-one neighbours are not.
+     *
+     * <p>Static methods count as reached. {@code Sub.staticFromSuper()} compiles, and compiling is
+     * what this tool is asked about.
+     */
+    static String inheritedFrom(Map<String, ClassApi> world, String cls, String member) {
+        if (member.startsWith("M:<init>")) {
+            return null;
+        }
+        return search(world, cls, member, new TreeSet<>(), true);
+    }
+
+    private static String search(Map<String, ClassApi> world, String cls, String member,
+                                 Set<String> seen, boolean isStart) {
+        if (cls == null || !seen.add(cls)) {
+            return null;
+        }
+        ClassApi api = world.get(cls);
+        if (api == null) {
+            return null;
+        }
+        if (!isStart && api.members.contains(member)) {
+            return cls;
+        }
+        for (String supertype : api.supertypes) {
+            String found = search(world, supertype, member, seen, false);
+            if (found != null) {
+                return found;
+            }
+        }
+        return null;
     }
 
     static Map<String, ClassApi> readJrt() throws IOException {
@@ -180,6 +261,10 @@ public class ApiDelta {
                 className = name;
                 classApi.access = access;
                 isApiClass = isApi(access);
+                if (superName != null) {
+                    classApi.supertypes.add(superName);
+                }
+                Collections.addAll(classApi.supertypes, interfaces);
             }
 
             @Override
@@ -200,8 +285,8 @@ public class ApiDelta {
 
             @Override
             public void visitEnd() {
-                if (isApiClass) {
-                    result.put(className, classApi);
+                if (isApiClass && result.put(className, classApi) != null) {
+                    duplicates++;
                 }
             }
         }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
