@@ -140,12 +140,12 @@ public class ApiDelta {
     /**
      * The supertype that already provides this member, or null if nothing does.
      *
-     * <p>Comparing declared members alone overstates the gap badly. Android's {@code Properties}
-     * inherits {@code get}, {@code put}, {@code size} and twenty-eight others from
-     * {@code Hashtable}, where OpenJDK's overrides every one of them because it keeps its entries
-     * in a {@code ConcurrentHashMap} instead. Nothing is missing — a caller reaches all of them —
-     * but a declaration-level diff calls all thirty-one absent, and someone then sets out to write
-     * them.
+     * <p>Comparing declared members alone overstates the gap badly. Our {@code Properties} — from
+     * the libcore fork this runtime descends from — inherits {@code get}, {@code put}, {@code size}
+     * and twenty-eight others from {@code Hashtable}, where OpenJDK's overrides every one of them
+     * because it keeps its entries in a {@code ConcurrentHashMap} instead. Nothing is missing: a
+     * caller reaches all of them. But a declaration-level diff calls all thirty-one absent, and
+     * someone then sets out to write them.
      *
      * <p>Constructors are the exception the walk has to make: {@code <init>} is not inherited, so
      * {@code Properties(int)} really is missing while its thirty-one neighbours are not.

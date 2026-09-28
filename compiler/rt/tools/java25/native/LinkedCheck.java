@@ -20,9 +20,11 @@ import java.util.SequencedSet;
  * methods answer correctly, but whether ordinary puts, access ordering, removeEldestEntry and
  * iteration still behave exactly as before.
  *
- * Android's libcore also carries a deliberate difference upstream does not: its forEach loops check
- * modCount on every step rather than only at the end, so a concurrent modification is caught while
- * the walk is still running. Reversed iteration had to keep that, and there is a case for it below.
+ * Our runtime also carries a deliberate difference from OpenJDK, inherited from the libcore fork it
+ * descends from: its forEach loops check modCount on every step rather than only at the end, so a
+ * concurrent modification is caught while the walk is still running. Reversed iteration keeps that —
+ * not out of fidelity to anything, but because it is better behaviour that our library already has,
+ * and dropping it would be a regression for whoever depends on it. There is a case for it below.
  */
 public class LinkedCheck {
 
@@ -134,8 +136,8 @@ public class LinkedCheck {
         try {
             guard.putFirst(null, 0);
         } catch (RuntimeException ignored) {
-            // Android's LinkedHashMap accepts a null key, so this may well not throw. Either way
-            // what matters is the next line.
+            // Our LinkedHashMap accepts a null key, so this may well not throw. Either way what
+            // matters is the next line.
         }
         guard.put("e", 5);
         eq("an ordinary put after putFirst still appends",
@@ -280,7 +282,7 @@ public class LinkedCheck {
         eq("newSequencedSetFromMap.reversed", walk(fromMap.reversed()), "ba");
     }
 
-    /** Android catches a concurrent modification during the walk, not after it. */
+    /** Our library catches a concurrent modification during the walk, not after it. */
     static void androidEarlyDetection() {
         LinkedHashSet<String> s = new LinkedHashSet<>(Arrays.asList("a", "b", "c", "d"));
         final LinkedHashMap<String, Integer> m = abcd();

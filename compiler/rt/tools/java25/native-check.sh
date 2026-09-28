@@ -4,9 +4,13 @@
 #
 # check.sh next door tests the added members by transplanting their sources into a probe package and
 # running them on the host JDK. That catches a wrong body, and nothing else: it proves a copy of
-# OpenJDK agrees with OpenJDK. It cannot say whether the addition fits onto libcore, whose classes
-# are not the JDK's — Android's String has no compact encoding, its Properties still keeps entries in
-# Hashtable, its collections are its own.
+# OpenJDK agrees with OpenJDK. It cannot say whether the addition fits onto *our* classes, which are
+# not the JDK's: compiler/rt/android/libcore is a fork of Android's libcore, and it has diverged from
+# OpenJDK for fifteen years. Our String has no compact encoding. Our Properties still keeps its
+# entries in Hashtable. Our collections are our own.
+#
+# None of that is a constraint Android imposes — we own this source and may change any of it. It is
+# simply what the code already is, and a member copied out of OpenJDK has to fit onto it.
 #
 # So this compiles the check against robovm-rt as the boot class path, hands it to the AOT compiler
 # for this machine's own architecture, and runs the binary. Everything below java.lang.Object is

@@ -67,9 +67,9 @@ def members(jar, jdk_home, rt8):
     """ApiDelta's CSV as {class: count}, counting only what is genuinely absent.
 
     A member the class does not declare may still be reachable through a supertype, and ApiDelta's
-    `inherited` column says which. Android's Properties inherits get, put, size and twenty-eight
-    more from Hashtable where OpenJDK's overrides them — nothing missing, but a declaration-level
-    count calls all thirty-one absent and sends someone off to write them.
+    `inherited` column says which. Our Properties inherits get, put, size and twenty-eight more from
+    Hashtable where OpenJDK's overrides them — nothing missing, but a declaration-level count calls
+    all thirty-one absent and sends someone off to write them.
     """
     here = pathlib.Path(__file__).resolve().parent
     asm = next((p for p in pathlib.Path.home().glob('.gradle/caches/**/asm-9*.jar')
