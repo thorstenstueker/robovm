@@ -3,9 +3,14 @@ project(android-external-sqlite)
 set(LIB_PATH "${ANDROID_RT_PATH}/external/sqlite")
 set(ICU_PATH "${ANDROID_RT_PATH}/external/icu/icu4c")
 
+# 28.09.2026 (tsb): "source/" added, for A2. ICU_PATH is .../external/icu/icu4c, so these two
+# pointed at icu4c/common and icu4c/i18n -- neither of which exists; the headers are under
+# icu4c/source/. The paths have been wrong for as long as they have been here and it never
+# showed, because on a Mac unicode/uiter.h is also in the macOS SDK and clang found it there.
+# Building for Android removes that accident and the include simply fails.
 include_directories(
-  ${ICU_PATH}/common
-  ${ICU_PATH}/i18n
+  ${ICU_PATH}/source/common
+  ${ICU_PATH}/source/i18n
 )
 
 # NOTE the following flags,

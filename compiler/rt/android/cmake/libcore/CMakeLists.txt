@@ -11,6 +11,10 @@ include_directories(
   "${ANDROID_RT_PATH}/external/icu/icu4c/source/common"
   "${ANDROID_RT_PATH}/external/icu/icu4c/source/i18n"
   "${ANDROID_RT_PATH}/external/boringssl/src/include"
+  # 28.09.2026 (tsb): expat added, for A2. org_apache_harmony_xml_ExpatParser.cpp in this very
+  # target includes <expat.h>, and this list never named where it is. On a Mac it built anyway
+  # because expat.h is in the macOS SDK; the copy in this tree was compiled but never included.
+  "${ANDROID_RT_PATH}/external/expat/lib"
   "${LUNI_PATH}"
   "${OJLUNI_PATH}"
 )

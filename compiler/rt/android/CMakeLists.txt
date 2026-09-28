@@ -15,6 +15,21 @@ include_directories(
   libnativehelper/include_platform/
   libnativehelper/include_platform_header_only/
   libnativehelper/header_only_include
+
+  # 28.09.2026 (tsb): the bundled third-party headers, for A2.
+  #
+  # These four are compiled from this tree and were never included from it. On a Mac that went
+  # unnoticed for years, because expat.h, sqlite3.h, zlib.h and unicode/*.h all sit in the macOS
+  # SDK as well and clang found them there -- so the sources were built against Apple's headers
+  # and linked against our objects, and the versions happened to agree.
+  #
+  # Building for Android takes the SDK away and every one of them fails to resolve: sixteen
+  # errors across ICUBinary.cpp, sqlite3_android.cpp and ExpatParser.cpp, all of the form
+  # "'zlib.h' file not found" or "unknown type name 'z_stream'".
+  external/expat/lib
+  external/sqlite/dist
+  external/zlib
+  external/icu/icu4c/source/common
 )
 
 if(DARWIN)

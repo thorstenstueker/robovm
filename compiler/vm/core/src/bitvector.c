@@ -21,6 +21,10 @@
 
 #include <stdlib.h>
 #include <string.h>
+// 28.09.2026 (tsb), for A2. ffs() is declared in <strings.h> by POSIX. glibc and Darwin also
+// reach it through <string.h>, so this file compiled without asking; Bionic keeps the two
+// headers apart and does not.
+#include <strings.h>
 
 #define kBitVectorGrowth    4   /* increase by 4 u4s when limit hit */
 

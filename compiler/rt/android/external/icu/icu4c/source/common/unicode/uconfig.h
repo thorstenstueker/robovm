@@ -27,7 +27,20 @@
 // uconfig_local.h is only included when ANDROID is defined in the
 // platform build system(s), or __ANDROID__ is defined when targeting
 // Android, e.g. NDK build.
-#if defined(ANDROID) || defined(__ANDROID__)
+// 28.09.2026 (tsb): __ROBOVM__ excluded, for A2.
+//
+// UCONFIG_USE_LOCAL makes uconfig.h include "uconfig_local.h" further down. That file is not in
+// this tree and never was -- it comes out of the NDK sysroot, at /usr/include/uconfig_local.h,
+// and it configures ICU the way Android's own libicu.so is configured: U_SHOW_CPLUSPLUS_API 0,
+// because the NDK exposes ICU's C API only.
+//
+// Correct for a program linking against Android's libicu. Wrong for us: ICU is compiled into
+// our runtime from the sources beside this file, and the C++ API is what libcore's own native
+// code calls. With it switched off, every class simply stops being declared, and the first
+// file to notice is appendable.cpp with five "use of undeclared identifier 'Appendable'".
+//
+// Nothing here was reachable before A2, since __ANDROID__ had never been defined in this build.
+#if (defined(ANDROID) || defined(__ANDROID__)) && !defined(__ROBOVM__)
 #define UCONFIG_USE_LOCAL 1
 #endif
 

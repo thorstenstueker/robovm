@@ -109,6 +109,46 @@ elseif(OS STREQUAL "ios")
     message(FATAL_ERROR "Unsupported ARCH: ${ARCH}")
   endif()
   set(CPLATFORM_MIN_VERSION ${IOS_MIN_VERSION})
+elseif(OS STREQUAL "android")
+  # Added 28.09.2026 (tsb). A2: the VM core for Bionic.
+  #
+  # OS_FAMILY is linux on purpose, and it is the reason this branch is short. The assembly
+  # stubs are selected by ${OS_FAMILY}-${ARCH}, so android/arm64 gets exactly the three
+  # files written for linux/arm64 in A1 -- same ELF, same AAPCS64, same register rules.
+  # Bionic differs from glibc in its C library, not in its calling convention.
+  #
+  # BIONIC rather than ANDROID: CMake sets ANDROID itself when its own NDK toolchain file is
+  # used, and a variable that means one thing here and another there is a trap. This build
+  # does not use that toolchain file -- it follows the pattern iOS already uses, CTARGET plus
+  # the platform's own clang, so there is one way of cross-compiling in this file and not two.
+  set(BIONIC YES)
+  set(OS_FAMILY linux)
+  if(NOT ANDROID_API)
+    # 21 is the NDK's own floor for 64-bit and well below MIN_SDK 26, so it constrains nothing
+    # we ship. Raise it here rather than at the call site if that ever stops being true.
+    set(ANDROID_API 21)
+  endif()
+  if (ARCH STREQUAL "arm64")
+    set(ARM YES)
+    set(ARM64 YES)
+    set(64_BIT YES)
+    set(CTARGET "aarch64-linux-android${ANDROID_API}")
+  elseif (ARCH STREQUAL "x86_64")
+    set(X86_64 YES)
+    set(64_BIT YES)
+    set(CTARGET "x86_64-linux-android${ANDROID_API}")
+  else()
+    message(FATAL_ERROR "Unsupported ARCH: ${ARCH}")
+  endif()
+  # No SYSROOT and no CARCH. The NDK's clang carries its own sysroot, and CARCH would feed
+  # `-arch` into ASM_FLAGS, which is an Apple clang flag.
+  #
+  # Symbols newer than the target become weak rather than an error. libbase's unique_fd.h is
+  # written for exactly this: it reaches for android_fdsan_exchange_owner_tag, which arrived in
+  # API 29, and guards every use with `if (android_fdsan_...)`. Those guards only mean something
+  # if the symbol may be absent at run time, which is what this flag arranges. Without it clang
+  # reports the functions as undeclared at API 26 and the checks could never have run.
+  add_definitions(-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__)
 else()
   message(FATAL_ERROR "Unsupported OS: ${OS}")
 endif()
@@ -140,7 +180,7 @@ if(DARWIN)
     endif()
   endif()
   set(CPLATFORM_MIN_VERSION ${IOS_MIN_VERSION})
-elseif(NOT LINUX)
+elseif(NOT LINUX AND NOT BIONIC)
   # 27.09.2026 (tsb): this was a bare else() with a fatal error in it, which meant the Linux
   # build died here -- twelve lines after the OS switch above had accepted it. Not something
   # arm64 introduced: linux-x86_64 hits it just the same, so the Linux VM build has been
@@ -219,10 +259,19 @@ endif()
 if(IOS)
   set(ASM_FLAGS "${ASM_FLAGS} -target ${CTARGET}")
 endif()
+if(BIONIC)
+  # Same reason as the two above: the assembler is invoked as clang, so it needs to be told
+  # what it is assembling for. Without this the .s files are built for the host.
+  set(ASM_FLAGS "${ASM_FLAGS} -target ${CTARGET}")
+endif()
 set(CMAKE_ASM_COMPILE_OBJECT "${CMAKE_C_COMPILER} ${ASM_FLAGS} -o <OBJECT> <SOURCE>")
 enable_language(ASM)
 
-if(LINUX)
+if(LINUX OR BIONIC)
+  # Bionic takes -DLINUX too: the core's #ifdef LINUX paths are about the kernel interface --
+  # /proc, futexes, ELF -- and those are the same. Where Bionic genuinely differs, the source
+  # can say so with __ANDROID__, which the NDK's clang predefines, so no second flag is needed
+  # here and none is invented.
   add_definitions(-DLINUX)
 elseif(DARWIN)
   if(MACOSX)
@@ -294,6 +343,28 @@ if(DARWIN)
 endif()
 
 set(EXTGC_PARAMS  "--enable-shared=no --enable-munmap=1 --enable-parallel-mark=yes")
+if(BIONIC)
+  # 28.09.2026 (tsb), for A2. Two of bdwgc's own switches, and both are statements of fact about
+  # this build rather than workarounds.
+  #
+  # GC_NOT_DLL: gc.h registers the caller's static data roots itself on Android unless this is
+  # set, and to do that it declares `extern int __data_start[], _end[]`. gcconfig.h then declares
+  # `extern char _end[]` in its AArch64/Linux section, and the two contradict each other --
+  # bdwgc disagreeing with itself, for this one combination. The switch exists for a GC that is
+  # not in a shared library, which is exactly what --enable-shared=no above produces.
+  #
+  # GC_DONT_DEFINE_LINK_MAP: dyn_load.c defines struct link_map and struct r_debug itself,
+  # explaining in a comment that only bionic/linker/linker.h has them and that it is a C++
+  # header. That has not been true for years; the NDK's <link.h> declares both for C, and the
+  # definitions collide.
+  #
+  # NO_GETCONTEXT: Bionic has never implemented getcontext/setcontext. mach_dep.c uses
+  # getcontext to capture the register set when scanning a thread's stack, and falls back
+  # to setjmp when told the call is not there. Android is the platform this switch was
+  # written for. configure did not set it by itself, which is what cross-compiling costs:
+  # its feature test cannot run a program on the target to find out.
+  set(EXTGC_C_FLAGS "${EXTGC_C_FLAGS} -DGC_NOT_DLL -DGC_DONT_DEFINE_LINK_MAP -DNO_GETCONTEXT")
+endif()
 if (CMAKE_BUILD_TYPE STREQUAL "debug")
   set(EXTGC_C_FLAGS "${EXTGC_C_FLAGS} -g")
   set(EXTGC_PARAMS "${EXTGC_PARAMS} --enable-gc-debug=yes")
@@ -307,6 +378,16 @@ if (IOS OR MACOSX)
     set(EXT_HOST --host=aarch64-apple-darwin7)
   elseif (ARCH STREQUAL "thumbv7")
       set(EXT_HOST --host=arm-apple-darwin7)
+  endif()
+elseif (BIONIC)
+  # 28.09.2026 (tsb), for A2. The GC and libatomic_ops are autotools projects, and --host is how
+  # autotools is told it is being cross-compiled. Without it configure tries to *run* what it has
+  # just built -- an aarch64 Android binary, on this Mac -- and stops with "cannot run C compiled
+  # programs", after every other part of the VM has already compiled.
+  if (ARCH STREQUAL "arm64")
+    set(EXT_HOST --host=aarch64-linux-android)
+  elseif (ARCH STREQUAL "x86_64")
+    set(EXT_HOST --host=x86_64-linux-android)
   endif()
 endif()
 ExternalProject_Add(libatomic_ops

@@ -39,6 +39,12 @@
 #include <unicode/udata.h>
 #include <unicode/uclean.h>
 
+// 28.09.2026 (tsb): added for A2. The inflate() helper below uses z_stream, Bytef, Z_NULL,
+// inflateInit2 and ::inflate, and this file never asked for zlib.h -- on a Mac the declarations
+// arrived through some other header's chain and it compiled by luck. Building for Android ends
+// the luck with seventeen errors in this one file.
+#include <zlib.h>
+
 // RoboVM note: Start change.
 #if defined(__APPLE__)
 #include <mach-o/dyld.h> // for _NSGetExecutablePath()
@@ -48,14 +54,23 @@
 #include "icudt68l.dat.gz.h"
 // RoboVM note: End change.
 
+// 28.09.2026 (tsb): FALSE -> false in both macros, for A2.
+//
+// ICU used to define FALSE and TRUE in umachine.h and stopped doing so in ICU 68 unless
+// U_DEFINE_FALSE_AND_TRUE is asked for. On a Mac the name still resolved, because Apple's
+// headers define it too and one of them is on the include chain here. Building for Android
+// leaves five uses of an undeclared identifier.
+//
+// Written as false rather than by asking ICU for its deprecated spelling back: this is a C++
+// file, both macros return UBool, and UBool is an int8_t that takes false without complaint.
 #define FAIL_WITH_STRERROR(s) \
     ALOGE("Couldn't " s " '%s': %s", path_.c_str(), strerror(errno)); \
-    return FALSE;
+    return false;
 
 #define MAYBE_FAIL_WITH_ICU_ERROR(s) \
     if (status != U_ZERO_ERROR) {\
         ALOGE("Couldn't initialize ICU (" s "): %s (%s)", u_errorName(status), path_.c_str()); \
-        return FALSE; \
+        return false; \
     }
 
 // Common struct for icu-data sources

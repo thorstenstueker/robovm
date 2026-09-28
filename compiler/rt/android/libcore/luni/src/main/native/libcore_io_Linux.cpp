@@ -528,15 +528,31 @@ static jobject makeStructStat(JNIEnv* env, const struct stat64& sb) {
         return NULL;
     }
 
-    jobject atim_timespec = makeStructTimespec(env, sb.st_atimespec);
+    // 28.09.2026 (tsb): the three member names below are Darwin's, for A2.
+    //
+    // POSIX.1-2008 calls them st_atim, st_mtim and st_ctim; Darwin spells them st_atimespec and
+    // so on. This file used Darwin's spelling unconditionally, which means it has never compiled
+    // for any Linux -- Bionic or glibc -- and is one of the reasons rt/android could not be built
+    // on Linux at all.
+#if defined(__linux__)
+#define RVM_ATIMESPEC st_atim
+#define RVM_MTIMESPEC st_mtim
+#define RVM_CTIMESPEC st_ctim
+#else
+#define RVM_ATIMESPEC st_atimespec
+#define RVM_MTIMESPEC st_mtimespec
+#define RVM_CTIMESPEC st_ctimespec
+#endif
+
+    jobject atim_timespec = makeStructTimespec(env, sb.RVM_ATIMESPEC);
     if (atim_timespec == NULL) {
         return NULL;
     }
-    jobject mtim_timespec = makeStructTimespec(env, sb.st_mtimespec);
+    jobject mtim_timespec = makeStructTimespec(env, sb.RVM_MTIMESPEC);
     if (mtim_timespec == NULL) {
         return NULL;
     }
-    jobject ctim_timespec = makeStructTimespec(env, sb.st_ctimespec);
+    jobject ctim_timespec = makeStructTimespec(env, sb.RVM_CTIMESPEC);
     if (ctim_timespec == NULL) {
         return NULL;
     }

@@ -29,7 +29,19 @@
 
 #include <jni.h>
 
-#if !defined(__BIONIC__) && !defined(__INTRODUCED_IN)
+// 28.09.2026 (tsb): __ROBOVM__ added to the condition, for A2.
+//
+// The three declarations below carry __INTRODUCED_IN(31) because on Android these functions come
+// out of libnativehelper.so and did not exist before API 31. In this tree they do not come from
+// there: file_descriptor_jni.c beside this header implements them, and they are linked in
+// statically. The annotation is therefore untrue here, and it was harmless only for as long as
+// nothing was compiled for Bionic -- off-Android the first half of this condition erased it.
+//
+// Compiling for Android turns it back on, and clang then refuses every call from
+// JNIPlatformHelp.h with "unavailable: introduced in Android 31" while targeting 26. Widened
+// rather than the target raised: raising it to 31 would put the product's floor at Android 12
+// for a symbol we supply ourselves.
+#if (!defined(__BIONIC__) || defined(__ROBOVM__)) && !defined(__INTRODUCED_IN)
 #define __INTRODUCED_IN(x)
 #endif
 

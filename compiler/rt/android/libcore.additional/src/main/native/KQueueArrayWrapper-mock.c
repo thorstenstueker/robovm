@@ -86,5 +86,7 @@ Java_sun_nio_ch_KQueueArrayWrapper_interrupt(JNIEnv *env, jclass cls, jint fd)
 {
     jniThrowException(env, "java/lang/UnsupportedOperationException",
             "Available only on Darwin");
-    return 0;
+    // 28.09.2026 (tsb): the `return 0` that was here is gone, for A2. The function is void, and
+    // clang 21 rejects a returned value where older clang only warned (-Wreturn-mismatch). The
+    // other mocks in this file return a value because they are not void; this one was a slip.
 }

@@ -267,7 +267,11 @@ JNIEXPORT jlong JNICALL Java_java_lang_System_nanoTime() {
     t /= info.denom;
     return (jlong) t;
 #else
-    timespec now;
+    // 28.09.2026 (tsb): 'struct' added, for A2. This is a .c file, and C has no implicit
+    // typedef for a struct tag -- timespec alone is only a type in C++. The branch has
+    // therefore never compiled for any Linux; the Darwin branch above it is the one that
+    // has been taken all along.
+    struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
     return now.tv_sec * 1000000000LL + now.tv_nsec;
 #endif

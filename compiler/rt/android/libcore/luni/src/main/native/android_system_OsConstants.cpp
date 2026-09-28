@@ -2891,7 +2891,14 @@ extern "C" JNIEXPORT jstring Java_android_system_OsConstants_errnoName(JNIEnv* e
         case ENOTSUP: return env->NewStringUTF("ENOTSUP");
         case ENOTTY: return env->NewStringUTF("ENOTTY");
         case ENXIO: return env->NewStringUTF("ENXIO");
+        // 28.09.2026 (tsb): guarded, for A2. On Bionic and on Linux generally ENOTSUP and
+        // EOPNOTSUPP are the same number, 95, and two cases of one value do not compile. On
+        // Darwin they differ -- 45 and 102 -- which is why this switch was fine until the
+        // first build for Android. ENOTSUP above wins where they coincide; the string is then
+        // the one POSIX names for that value, and the other name is simply a synonym for it.
+#if EOPNOTSUPP != ENOTSUP
         case EOPNOTSUPP: return env->NewStringUTF("EOPNOTSUPP");
+#endif
         case EOVERFLOW: return env->NewStringUTF("EOVERFLOW");
         case EPERM: return env->NewStringUTF("EPERM");
         case EPIPE: return env->NewStringUTF("EPIPE");

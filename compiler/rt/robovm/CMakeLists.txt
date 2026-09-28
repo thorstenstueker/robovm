@@ -28,6 +28,25 @@ set(SRC
   src/main/native/sun_misc_Unsafe.cpp
 )
 
+# 28.09.2026 (tsb), for A2. Scoped to the one file that needs it, and not to the target.
+#
+# org_robovm_rt_GC.c reaches bdwgc's setters through GC_call_with_alloc_lock, whose signature is
+# void *(*)(void *). So GC_set_free_space_divisor -- void(int) -- is passed as that function
+# pointer and its argument is passed as a pointer holding an integer. On every ABI this project
+# targets the call lands correctly: one register-sized argument in, return value ignored. It is
+# still two type violations, and clang 21 turned both from warnings into errors, so the file
+# stopped compiling the moment a newer compiler was used -- which building for Android is.
+#
+# Relaxed here rather than target-wide on purpose: -Wno-error=int-conversion across the whole VM
+# would hide the next genuine pointer/integer mistake in our own code, and this file's version is
+# upstream's and unchanged.
+#
+# TODO: replace with ten one-line wrappers of the right shape, which removes the undefined
+# behaviour instead of tolerating it. Left out of A2 because this file is compiled for iOS and
+# macOS too, and A2 has no business changing what they build.
+set_source_files_properties(src/main/native/org_robovm_rt_GC.c PROPERTIES COMPILE_OPTIONS
+  "-Wno-error=incompatible-function-pointer-types;-Wno-error=int-conversion")
+
 if(DARWIN)
   add_definitions(-DNOUNCRYPT)
   set(OBJC_SRC src/main/native/darwin.m)
