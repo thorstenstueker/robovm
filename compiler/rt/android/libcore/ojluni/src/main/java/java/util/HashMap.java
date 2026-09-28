@@ -2388,4 +2388,85 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         }
     }
 
+
+    // ---- helpers the sequenced views need, from OpenJDK 25 ----
+
+/**
+     * Prepares the array for {@link Collection#toArray(Object[])} implementation.
+     * If supplied array is smaller than this map size, a new array is allocated.
+     * If supplied array is bigger than this map size, a null is written at size index.
+     *
+     * @param a an original array passed to {@code toArray()} method
+     * @param <T> type of array elements
+     * @return an array ready to be filled and returned from {@code toArray()} method.
+     */
+    @SuppressWarnings("unchecked")
+    final <T> T[] prepareArray(T[] a) {
+        int size = this.size;
+        if (a.length < size) {
+            return (T[]) java.lang.reflect.Array
+                    .newInstance(a.getClass().getComponentType(), size);
+        }
+        if (a.length > size) {
+            a[size] = null;
+        }
+        return a;
+    }
+
+/**
+     * Fills an array with this map keys and returns it. This method assumes
+     * that input array is big enough to fit all the keys. Use
+     * {@link #prepareArray(Object[])} to ensure this.
+     *
+     * @param a an array to fill
+     * @param <T> type of array elements
+     * @return supplied array
+     */
+    <T> T[] keysToArray(T[] a) {
+        Object[] r = a;
+        Node<K,V>[] tab;
+        int idx = 0;
+        if (size > 0 && (tab = table) != null) {
+            for (Node<K,V> e : tab) {
+                for (; e != null; e = e.next) {
+                    r[idx++] = e.key;
+                }
+            }
+        }
+        return a;
+    }
+
+/**
+     * Fills an array with this map values and returns it. This method assumes
+     * that input array is big enough to fit all the values. Use
+     * {@link #prepareArray(Object[])} to ensure this.
+     *
+     * @param a an array to fill
+     * @param <T> type of array elements
+     * @return supplied array
+     */
+    <T> T[] valuesToArray(T[] a) {
+        Object[] r = a;
+        Node<K,V>[] tab;
+        int idx = 0;
+        if (size > 0 && (tab = table) != null) {
+            for (Node<K,V> e : tab) {
+                for (; e != null; e = e.next) {
+                    r[idx++] = e.value;
+                }
+            }
+        }
+        return a;
+    }
+
+/**
+     * Calculate initial capacity for HashMap based classes, from expected size and default load factor (0.75).
+     *
+     * @param numMappings the expected number of mappings
+     * @return initial capacity for HashMap based classes.
+     * @since 19
+     */
+    static int calculateHashMapCapacity(int numMappings) {
+        return (int) Math.ceil(numMappings / (double) DEFAULT_LOAD_FACTOR);
+    }
 }

@@ -92,10 +92,12 @@ public class HashSet<E>
 {
     static final long serialVersionUID = -5024744406713321676L;
 
-    private transient HashMap<E,Object> map;
+    // Package-private rather than private, as upstream has it: LinkedHashSet needs the map to
+    // reach LinkedHashMap.putFirst and the sequenced key set.
+    transient HashMap<E,Object> map;
 
     // Dummy value to associate with an Object in the backing Map
-    private static final Object PRESENT = new Object();
+    static final Object PRESENT = new Object();
 
     /**
      * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has

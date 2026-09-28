@@ -27,6 +27,7 @@ package java.util;
 
 import java.util.function.Consumer;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.BiFunction;
 import java.io.IOException;
 
@@ -180,7 +181,7 @@ import java.io.IOException;
  */
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
-    implements Map<K,V>
+    implements SequencedMap<K,V>
 {
 
     /*
@@ -243,14 +244,25 @@ public class LinkedHashMap<K,V>
     // internal utilities
 
     // link at the end of list
-    private void linkNodeLast(LinkedHashMapEntry<K,V> p) {
-        LinkedHashMapEntry<K,V> last = tail;
-        tail = p;
-        if (last == null)
+    private void linkNodeAtEnd(LinkedHashMapEntry<K,V> p) {
+        if (putMode == PUT_FIRST) {
+            LinkedHashMapEntry<K,V> first = head;
             head = p;
-        else {
-            p.before = last;
-            last.after = p;
+            if (first == null)
+                tail = p;
+            else {
+                p.after = first;
+                first.before = p;
+            }
+        } else {
+            LinkedHashMapEntry<K,V> last = tail;
+            tail = p;
+            if (last == null)
+                head = p;
+            else {
+                p.before = last;
+                last.after = p;
+            }
         }
     }
 
@@ -278,28 +290,28 @@ public class LinkedHashMap<K,V>
 
     Node<K,V> newNode(int hash, K key, V value, Node<K,V> e) {
         LinkedHashMapEntry<K,V> p =
-            new LinkedHashMapEntry<K,V>(hash, key, value, e);
-        linkNodeLast(p);
+            new LinkedHashMapEntry<>(hash, key, value, e);
+        linkNodeAtEnd(p);
         return p;
     }
 
     Node<K,V> replacementNode(Node<K,V> p, Node<K,V> next) {
         LinkedHashMapEntry<K,V> q = (LinkedHashMapEntry<K,V>)p;
         LinkedHashMapEntry<K,V> t =
-            new LinkedHashMapEntry<K,V>(q.hash, q.key, q.value, next);
+            new LinkedHashMapEntry<>(q.hash, q.key, q.value, next);
         transferLinks(q, t);
         return t;
     }
 
     TreeNode<K,V> newTreeNode(int hash, K key, V value, Node<K,V> next) {
-        TreeNode<K,V> p = new TreeNode<K,V>(hash, key, value, next);
-        linkNodeLast(p);
+        TreeNode<K,V> p = new TreeNode<>(hash, key, value, next);
+        linkNodeAtEnd(p);
         return p;
     }
 
     TreeNode<K,V> replacementTreeNode(Node<K,V> p, Node<K,V> next) {
         LinkedHashMapEntry<K,V> q = (LinkedHashMapEntry<K,V>)p;
-        TreeNode<K,V> t = new TreeNode<K,V>(q.hash, q.key, q.value, next);
+        TreeNode<K,V> t = new TreeNode<>(q.hash, q.key, q.value, next);
         transferLinks(q, t);
         return t;
     }
@@ -326,9 +338,17 @@ public class LinkedHashMap<K,V>
         }
     }
 
-    void afterNodeAccess(Node<K,V> e) { // move node to last
+    static final int PUT_NORM = 0;
+    static final int PUT_FIRST = 1;
+    static final int PUT_LAST = 2;
+    transient int putMode = PUT_NORM;
+
+    // Called after update, but not after insertion
+    void afterNodeAccess(Node<K,V> e) {
         LinkedHashMapEntry<K,V> last;
-        if (accessOrder && (last = tail) != e) {
+        LinkedHashMapEntry<K,V> first;
+        if ((putMode == PUT_LAST || (putMode == PUT_NORM && accessOrder)) && (last = tail) != e) {
+            // move node to last
             LinkedHashMapEntry<K,V> p =
                 (LinkedHashMapEntry<K,V>)e, b = p.before, a = p.after;
             p.after = null;
@@ -347,6 +367,27 @@ public class LinkedHashMap<K,V>
                 last.after = p;
             }
             tail = p;
+            ++modCount;
+        } else if (putMode == PUT_FIRST && (first = head) != e) {
+            // move node to first
+            LinkedHashMapEntry<K,V> p =
+                (LinkedHashMapEntry<K,V>)e, b = p.before, a = p.after;
+            p.before = null;
+            if (a == null)
+                tail = b;
+            else
+                a.before = b;
+            if (b != null)
+                b.after = a;
+            else
+                first = a;
+            if (first == null)
+                tail = p;
+            else {
+                p.after = first;
+                first.before = p;
+            }
+            head = p;
             ++modCount;
         }
     }
@@ -566,17 +607,25 @@ public class LinkedHashMap<K,V>
     public Set<K> keySet() {
         Set<K> ks = keySet;
         if (ks == null) {
-            ks = new LinkedKeySet();
+            ks = new LinkedKeySet(false);
             keySet = ks;
         }
         return ks;
     }
 
-    final class LinkedKeySet extends AbstractSet<K> {
+    final class LinkedKeySet extends AbstractSet<K> implements SequencedSet<K> {
+        final boolean reversed;
+        LinkedKeySet(boolean reversed)          { this.reversed = reversed; }
         public final int size()                 { return size; }
         public final void clear()               { LinkedHashMap.this.clear(); }
         public final Iterator<K> iterator() {
-            return new LinkedKeyIterator();
+            return new LinkedKeyIterator(reversed);
+        }
+        public Object[] toArray() {
+            return keysToArray(new Object[size], reversed);
+        }
+        public <T> T[] toArray(T[] a) {
+            return keysToArray(prepareArray(a), reversed);
         }
         public final boolean contains(Object o) { return containsKey(o); }
         public final boolean remove(Object key) {
@@ -592,10 +641,43 @@ public class LinkedHashMap<K,V>
                 throw new NullPointerException();
             int mc = modCount;
             // Android-changed: Detect changes to modCount early.
-            for (LinkedHashMapEntry<K,V> e = head; (e != null && modCount == mc); e = e.after)
-                action.accept(e.key);
+            if (reversed) {
+                for (LinkedHashMapEntry<K,V> e = tail; (e != null && modCount == mc); e = e.before)
+                    action.accept(e.key);
+            } else {
+                for (LinkedHashMapEntry<K,V> e = head; (e != null && modCount == mc); e = e.after)
+                    action.accept(e.key);
+            }
             if (modCount != mc)
                 throw new ConcurrentModificationException();
+        }
+    
+        public final void addFirst(K k) { throw new UnsupportedOperationException(); }
+
+        public final void addLast(K k) { throw new UnsupportedOperationException(); }
+
+        public final K getFirst() { return nsee(reversed ? tail : head).key; }
+
+        public final K getLast() { return nsee(reversed ? head : tail).key; }
+
+        public final K removeFirst() {
+            Node<K,V> node = nsee(reversed ? tail : head);
+            removeNode(node.hash, node.key, null, false, false);
+            return node.key;
+        }
+
+        public final K removeLast() {
+            Node<K,V> node = nsee(reversed ? head : tail);
+            removeNode(node.hash, node.key, null, false, false);
+            return node.key;
+        }
+
+        public SequencedSet<K> reversed() {
+            if (reversed) {
+                return LinkedHashMap.this.sequencedKeySet();
+            } else {
+                return new LinkedKeySet(true);
+            }
         }
     }
 
@@ -620,17 +702,25 @@ public class LinkedHashMap<K,V>
     public Collection<V> values() {
         Collection<V> vs = values;
         if (vs == null) {
-            vs = new LinkedValues();
+            vs = new LinkedValues(false);
             values = vs;
         }
         return vs;
     }
 
-    final class LinkedValues extends AbstractCollection<V> {
+    final class LinkedValues extends AbstractCollection<V> implements SequencedCollection<V> {
+        final boolean reversed;
+        LinkedValues(boolean reversed)          { this.reversed = reversed; }
         public final int size()                 { return size; }
         public final void clear()               { LinkedHashMap.this.clear(); }
         public final Iterator<V> iterator() {
-            return new LinkedValueIterator();
+            return new LinkedValueIterator(reversed);
+        }
+        public Object[] toArray() {
+            return valuesToArray(new Object[size], reversed);
+        }
+        public <T> T[] toArray(T[] a) {
+            return valuesToArray(prepareArray(a), reversed);
         }
         public final boolean contains(Object o) { return containsValue(o); }
         public final Spliterator<V> spliterator() {
@@ -642,10 +732,43 @@ public class LinkedHashMap<K,V>
                 throw new NullPointerException();
             int mc = modCount;
             // Android-changed: Detect changes to modCount early.
-            for (LinkedHashMapEntry<K,V> e = head; (e != null && modCount == mc); e = e.after)
-                action.accept(e.value);
+            if (reversed) {
+                for (LinkedHashMapEntry<K,V> e = tail; (e != null && modCount == mc); e = e.before)
+                    action.accept(e.value);
+            } else {
+                for (LinkedHashMapEntry<K,V> e = head; (e != null && modCount == mc); e = e.after)
+                    action.accept(e.value);
+            }
             if (modCount != mc)
                 throw new ConcurrentModificationException();
+        }
+    
+        public final void addFirst(V v) { throw new UnsupportedOperationException(); }
+
+        public final void addLast(V v) { throw new UnsupportedOperationException(); }
+
+        public final V getFirst() { return nsee(reversed ? tail : head).value; }
+
+        public final V getLast() { return nsee(reversed ? head : tail).value; }
+
+        public final V removeFirst() {
+            Node<K,V> node = nsee(reversed ? tail : head);
+            removeNode(node.hash, node.key, null, false, false);
+            return node.value;
+        }
+
+        public final V removeLast() {
+            Node<K,V> node = nsee(reversed ? head : tail);
+            removeNode(node.hash, node.key, null, false, false);
+            return node.value;
+        }
+
+        public SequencedCollection<V> reversed() {
+            if (reversed) {
+                return LinkedHashMap.this.sequencedValues();
+            } else {
+                return new LinkedValues(true);
+            }
         }
     }
 
@@ -670,14 +793,17 @@ public class LinkedHashMap<K,V>
      */
     public Set<Map.Entry<K,V>> entrySet() {
         Set<Map.Entry<K,V>> es;
-        return (es = entrySet) == null ? (entrySet = new LinkedEntrySet()) : es;
+        return (es = entrySet) == null ? (entrySet = new LinkedEntrySet(false)) : es;
     }
 
-    final class LinkedEntrySet extends AbstractSet<Map.Entry<K,V>> {
+    final class LinkedEntrySet extends AbstractSet<Map.Entry<K,V>>
+            implements SequencedSet<Map.Entry<K,V>> {
+        final boolean reversed;
+        LinkedEntrySet(boolean reversed)        { this.reversed = reversed; }
         public final int size()                 { return size; }
         public final void clear()               { LinkedHashMap.this.clear(); }
         public final Iterator<Map.Entry<K,V>> iterator() {
-            return new LinkedEntryIterator();
+            return new LinkedEntryIterator(reversed);
         }
         public final boolean contains(Object o) {
             if (!(o instanceof Map.Entry))
@@ -706,10 +832,43 @@ public class LinkedHashMap<K,V>
                 throw new NullPointerException();
             int mc = modCount;
             // Android-changed: Detect changes to modCount early.
-            for (LinkedHashMapEntry<K,V> e = head; (e != null && mc == modCount); e = e.after)
-                action.accept(e);
+            if (reversed) {
+                for (LinkedHashMapEntry<K,V> e = tail; (e != null && mc == modCount); e = e.before)
+                    action.accept(e);
+            } else {
+                for (LinkedHashMapEntry<K,V> e = head; (e != null && mc == modCount); e = e.after)
+                    action.accept(e);
+            }
             if (modCount != mc)
                 throw new ConcurrentModificationException();
+        }
+    
+        public final void addFirst(Map.Entry<K,V> e) { throw new UnsupportedOperationException(); }
+
+        public final void addLast(Map.Entry<K,V> e) { throw new UnsupportedOperationException(); }
+
+        public final Map.Entry<K,V> getFirst() { return nsee(reversed ? tail : head); }
+
+        public final Map.Entry<K,V> getLast() { return nsee(reversed ? head : tail); }
+
+        public final Map.Entry<K,V> removeFirst() {
+            Node<K,V> node = nsee(reversed ? tail : head);
+            removeNode(node.hash, node.key, null, false, false);
+            return node;
+        }
+
+        public final Map.Entry<K,V> removeLast() {
+            Node<K,V> node = nsee(reversed ? head : tail);
+            removeNode(node.hash, node.key, null, false, false);
+            return node;
+        }
+
+        public SequencedSet<Map.Entry<K,V>> reversed() {
+            if (reversed) {
+                return LinkedHashMap.this.sequencedEntrySet();
+            } else {
+                return new LinkedEntrySet(true);
+            }
         }
     }
 
@@ -743,9 +902,11 @@ public class LinkedHashMap<K,V>
         LinkedHashMapEntry<K,V> next;
         LinkedHashMapEntry<K,V> current;
         int expectedModCount;
+        boolean reversed;
 
-        LinkedHashIterator() {
-            next = head;
+        LinkedHashIterator(boolean reversed) {
+            this.reversed = reversed;
+            next = reversed ? tail : head;
             expectedModCount = modCount;
             current = null;
         }
@@ -761,7 +922,7 @@ public class LinkedHashMap<K,V>
             if (e == null)
                 throw new NoSuchElementException();
             current = e;
-            next = e.after;
+            next = reversed ? e.before : e.after;
             return e;
         }
 
@@ -780,18 +941,359 @@ public class LinkedHashMap<K,V>
 
     final class LinkedKeyIterator extends LinkedHashIterator
         implements Iterator<K> {
+        LinkedKeyIterator(boolean reversed) { super(reversed); }
         public final K next() { return nextNode().getKey(); }
     }
 
     final class LinkedValueIterator extends LinkedHashIterator
         implements Iterator<V> {
+        LinkedValueIterator(boolean reversed) { super(reversed); }
         public final V next() { return nextNode().value; }
     }
 
     final class LinkedEntryIterator extends LinkedHashIterator
         implements Iterator<Map.Entry<K,V>> {
+        LinkedEntryIterator(boolean reversed) { super(reversed); }
         public final Map.Entry<K,V> next() { return nextNode(); }
     }
 
 
+
+    // ---- the sequenced methods, from OpenJDK 25 ----
+
+/**
+     * {@inheritDoc}
+     * <p>
+     * If this map already contains a mapping for this key, the mapping is relocated if necessary
+     * so that it is first in encounter order.
+     *
+     * @since 21
+     */
+    public V putFirst(K k, V v) {
+        try {
+            putMode = PUT_FIRST;
+            return this.put(k, v);
+        } finally {
+            putMode = PUT_NORM;
+        }
+    }
+
+/**
+     * {@inheritDoc}
+     * <p>
+     * If this map already contains a mapping for this key, the mapping is relocated if necessary
+     * so that it is last in encounter order.
+     *
+     * @since 21
+     */
+    public V putLast(K k, V v) {
+        try {
+            putMode = PUT_LAST;
+            return this.put(k, v);
+        } finally {
+            putMode = PUT_NORM;
+        }
+    }
+
+/**
+     * {@inheritDoc}
+     * <p>
+     * Modifications to the reversed view and its map views are permitted and will be
+     * propagated to this map. In addition, modifications to this map will be visible
+     * in the reversed view and its map views.
+     *
+     * @return {@inheritDoc}
+     * @since 21
+     */
+    public SequencedMap<K, V> reversed() {
+        return new ReversedLinkedHashMapView<>(this);
+    }
+
+/**
+     * {@inheritDoc}
+     * <p>
+     * The returned view has the same characteristics as specified for the view
+     * returned by the {@link #keySet keySet} method.
+     *
+     * @return {@inheritDoc}
+     * @since 21
+     */
+    public SequencedSet<K> sequencedKeySet() {
+        Set<K> ks = keySet;
+        if (ks == null) {
+            SequencedSet<K> sks = new LinkedKeySet(false);
+            keySet = sks;
+            return sks;
+        } else {
+            // The cast should never fail, since the only assignment of non-null to keySet is
+            // above, and assignments in AbstractMap and HashMap are in overridden methods.
+            return (SequencedSet<K>) ks;
+        }
+    }
+
+/**
+     * {@inheritDoc}
+     * <p>
+     * The returned view has the same characteristics as specified for the view
+     * returned by the {@link #values values} method.
+     *
+     * @return {@inheritDoc}
+     * @since 21
+     */
+    public SequencedCollection<V> sequencedValues() {
+        Collection<V> vs = values;
+        if (vs == null) {
+            SequencedCollection<V> svs = new LinkedValues(false);
+            values = svs;
+            return svs;
+        } else {
+            // The cast should never fail, since the only assignment of non-null to values is
+            // above, and assignments in AbstractMap and HashMap are in overridden methods.
+            return (SequencedCollection<V>) vs;
+        }
+    }
+
+/**
+     * {@inheritDoc}
+     * <p>
+     * The returned view has the same characteristics as specified for the view
+     * returned by the {@link #entrySet entrySet} method.
+     *
+     * @return {@inheritDoc}
+     * @since 21
+     */
+    public SequencedSet<Map.Entry<K, V>> sequencedEntrySet() {
+        Set<Map.Entry<K, V>> es = entrySet;
+        if (es == null) {
+            SequencedSet<Map.Entry<K, V>> ses = new LinkedEntrySet(false);
+            entrySet = ses;
+            return ses;
+        } else {
+            // The cast should never fail, since the only assignment of non-null to entrySet is
+            // above, and assignments in HashMap are in overridden methods.
+            return (SequencedSet<Map.Entry<K, V>>) es;
+        }
+    }
+
+/**
+     * Creates a new, empty, insertion-ordered LinkedHashMap suitable for the expected number of mappings.
+     * The returned map uses the default load factor of 0.75, and its initial capacity is
+     * generally large enough so that the expected number of mappings can be added
+     * without resizing the map.
+     *
+     * @param numMappings the expected number of mappings
+     * @param <K>         the type of keys maintained by the new map
+     * @param <V>         the type of mapped values
+     * @return the newly created map
+     * @throws IllegalArgumentException if numMappings is negative
+     * @since 19
+     */
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(int numMappings) {
+        if (numMappings < 0) {
+            throw new IllegalArgumentException("Negative number of mappings: " + numMappings);
+        }
+        return new LinkedHashMap<>(HashMap.calculateHashMapCapacity(numMappings));
+    }
+
+
+    static <K1,V1> Node<K1,V1> nsee(Node<K1,V1> node) {
+        if (node == null)
+            throw new NoSuchElementException();
+        else
+            return node;
+    }
+
+static class ReversedLinkedHashMapView<K, V> extends AbstractMap<K, V>
+                                                 implements SequencedMap<K, V> {
+        final LinkedHashMap<K, V> base;
+
+        ReversedLinkedHashMapView(LinkedHashMap<K, V> lhm) {
+            base = lhm;
+        }
+
+        // Object
+        // inherit toString() from AbstractMap; it depends on entrySet()
+
+        public boolean equals(Object o) {
+            return base.equals(o);
+        }
+
+        public int hashCode() {
+            return base.hashCode();
+        }
+
+        // Map
+
+        public int size() {
+            return base.size();
+        }
+
+        public boolean isEmpty() {
+            return base.isEmpty();
+        }
+
+        public boolean containsKey(Object key) {
+            return base.containsKey(key);
+        }
+
+        public boolean containsValue(Object value) {
+            return base.containsValue(value);
+        }
+
+        public V get(Object key) {
+            return base.get(key);
+        }
+
+        public V put(K key, V value) {
+            return base.put(key, value);
+        }
+
+        public V remove(Object key) {
+            return base.remove(key);
+        }
+
+        public void putAll(Map<? extends K, ? extends V> m) {
+            base.putAll(m);
+        }
+
+        public void clear() {
+            base.clear();
+        }
+
+        public Set<K> keySet() {
+            return base.sequencedKeySet().reversed();
+        }
+
+        public Collection<V> values() {
+            return base.sequencedValues().reversed();
+        }
+
+        public Set<Entry<K, V>> entrySet() {
+            return base.sequencedEntrySet().reversed();
+        }
+
+        public V getOrDefault(Object key, V defaultValue) {
+            return base.getOrDefault(key, defaultValue);
+        }
+
+        public void forEach(BiConsumer<? super K, ? super V> action) {
+            if (action == null)
+                throw new NullPointerException();
+            int mc = base.modCount;
+            for (LinkedHashMapEntry<K,V> e = base.tail; e != null; e = e.before)
+                action.accept(e.key, e.value);
+            if (base.modCount != mc)
+                throw new ConcurrentModificationException();
+        }
+
+        public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+            if (function == null)
+                throw new NullPointerException();
+            int mc = base.modCount;
+            for (LinkedHashMapEntry<K,V> e = base.tail; e != null; e = e.before)
+                e.value = function.apply(e.key, e.value);
+            if (base.modCount != mc)
+                throw new ConcurrentModificationException();
+        }
+
+        public V putIfAbsent(K key, V value) {
+            return base.putIfAbsent(key, value);
+        }
+
+        public boolean remove(Object key, Object value) {
+            return base.remove(key, value);
+        }
+
+        public boolean replace(K key, V oldValue, V newValue) {
+            return base.replace(key, oldValue, newValue);
+        }
+
+        public V replace(K key, V value) {
+            return base.replace(key, value);
+        }
+
+        public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
+            return base.computeIfAbsent(key, mappingFunction);
+        }
+
+        public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+            return base.computeIfPresent(key, remappingFunction);
+        }
+
+        public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+            return base.compute(key, remappingFunction);
+        }
+
+        public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+            return base.merge(key, value, remappingFunction);
+        }
+
+        // SequencedMap
+
+        public SequencedMap<K, V> reversed() {
+            return base;
+        }
+
+        public Entry<K, V> firstEntry() {
+            return base.lastEntry();
+        }
+
+        public Entry<K, V> lastEntry() {
+            return base.firstEntry();
+        }
+
+        public Entry<K, V> pollFirstEntry() {
+            return base.pollLastEntry();
+        }
+
+        public Entry<K, V> pollLastEntry() {
+            return base.pollFirstEntry();
+        }
+
+        public V putFirst(K k, V v) {
+            return base.putLast(k, v);
+        }
+
+        public V putLast(K k, V v) {
+            return base.putFirst(k, v);
+        }
+    }
+
+    final <T> T[] keysToArray(T[] a) {
+        return keysToArray(a, false);
+    }
+
+    final <T> T[] keysToArray(T[] a, boolean reversed) {
+        Object[] r = a;
+        int idx = 0;
+        if (reversed) {
+            for (LinkedHashMapEntry<K,V> e = tail; e != null; e = e.before) {
+                r[idx++] = e.key;
+            }
+        } else {
+            for (LinkedHashMapEntry<K,V> e = head; e != null; e = e.after) {
+                r[idx++] = e.key;
+            }
+        }
+        return a;
+    }
+
+    final <T> T[] valuesToArray(T[] a) {
+        return valuesToArray(a, false);
+    }
+
+    final <T> T[] valuesToArray(T[] a, boolean reversed) {
+        Object[] r = a;
+        int idx = 0;
+        if (reversed) {
+            for (LinkedHashMapEntry<K,V> e = tail; e != null; e = e.before) {
+                r[idx++] = e.value;
+            }
+        } else {
+            for (LinkedHashMapEntry<K,V> e = head; e != null; e = e.after) {
+                r[idx++] = e.value;
+            }
+        }
+        return a;
+    }
 }

@@ -117,7 +117,7 @@ package java.util;
 
 public class LinkedHashSet<E>
     extends HashSet<E>
-    implements Set<E>, Cloneable, java.io.Serializable {
+    implements SequencedSet<E>, Cloneable, java.io.Serializable {
 
     private static final long serialVersionUID = -2851667679971038690L;
 
@@ -191,5 +191,122 @@ public class LinkedHashSet<E>
     @Override
     public Spliterator<E> spliterator() {
         return Spliterators.spliterator(this, Spliterator.DISTINCT | Spliterator.ORDERED);
+    }
+
+    // ---- the sequenced methods, from OpenJDK 25 ----
+
+    /**
+     * Creates a new, empty LinkedHashSet suitable for the expected number of elements.
+     * The returned set uses the default load factor of 0.75, and its initial capacity is
+     * generally large enough so that the expected number of elements can be added
+     * without resizing the set.
+     *
+     * @param numElements    the expected number of elements
+     * @param <T>         the type of elements maintained by the new set
+     * @return the newly created set
+     * @throws IllegalArgumentException if numElements is negative
+     * @since 19
+     */
+    public static <T> LinkedHashSet<T> newLinkedHashSet(int numElements) {
+        if (numElements < 0) {
+            throw new IllegalArgumentException("Negative number of elements: " + numElements);
+        }
+        return new LinkedHashSet<>(HashMap.calculateHashMapCapacity(numElements));
+    }
+
+    LinkedHashMap<E, Object> map() {
+        return (LinkedHashMap<E, Object>) map;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If this set already contains the element, it is relocated if necessary so that it is
+     * first in encounter order.
+     *
+     * @since 21
+     */
+    public void addFirst(E e) {
+        map().putFirst(e, PRESENT);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If this set already contains the element, it is relocated if necessary so that it is
+     * last in encounter order.
+     *
+     * @since 21
+     */
+    public void addLast(E e) {
+        map().putLast(e, PRESENT);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NoSuchElementException {@inheritDoc}
+     * @since 21
+     */
+    public E getFirst() {
+        return map().sequencedKeySet().getFirst();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NoSuchElementException {@inheritDoc}
+     * @since 21
+     */
+    public E getLast() {
+        return map().sequencedKeySet().getLast();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NoSuchElementException {@inheritDoc}
+     * @since 21
+     */
+    public E removeFirst() {
+        return map().sequencedKeySet().removeFirst();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NoSuchElementException {@inheritDoc}
+     * @since 21
+     */
+    public E removeLast() {
+        return map().sequencedKeySet().removeLast();
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Modifications to the reversed view are permitted and will be propagated to this set.
+     * In addition, modifications to this set will be visible in the reversed view.
+     *
+     * @return {@inheritDoc}
+     * @since 21
+     */
+    public SequencedSet<E> reversed() {
+        class ReverseLinkedHashSetView extends AbstractSet<E> implements SequencedSet<E> {
+            public int size()                  { return LinkedHashSet.this.size(); }
+            public Iterator<E> iterator()      { return map().sequencedKeySet().reversed().iterator(); }
+            public boolean add(E e)            { return LinkedHashSet.this.add(e); }
+            public void addFirst(E e)          { LinkedHashSet.this.addLast(e); }
+            public void addLast(E e)           { LinkedHashSet.this.addFirst(e); }
+            public E getFirst()                { return LinkedHashSet.this.getLast(); }
+            public E getLast()                 { return LinkedHashSet.this.getFirst(); }
+            public E removeFirst()             { return LinkedHashSet.this.removeLast(); }
+            public E removeLast()              { return LinkedHashSet.this.removeFirst(); }
+            public SequencedSet<E> reversed()  { return LinkedHashSet.this; }
+            public Object[] toArray() { return map().keysToArray(new Object[map.size()], true); }
+            public <T> T[] toArray(T[] a) { return map().keysToArray(map.prepareArray(a), true); }
+        }
+
+        return new ReverseLinkedHashSetView();
     }
 }

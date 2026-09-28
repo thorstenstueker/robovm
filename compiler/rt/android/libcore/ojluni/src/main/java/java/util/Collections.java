@@ -1486,7 +1486,9 @@ public class Collections {
     private static class UnmodifiableMap<K,V> implements Map<K,V>, Serializable {
         private static final long serialVersionUID = -1034234728574286014L;
 
-        private final Map<? extends K, ? extends V> m;
+        // Package-private rather than private, as upstream has it: the sequenced
+        // wrapper below needs the map it is standing in front of.
+        final Map<? extends K, ? extends V> m;
 
         UnmodifiableMap(Map<? extends K, ? extends V> m) {
             if (m==null)
@@ -5510,6 +5512,22 @@ public class Collections {
             s = map.keySet();
         }
 
+        /**
+         * The same, without the emptiness check, for a view of a map that already has entries.
+         *
+         * <p>Upstream puts that check in {@code newSetFromMap} and leaves the constructor plain;
+         * libcore moved it into the constructor, and that is kept, because it is what every caller
+         * that goes through the public factory has been getting. But
+         * {@link SequencedSetFromMap#reversed()} builds a second wrapper over the reversed view of
+         * a map that is by then full, and rejecting that would make reversed() throw on any set
+         * with something in it. The boolean argument is unused and exists only to pick this
+         * constructor apart from the other.
+         */
+        SetFromMap(Map<E, Boolean> map, boolean unchecked) {
+            m = map;
+            s = map.keySet();
+        }
+
         public void clear()               {        m.clear(); }
         public int size()                 { return m.size(); }
         public boolean isEmpty()          { return m.isEmpty(); }
@@ -5617,5 +5635,206 @@ public class Collections {
         public Stream<E> stream()           {return q.stream();}
         @Override
         public Stream<E> parallelStream()   {return q.parallelStream();}
+    }
+
+    // ---- the sequenced wrappers, from OpenJDK 25 ----
+
+    public static <T> SequencedCollection<T> unmodifiableSequencedCollection(SequencedCollection<? extends T> c) {
+        if (c.getClass() == UnmodifiableSequencedCollection.class) {
+            return (SequencedCollection<T>) c;
+        }
+        return new UnmodifiableSequencedCollection<>(c);
+    }
+
+    public static <T> SequencedSet<T> unmodifiableSequencedSet(SequencedSet<? extends T> s) {
+        // Not checking for subclasses because of heap pollution and information leakage.
+        if (s.getClass() == UnmodifiableSequencedSet.class) {
+            return (SequencedSet<T>) s;
+        }
+        return new UnmodifiableSequencedSet<>(s);
+    }
+
+    public static <K,V> SequencedMap<K,V> unmodifiableSequencedMap(SequencedMap<? extends K, ? extends V> m) {
+        // Not checking for subclasses because of heap pollution and information leakage.
+        if (m.getClass() == UnmodifiableSequencedMap.class) {
+            return (SequencedMap<K,V>) m;
+        }
+        return new UnmodifiableSequencedMap<>(m);
+    }
+
+/**
+     * @serial include
+     */
+    static class UnmodifiableSequencedCollection<E> extends UnmodifiableCollection<E>
+            implements SequencedCollection<E>, Serializable {
+
+        @java.io.Serial
+        private static final long serialVersionUID = -6060065079711684830L;
+
+        UnmodifiableSequencedCollection(SequencedCollection<? extends E> c) {
+            super(c);
+        }
+
+        @SuppressWarnings("unchecked")
+        private SequencedCollection<E> sc() {
+            return (SequencedCollection<E>) c;
+        }
+
+        // Even though this wrapper class is serializable, the reversed view is effectively
+        // not serializable because it points to the reversed collection view, which usually isn't
+        // serializable.
+        public SequencedCollection<E> reversed() {
+            return new UnmodifiableSequencedCollection<>(sc().reversed());
+        }
+
+        public void addFirst(E e) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void addLast(E e) {
+            throw new UnsupportedOperationException();
+        }
+
+        public E getFirst() {
+            return sc().getFirst();
+        }
+
+        public E getLast() {
+            return sc().getLast();
+        }
+
+        public E removeFirst() {
+            throw new UnsupportedOperationException();
+        }
+
+        public E removeLast() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+/**
+     * @serial include
+     */
+    static class UnmodifiableSequencedSet<E> extends UnmodifiableSequencedCollection<E>
+                                             implements SequencedSet<E>, Serializable {
+        @java.io.Serial
+        private static final long serialVersionUID = -2153469532349793522L;
+
+        UnmodifiableSequencedSet(SequencedSet<? extends E> s)    {super(s);}
+        public boolean equals(Object o)                          {return o == this || c.equals(o);}
+        public int hashCode()                                    {return c.hashCode();}
+
+        @SuppressWarnings("unchecked")
+        private SequencedSet<E> ss() {
+            return (SequencedSet<E>) c;
+        }
+
+        // Even though this wrapper class is serializable, the reversed view is effectively
+        // not serializable because it points to the reversed set view, which usually isn't
+        // serializable.
+        public SequencedSet<E> reversed() {
+            return new UnmodifiableSequencedSet<>(ss().reversed());
+        }
+    }
+
+/**
+     * @serial include
+     */
+    private static class UnmodifiableSequencedMap<K,V> extends UnmodifiableMap<K,V> implements SequencedMap<K,V>, Serializable {
+        @java.io.Serial
+        private static final long serialVersionUID = -8171676257373950636L;
+
+        UnmodifiableSequencedMap(Map<? extends K, ? extends V> m) {
+            super(m);
+        }
+
+        @SuppressWarnings("unchecked")
+        private SequencedMap<K, V> sm() {
+            return (SequencedMap<K, V>) m;
+        }
+
+        // Even though this wrapper class is serializable, the reversed view is effectively
+        // not serializable because it points to the reversed map view, which usually isn't
+        // serializable.
+        public SequencedMap<K, V> reversed() {
+            return new UnmodifiableSequencedMap<>(sm().reversed());
+        }
+
+        public Entry<K, V> pollFirstEntry() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Entry<K, V> pollLastEntry() {
+            throw new UnsupportedOperationException();
+        }
+
+        public V putFirst(K k, V v) {
+            throw new UnsupportedOperationException();
+        }
+
+        public V putLast(K k, V v) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+/**
+     * @serial include
+     */
+
+    /**
+     * Returns a sequenced set backed by the specified map. The resulting set displays
+     * the same ordering, concurrency, and performance characteristics as the
+     * backing map. The map must be empty at the time this method is invoked,
+     * and should not be accessed directly after this method returns.
+     *
+     * @param <E> the class of the map keys and of the objects in the returned set
+     * @param map the backing map
+     * @return the set backed by the map
+     * @throws IllegalArgumentException if {@code map} is not empty
+     * @since 21
+     */
+    public static <E> SequencedSet<E> newSequencedSetFromMap(SequencedMap<E, Boolean> map) {
+        if (! map.isEmpty()) // implicit null check
+            throw new IllegalArgumentException("Map is non-empty");
+        return new SequencedSetFromMap<>(map);
+    }
+
+    private static class SequencedSetFromMap<E> extends SetFromMap<E> implements SequencedSet<E> {
+        private E nsee(Map.Entry<E, Boolean> e) {
+            if (e == null) {
+                throw new NoSuchElementException();
+            } else {
+                return e.getKey();
+            }
+        }
+
+        private SequencedMap<E, Boolean> map() {
+            return (SequencedMap<E, Boolean>) super.m;
+        }
+
+        SequencedSetFromMap(SequencedMap<E, Boolean> map) {
+            super(map);
+        }
+
+        private SequencedSetFromMap(SequencedMap<E, Boolean> map, boolean unchecked) {
+            super(map, unchecked);
+        }
+
+        // Even though this wrapper class is serializable, the reversed view is effectively
+        // not serializable because it points to the reversed map view, which usually isn't
+        // serializable.
+        public SequencedSet<E> reversed() {
+            return new SequencedSetFromMap<>(map().reversed(), true);
+        }
+
+        public void addFirst(E e) { map().putFirst(e, Boolean.TRUE); }
+        public void addLast(E e)  { map().putLast(e, Boolean.TRUE); }
+        public E getFirst()       { return nsee(map().firstEntry()); }
+        public E getLast()        { return nsee(map().lastEntry()); }
+        public E removeFirst()    { return nsee(map().pollFirstEntry()); }
+        public E removeLast()     { return nsee(map().pollLastEntry()); }
+
+        @java.io.Serial
+        private static final long serialVersionUID = -3943479744841433802L;
     }
 }
