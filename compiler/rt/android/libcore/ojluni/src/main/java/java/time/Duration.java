@@ -588,6 +588,20 @@ public final class Duration
         return seconds < 0;
     }
 
+    /**
+     * Checks if this duration is positive, excluding zero.
+     * <p>
+     * A {@code Duration} represents a directed distance between two points on
+     * the time-line and can therefore be positive, zero or negative.
+     * This method checks whether the length is greater than zero.
+     *
+     * @return true if this duration has a total length greater than zero
+     * @since 18
+     */
+    public boolean isPositive() {
+        return (seconds | nanos) > 0;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the number of seconds in this duration.

@@ -16,6 +16,8 @@
  */
 package jdk.internal.util;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -259,5 +261,34 @@ public class ArraysSupport {
             a[j] = t;
         }
         return a;
+    }
+
+    /**
+     * The collection's elements into the array in reverse order, following the contract of
+     * {@link java.util.Collection#toArray(Object[])} about reusing the array and the trailing null.
+     *
+     * <p>Verbatim from OpenJDK, and the comment there explains a constraint worth keeping: the
+     * collection is asked for its contents exactly once. A separate {@code size()} call, or an
+     * iterator, would go wrong if the collection changed between the two — so the elements arrive
+     * through a single {@code toArray}, at the cost of one extra copy.
+     *
+     * <p>The obvious alternative, {@code coll.toArray(array)} followed by reversing in place, does
+     * not work: if the array passed in is longer than the collection there is no way to tell how
+     * many entries were written, and so no way to reverse the right ones and leave the rest alone.
+     *
+     * <p>Needed by {@code ReverseOrderListView}, which is what {@code List.reversed()} returns.
+     *
+     * @throws ArrayStoreException if the collection holds something the array cannot store
+     */
+    public static <T> T[] toArrayReversed(Collection<?> coll, T[] array) {
+        T[] reversed = reverse(coll.toArray(Arrays.copyOfRange(array, 0, 0)));
+        if (reversed.length > array.length) {
+            return reversed;
+        }
+        System.arraycopy(reversed, 0, array, 0, reversed.length);
+        if (array.length > reversed.length) {
+            array[reversed.length] = null;
+        }
+        return array;
     }
 }

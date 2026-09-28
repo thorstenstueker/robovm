@@ -132,7 +132,7 @@ import java.util.function.UnaryOperator;
  * @since 1.2
  */
 
-public interface List<E> extends Collection<E> {
+public interface List<E> extends SequencedCollection<E> {
     // Query Operations
 
     /**
@@ -1078,5 +1078,129 @@ public interface List<E> extends Collection<E> {
      */
     static <E> List<E> copyOf(Collection<? extends E> coll) {
         return ImmutableCollections.listCopy(coll);
+    }
+
+    // ---- the sequenced methods, from OpenJDK 25 ----
+
+/**
+     * {@inheritDoc}
+     *
+     * @implSpec
+     * The implementation in this interface calls {@code add(0, e)}.
+     *
+     * @throws NullPointerException {@inheritDoc}
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @since 21
+     */
+    default void addFirst(E e) {
+        this.add(0, e);
+    }
+
+/**
+     * {@inheritDoc}
+     *
+     * @implSpec
+     * The implementation in this interface calls {@code add(e)}.
+     *
+     * @throws NullPointerException {@inheritDoc}
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @since 21
+     */
+    default void addLast(E e) {
+        this.add(e);
+    }
+
+/**
+     * {@inheritDoc}
+     *
+     * @implSpec
+     * If this List is not empty, the implementation in this interface returns the result
+     * of calling {@code get(0)}. Otherwise, it throws {@code NoSuchElementException}.
+     *
+     * @throws NoSuchElementException {@inheritDoc}
+     * @since 21
+     */
+    default E getFirst() {
+        if (this.isEmpty()) {
+            throw new NoSuchElementException();
+        } else {
+            return this.get(0);
+        }
+    }
+
+/**
+     * {@inheritDoc}
+     *
+     * @implSpec
+     * If this List is not empty, the implementation in this interface returns the result
+     * of calling {@code get(size() - 1)}. Otherwise, it throws {@code NoSuchElementException}.
+     *
+     * @throws NoSuchElementException {@inheritDoc}
+     * @since 21
+     */
+    default E getLast() {
+        if (this.isEmpty()) {
+            throw new NoSuchElementException();
+        } else {
+            return this.get(this.size() - 1);
+        }
+    }
+
+/**
+     * {@inheritDoc}
+     *
+     * @implSpec
+     * If this List is not empty, the implementation in this interface returns the result
+     * of calling {@code remove(0)}. Otherwise, it throws {@code NoSuchElementException}.
+     *
+     * @throws NoSuchElementException {@inheritDoc}
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @since 21
+     */
+    default E removeFirst() {
+        if (this.isEmpty()) {
+            throw new NoSuchElementException();
+        } else {
+            return this.remove(0);
+        }
+    }
+
+/**
+     * {@inheritDoc}
+     *
+     * @implSpec
+     * If this List is not empty, the implementation in this interface returns the result
+     * of calling {@code remove(size() - 1)}. Otherwise, it throws {@code NoSuchElementException}.
+     *
+     * @throws NoSuchElementException {@inheritDoc}
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @since 21
+     */
+    default E removeLast() {
+        if (this.isEmpty()) {
+            throw new NoSuchElementException();
+        } else {
+            return this.remove(this.size() - 1);
+        }
+    }
+
+/**
+     * {@inheritDoc}
+     *
+     * @implSpec
+     * The implementation in this interface returns a reverse-ordered List
+     * view. The {@code reversed()} method of the view returns a reference
+     * to this List. Other operations on the view are implemented via calls to
+     * public methods on this List. The exact relationship between calls on the
+     * view and calls on this List is unspecified. However, order-sensitive
+     * operations generally behave as if they delegate to the appropriate method
+     * with the opposite orientation. For example, calling {@code getFirst} on
+     * the view might result in a call to {@code getLast} on this List.
+     *
+     * @return a reverse-ordered view of this collection, as a {@code List}
+     * @since 21
+     */
+    default List<E> reversed() {
+        return ReverseOrderListView.of(this, true); // we must assume it's modifiable
     }
 }

@@ -177,6 +177,27 @@ public final class Objects {
     }
 
     /**
+     * Returns a string equivalent to the string returned by {@code
+     * Object.toString} if that method and {@code hashCode} are not
+     * overridden.
+     *
+     * @implNote
+     * This method constructs a string for an object without calling
+     * any overridable methods of the object.
+     *
+     * @param o an object
+     * @return a string equivalent to the string returned by {@code Object.toString}
+     * @throws NullPointerException if the argument is null
+     * @see Object#toString
+     * @see System#identityHashCode(Object)
+     * @since 19
+     */
+    public static String toIdentityString(Object o) {
+        requireNonNull(o);
+        return o.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(o));
+    }
+
+    /**
      * Returns 0 if the arguments are identical and {@code
      * c.compare(a, b)} otherwise.
      * Consequently, if both arguments are {@code null} 0

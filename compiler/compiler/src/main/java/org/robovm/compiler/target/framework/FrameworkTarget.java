@@ -34,8 +34,18 @@ public class FrameworkTarget extends AbstractTarget {
 
 	private static final String TYPE = "framework";
 	private static final String XC_TYPE = "xcframework";
+	/**
+	 * Whether the named target type is one of ours.
+	 *
+	 * <p>Null is a legitimate answer of no, not a programming error: {@code -target} is optional and
+	 * defaults to deciding from {@code -os}, so by the time {@code ObjCMemberPlugin.beforeLinker}
+	 * asks, the type may never have been set. Without this the whole build ends in
+	 * {@code Cannot invoke "String.matches(String)" because "candidate" is null}, printed after the
+	 * compilation has already succeeded and followed by the usage text, which reads like a
+	 * mistyped command line rather than what it is.
+	 */
 	public static boolean matches(String candidate) {
-		return (candidate.matches(TYPE) || candidate.matches((XC_TYPE)));
+		return TYPE.equals(candidate) || XC_TYPE.equals(candidate);
 	}
 
     private OS os;
