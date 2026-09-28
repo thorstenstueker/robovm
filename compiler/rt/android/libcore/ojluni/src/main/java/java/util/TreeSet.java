@@ -557,4 +557,30 @@ public class TreeSet<E> extends AbstractSet<E>
     }
 
     private static final long serialVersionUID = -2479143000061671589L;
+
+    // ---- the sequenced methods, from OpenJDK 25 ----
+
+/**
+     * Throws {@code UnsupportedOperationException}. The encounter order induced by this
+     * set's comparison method determines the position of elements, so explicit positioning
+     * is not supported.
+     *
+     * @throws UnsupportedOperationException always
+     * @since 21
+     */
+    public void addFirst(E e) {
+        throw new UnsupportedOperationException();
+    }
+
+/**
+     * Throws {@code UnsupportedOperationException}. The encounter order induced by this
+     * set's comparison method determines the position of elements, so explicit positioning
+     * is not supported.
+     *
+     * @throws UnsupportedOperationException always
+     * @since 21
+     */
+    public void addLast(E e) {
+        throw new UnsupportedOperationException();
+    }
 }

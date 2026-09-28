@@ -110,7 +110,7 @@ package java.util;
  * @since 1.2
  */
 
-public interface SortedMap<K,V> extends Map<K,V> {
+public interface SortedMap<K,V> extends Map<K,V>, SequencedMap<K,V> {
     /**
      * Returns the comparator used to order the keys in this map, or
      * {@code null} if this map uses the {@linkplain Comparable
@@ -281,4 +281,56 @@ public interface SortedMap<K,V> extends Map<K,V> {
      *         sorted in ascending key order
      */
     Set<Map.Entry<K, V>> entrySet();
+
+    // ---- the sequenced methods, from OpenJDK 25 ----
+
+/**
+     * Throws {@code UnsupportedOperationException}. The encounter order induced by this
+     * map's comparison method determines the position of mappings, so explicit positioning
+     * is not supported.
+     *
+     * @implSpec
+     * The implementation in this interface always throws {@code UnsupportedOperationException}.
+     *
+     * @throws UnsupportedOperationException always
+     * @since 21
+     */
+    default V putLast(K k, V v) {
+        throw new UnsupportedOperationException();
+    }
+
+/**
+     * {@inheritDoc}
+     *
+     * @implSpec
+     * The implementation in this interface returns a reverse-ordered SortedMap
+     * view. The {@code reversed()} method of the view returns a reference
+     * to this SortedMap. Other operations on the view are implemented via calls to
+     * public methods on this SortedMap. The exact relationship between calls on the
+     * view and calls on this SortedMap is unspecified. However, order-sensitive
+     * operations generally behave as if they delegate to the appropriate method
+     * with the opposite orientation. For example, calling {@code firstEntry} on
+     * the view might result in a call to {@code lastEntry} on this SortedMap.
+     *
+     * @return a reverse-ordered view of this map, as a {@code SortedMap}
+     * @since 21
+     */
+    default SortedMap<K, V> reversed() {
+        return ReverseOrderSortedMapView.of(this);
+    }
+
+/**
+     * Throws {@code UnsupportedOperationException}. The encounter order induced by this
+     * map's comparison method determines the position of mappings, so explicit positioning
+     * is not supported.
+     *
+     * @implSpec
+     * The implementation in this interface always throws {@code UnsupportedOperationException}.
+     *
+     * @throws UnsupportedOperationException always
+     * @since 21
+     */
+     default V putFirst(K k, V v) {
+        throw new UnsupportedOperationException();
+    }
 }

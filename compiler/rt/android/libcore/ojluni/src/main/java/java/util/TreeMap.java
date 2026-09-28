@@ -3047,4 +3047,30 @@ public class TreeMap<K,V>
             }
         }
     }
+
+    // ---- the sequenced methods, from OpenJDK 25 ----
+
+/**
+     * Throws {@code UnsupportedOperationException}. The encounter order induced by this
+     * map's comparison method determines the position of mappings, so explicit positioning
+     * is not supported.
+     *
+     * @throws UnsupportedOperationException always
+     * @since 21
+     */
+    public V putLast(K k, V v) {
+        throw new UnsupportedOperationException();
+    }
+
+/**
+     * Throws {@code UnsupportedOperationException}. The encounter order induced by this
+     * map's comparison method determines the position of mappings, so explicit positioning
+     * is not supported.
+     *
+     * @throws UnsupportedOperationException always
+     * @since 21
+     */
+     public V putFirst(K k, V v) {
+        throw new UnsupportedOperationException();
+    }
 }
